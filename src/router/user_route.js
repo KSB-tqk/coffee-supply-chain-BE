@@ -33,12 +33,6 @@ router.get("/users", auth, async (req, res) => {
   } catch (e) {
     res.status(500).send();
   }
-
-  // User.find({}).then((result) => {
-  //     res.send(result)
-  // }).catch((error) => {
-  //     res.status(500).send(error)
-  // })
 });
 
 router.get("/users/me", auth, async (req, res) => {
