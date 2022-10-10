@@ -21,6 +21,7 @@ router.post("/users/login", async (req, res) => {
     const user = await User.findByCredentials(req.body.email, req.body.pwd);
     const token = await user.generateAuthToken();
     res.send({ user, token });
+    console.log(user.toString(), token.toString());
   } catch (e) {
     res.status(400).send();
   }
