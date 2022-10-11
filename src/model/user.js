@@ -15,6 +15,10 @@ const userSchema = mongoose.Schema(
       trim: true,
       required: true,
     },
+    roleTypeId: {
+      type: Number,
+      required: true,
+    },
     email: {
       type: String,
       unique: true,
