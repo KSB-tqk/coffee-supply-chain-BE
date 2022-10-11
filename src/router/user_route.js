@@ -23,7 +23,7 @@ router.post("/login", async (req, res) => {
     res.send({ user, token });
     console.log(user.toString(), token.toString());
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).send(e.toString());
   }
 });
 
@@ -32,7 +32,7 @@ router.get("/", auth, async (req, res) => {
     const users = await User.find({});
     res.send(users);
   } catch (e) {
-    res.status(500).send();
+    res.status(500).send(e.toString());
   }
 });
 
@@ -47,7 +47,7 @@ router.get("/:id", auth, async (req, res) => {
     const user = await User.findById(_id);
     res.send(user);
   } catch (e) {
-    res.status(500).send();
+    res.status(500).send(e.toString());
   }
 });
 
@@ -70,11 +70,11 @@ router.patch("/me", auth, async (req, res) => {
     await req.user.save();
 
     if (!req.user) {
-      return res.status(404).send();
+      return res.status(404).send(e.toString());
     }
     res.send(req.user);
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).send(e.toString());
   }
 });
 
@@ -100,7 +100,7 @@ router.post("/logout", auth, async (req, res) => {
 
     res.send();
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send(e.toString());
   }
 });
 
@@ -111,7 +111,7 @@ router.post("/logoutall", auth, async (req, res) => {
 
     res.send();
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send(e.toString());
   }
 });
 
@@ -120,7 +120,7 @@ router.delete("/me", auth, async (req, res) => {
     await req.user.remove();
     res.send(req.user);
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send(e.toString());
   }
 });
 
