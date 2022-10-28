@@ -15,9 +15,9 @@ const port = process.env.PORT;
 
 // })
 
+app.use(cors());
 app.use(express.json());
 app.use("/users", userRouter);
-app.use(cors());
 
 const publicDir = path.join(__dirname, "../public");
 
