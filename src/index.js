@@ -16,13 +16,13 @@ const port = process.env.PORT;
 // })
 
 app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use(express.json());
 app.use("/users", userRouter);
-
-app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  next();
-});
 
 const publicDir = path.join(__dirname, "../public");
 
