@@ -19,6 +19,11 @@ app.use(cors());
 app.use(express.json());
 app.use("/users", userRouter);
 
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  next();
+});
+
 const publicDir = path.join(__dirname, "../public");
 
 app.use(express.static(publicDir));
