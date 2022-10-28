@@ -8,8 +8,6 @@ var cors = require("cors");
 
 const app = express();
 
-app.use(cors());
-
 const port = process.env.PORT;
 
 // app.use((req, res, next) => {
@@ -20,6 +18,7 @@ const port = process.env.PORT;
 
 app.use(express.json());
 app.use("/users", userRouter);
+app.use(cors());
 
 const publicDir = path.join(__dirname, "../public");
 
