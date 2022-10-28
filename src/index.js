@@ -3,8 +3,7 @@ require("./database/mongoose");
 const User = require("./model/user");
 const path = require("path");
 const userRouter = require("./router/user_route");
-
-var cors = require("cors");
+const cors = require("cors");
 
 const app = express();
 
