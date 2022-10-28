@@ -4,7 +4,12 @@ const User = require("./model/user");
 const path = require("path");
 const userRouter = require("./router/user_route");
 
+var cors = require("cors");
+
 const app = express();
+
+app.use(cors());
+
 const port = process.env.PORT;
 
 // app.use((req, res, next) => {
