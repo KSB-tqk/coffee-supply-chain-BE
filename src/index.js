@@ -1,23 +1,26 @@
-const express = require("express");
-require("./database/mongoose");
-const User = require("./model/user");
-const path = require("path");
-const userRouter = require("./router/user_route");
-const cors = require("cors");
+import express from "express";
+import mongooseDB from "./database/mongoose.js";
+import path from "path";
+import cors from "cors";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+import {default as UserRouter} from "./router/user_route.js";
+import FarmRouter from "./router/farm_router.js";
 
 const app = express();
 
 const port = process.env.PORT;
+mongooseDB.then(() => console.log("Connect db success!"))
 
-// app.use((req, res, next) => {
-
-//     res.status(503).send('Service are unavailable at the monment, Please try again later !')
-
-// })
 
 app.use(cors());
 app.use(express.json());
-app.use("/users", userRouter);
+app.use("/users", UserRouter);
+app.use("/farm", FarmRouter);
 
 const publicDir = path.join(__dirname, "../public");
 
@@ -27,10 +30,3 @@ app.listen(port, () => {
   console.log("Server is up on port " + port);
 });
 
-// const main = async () => {
-//     const user = await User.findById('62e2645afda0cdd7c4e38258')
-//     await user.populate('tasks')
-//     console.log(user.tasks)
-// }
-
-// main()

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const enterpriseSchema = mongoose.Schema(
   {
@@ -34,4 +34,4 @@ enterpriseSchema.virtual("employees", {
 
 const Enterprise = mongoose.model("Enterprise", enterpriseSchema);
 
-module.exports = Enterprise;
+export default Enterprise
