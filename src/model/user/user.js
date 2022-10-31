@@ -36,7 +36,7 @@ const userSchema = mongoose.Schema(
     },
     department: {
       type: Number,
-      required: true,
+      default: 0,
     },
     password: {
       type: String,
@@ -85,7 +85,7 @@ userSchema.methods.toJSON = function () {
   const userObject = user.toObject();
 
   delete userObject.tokens;
-  delete userObject.pwd;
+  delete userObject.password;
 
   return userObject;
 };
@@ -100,7 +100,7 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-userSchema.statics.findByCredentials = async (email, pwd) => {
+userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
   if (!user) {
     throw Error(
@@ -108,7 +108,7 @@ userSchema.statics.findByCredentials = async (email, pwd) => {
     );
   }
 
-  const isMatch = await bcrypt.compare(pwd, user.pwd);
+  const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
     throw Error(
@@ -123,8 +123,8 @@ userSchema.statics.findByCredentials = async (email, pwd) => {
 userSchema.pre("save", async function (next) {
   const user = this;
 
-  if (user.isModified("pwd")) {
-    user.pwd = await bcrypt.hash(user.pwd, 8);
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 8);
   }
 
   next();

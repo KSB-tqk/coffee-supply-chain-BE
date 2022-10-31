@@ -14,7 +14,10 @@ const userController = {
   },
   loginUser: async (req, res) => {
     try {
-      const user = await User.findByCredentials(req.body.email, req.body.pwd);
+      const user = await User.findByCredentials(
+        req.body.email,
+        req.body.password
+      );
       const token = await user.generateAuthToken();
       res.send({ user, token });
       console.log(user.toString(), token.toString());
@@ -104,6 +107,17 @@ const userController = {
       res.send(req.user);
     } catch (e) {
       res.status(500).send(e.toString());
+    }
+  },
+  getUserByDepartmentId: async (req, res) => {
+    const department = req.params.id;
+    try {
+      const users = await User.find({
+        department: { $gte: department },
+      }).exec();
+      res.send(users);
+    } catch (e) {
+      res.status(401).send(e.toString());
     }
   },
 };

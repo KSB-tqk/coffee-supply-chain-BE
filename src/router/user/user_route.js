@@ -16,6 +16,8 @@ userRouter.get("/me", auth, userController.getCurrentUserInfo);
 
 userRouter.get("/:id", auth, userController.getUserById);
 
+userRouter.get("/department/:id", auth, userController.getUserByDepartmentId);
+
 userRouter.patch("/me", auth, userController.updateCurrentUserInfo);
 
 userRouter.post("/logout", auth, userController.logoutCurrentUser);
