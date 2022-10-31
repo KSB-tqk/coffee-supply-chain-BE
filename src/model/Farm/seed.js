@@ -16,6 +16,11 @@ const seedSchema = mongoose.Schema({
         required: true,
         trim: true,
     },
+    farmId: {
+        type: String,
+        required: true,
+        trim: true,
+    }
 });
 
 const SeedModel = mongoose.model('Seed', seedSchema);

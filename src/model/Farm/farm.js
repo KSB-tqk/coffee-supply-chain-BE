@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const farmSchema = mongoose.Schema({
     farmName: {
@@ -11,7 +11,7 @@ const farmSchema = mongoose.Schema({
         trim: true,
         required: true,
     },
-    farmNumberPhone: {
+    farmPhoneNumber: {
         type: String,
         trim: true,
         required: true,
@@ -21,6 +21,18 @@ const farmSchema = mongoose.Schema({
         required: true,
         ref: 'User',
     },
+    seeds: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Seed',
+    }],
+    lands: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Land'
+    }],
+    farmProjects: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FarmProject',
+    }]
 });
 
 const FarmModel = mongoose.model('Farm', farmSchema);
