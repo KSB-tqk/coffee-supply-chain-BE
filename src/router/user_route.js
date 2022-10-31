@@ -1,10 +1,11 @@
-const express = require("express");
-const jwt = require("jsonwebtoken");
-const User = require("../model/user");
-const router = express.Router();
-const auth = require("../middleware/authentication");
+import express from "express";
+import jwt from "jsonwebtoken";
+import User from "../model/user.js"
+import auth from "../middleware/authentication.js";
 
-router.post("/", async (req, res) => {
+const UserRouter = express.Router();
+
+UserRouter.post("/", async (req, res) => {
   const user = new User(req.body);
 
   try {
@@ -16,7 +17,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+UserRouter.post("/login", async (req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.pwd);
     const token = await user.generateAuthToken();
@@ -27,7 +28,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/", auth, async (req, res) => {
+UserRouter.get("/", auth, async (req, res) => {
   try {
     const users = await User.find({});
     res.send(users);
@@ -36,11 +37,11 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-router.get("/me", auth, async (req, res) => {
+UserRouter.get("/me", auth, async (req, res) => {
   res.send(req.user);
 });
 
-router.get("/:id", auth, async (req, res) => {
+UserRouter.get("/:id", auth, async (req, res) => {
   const _id = req.params.id;
 
   try {
@@ -51,7 +52,7 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
-router.patch("/me", auth, async (req, res) => {
+UserRouter.patch("/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "email", "pwd", "age"];
   const isValidOperation = updates.every((update) =>
@@ -90,7 +91,7 @@ router.patch("/me", auth, async (req, res) => {
 //     }
 // })
 
-router.post("/logout", auth, async (req, res) => {
+UserRouter.post("/logout", auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter((token) => {
       return token.token !== req.token;
@@ -104,7 +105,7 @@ router.post("/logout", auth, async (req, res) => {
   }
 });
 
-router.post("/logoutall", auth, async (req, res) => {
+UserRouter.post("/logoutall", auth, async (req, res) => {
   try {
     req.user.tokens = [];
     await req.user.save();
@@ -115,7 +116,7 @@ router.post("/logoutall", auth, async (req, res) => {
   }
 });
 
-router.delete("/me", auth, async (req, res) => {
+UserRouter.delete("/me", auth, async (req, res) => {
   try {
     await req.user.remove();
     res.send(req.user);
@@ -124,4 +125,4 @@ router.delete("/me", auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default UserRouter;
