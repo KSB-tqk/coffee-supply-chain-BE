@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema(
       trim: true,
       required: true,
     },
-    roleTypeId: {
+    role: {
       type: Number,
       required: true,
       default: 1,
@@ -31,17 +31,14 @@ const userSchema = mongoose.Schema(
         }
       },
     },
-    age: {
+    address: {
+      type: String,
+    },
+    department: {
       type: Number,
       required: true,
-      default: 0,
-      validate(value) {
-        if (value < 0) {
-          throw Error("Invalid age for user");
-        }
-      },
     },
-    pwd: {
+    password: {
       type: String,
       required: true,
       trim: true,
