@@ -10,20 +10,24 @@ userRouter.post("/", userController.addUser);
 
 userRouter.post("/login", userController.loginUser);
 
-userRouter.get("/", auth, userController.getAllUserInfo);
+userRouter.use(auth);
 
-userRouter.get("/me", auth, userController.getCurrentUserInfo);
+userRouter.get("/", userController.getAllUserInfo);
 
-userRouter.get("/:id", auth, userController.getUserById);
+userRouter.get("/me", userController.getCurrentUserInfo);
 
-userRouter.get("/department/:id", auth, userController.getUserByDepartmentId);
+userRouter.get("/:id", userController.getUserById);
 
-userRouter.patch("/me", auth, userController.updateCurrentUserInfo);
+userRouter.get("/department/:id", userController.getUserByDepartmentId);
 
-userRouter.post("/logout", auth, userController.logoutCurrentUser);
+userRouter.get("/role/:id", userController.getUserByRoleTypeId);
 
-userRouter.post("/logoutall", auth, userController.logoutAllUser);
+userRouter.patch("/me", userController.updateCurrentUserInfo);
 
-userRouter.delete("/me", auth, userController.deleteCurrentUser);
+userRouter.post("/logout", userController.logoutCurrentUser);
+
+userRouter.post("/logoutall", userController.logoutAllUser);
+
+userRouter.delete("/me", userController.deleteCurrentUser);
 
 export default userRouter;

@@ -1,3 +1,4 @@
+import { json } from "express";
 import User from "../../model/user/user.js";
 
 const userController = {
@@ -118,6 +119,17 @@ const userController = {
       res.send(users);
     } catch (e) {
       res.status(401).send(e.toString());
+    }
+  },
+  getUserByRoleTypeId: async (req, res) => {
+    const roleTypeId = req.params.id;
+    try {
+      const users = await User.find({
+        role: { $gte: roleTypeId },
+      }).exec();
+      res.send(users);
+    } catch (e) {
+      res.status(401).send({ e });
     }
   },
 };

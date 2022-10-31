@@ -36,7 +36,7 @@ const userSchema = mongoose.Schema(
     },
     department: {
       type: Number,
-      default: 0,
+      default: 1,
     },
     password: {
       type: String,
