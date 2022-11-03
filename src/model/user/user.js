@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema(
       trim: true,
       required: true,
     },
-    roleTypeId: {
+    role: {
       type: Number,
       required: true,
       default: 1,
@@ -31,17 +31,14 @@ const userSchema = mongoose.Schema(
         }
       },
     },
-    age: {
-      type: Number,
-      required: true,
-      default: 0,
-      validate(value) {
-        if (value < 0) {
-          throw Error("Invalid age for user");
-        }
-      },
+    address: {
+      type: String,
     },
-    pwd: {
+    department: {
+      type: Number,
+      default: 1,
+    },
+    password: {
       type: String,
       required: true,
       trim: true,
@@ -77,18 +74,12 @@ const userSchema = mongoose.Schema(
   }
 );
 
-userSchema.virtual("tasks", {
-  ref: "Task",
-  localField: "_id",
-  foreignField: "owner",
-});
-
 userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
 
   delete userObject.tokens;
-  delete userObject.pwd;
+  delete userObject.password;
 
   return userObject;
 };
@@ -103,7 +94,7 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-userSchema.statics.findByCredentials = async (email, pwd) => {
+userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
   if (!user) {
     throw Error(
@@ -111,7 +102,7 @@ userSchema.statics.findByCredentials = async (email, pwd) => {
     );
   }
 
-  const isMatch = await bcrypt.compare(pwd, user.pwd);
+  const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
     throw Error(
@@ -126,8 +117,8 @@ userSchema.statics.findByCredentials = async (email, pwd) => {
 userSchema.pre("save", async function (next) {
   const user = this;
 
-  if (user.isModified("pwd")) {
-    user.pwd = await bcrypt.hash(user.pwd, 8);
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 8);
   }
 
   next();

@@ -1,6 +1,6 @@
 import express from "express";
-import Enterprise from "../model/enterprice.js"
-import auth from "../middleware/authentication.js";
+import Enterprise from "../../model/enterprise.js";
+import auth from "../../middleware/authentication.js";
 
 const EnterpriseRouter = express.Router();
 
