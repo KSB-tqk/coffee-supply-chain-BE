@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import SeedModel from "../../model/farm/seed.js";
-import LandModel from "../../model/farm/land.js";
-import FarmModel from "../../model/farm/farm.js";
+import SeedModel from "../../model/Farm/seed.js";
+import LandModel from "../../model/Farm/land.js";
+import FarmModel from "../../model/Farm/farm.js";
 
 const seedController = {
   addSeed: async (req, res) => {
