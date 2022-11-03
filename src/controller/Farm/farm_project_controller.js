@@ -1,5 +1,5 @@
 import FarmModel from "../../model/Farm/farm.js";
-import FarmProjectModel from "../../model/farm/farm_project.js";
+import FarmProjectModel from "../../model/Farm/farm_project.js";
 import LandModel from "../../model/Farm/land.js";
 import SeedModel from "../../model/Farm/seed.js";
 
