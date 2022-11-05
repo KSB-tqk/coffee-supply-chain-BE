@@ -23,7 +23,7 @@ const userController = {
       res.send({ user, token });
       console.log(user.toString(), token.toString());
     } catch (e) {
-      res.status(400).send(e.toString());
+      res.status(400).send({ Code: 400, message: "Failed", Error: e.message });
     }
   },
   getAllUserInfo: async (req, res) => {
