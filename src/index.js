@@ -13,6 +13,7 @@ import farmRouter from "./router/Farm/farm_router.js";
 import FarmProjectRouter from "./router/Farm/farm_project_router.js";
 import harvestRouter from "./router/harvest/harvest_route.js";
 import transportRouter from "./router/shipping/transport_router.js";
+import shippingRouter from "./router/shipping/shipping_router.js";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/farm", farmRouter);
 app.use("/farm-project", FarmProjectRouter);
 app.use("/harvest", harvestRouter);
 app.use("/transport", transportRouter);
+app.use("/shipping", shippingRouter);
 
 const publicDir = path.join(__dirname, "../public");
 
