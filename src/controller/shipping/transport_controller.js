@@ -12,6 +12,14 @@ const transportController = {
     }
   },
   updateTransport: async (req, res) => {
+    const id = req.params.id;
+
+    const harvest = await TransportModel.findById(id).exec();
+
+    if (!harvest) {
+      return res.status(400).json({ msg: "This transport doesn't exist" });
+    }
+
     TransportModel.findOne({ _id: req.params.id }, function (err, transport) {
       if (err) {
         res.send(422, "Update transport failed");
@@ -32,6 +40,12 @@ const transportController = {
   deleteTransport: async (req, res) => {
     try {
       const id = req.params.id;
+
+      const harvest = await TransportModel.findById(id).exec();
+
+      if (!harvest) {
+        return res.status(400).json({ msg: "This harvest doesn't exist" });
+      }
 
       await TransportModel.findByIdAndRemove(id);
       res.status(200).json({ msg: "Delete transport success" });
