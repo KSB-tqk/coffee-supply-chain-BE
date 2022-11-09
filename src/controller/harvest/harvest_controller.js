@@ -4,96 +4,68 @@ const harvestController = {
     try {
       const harvest = new HarvestModel(req.body);
 
-      const farm = await HarvestModel.findById(harvest._id);
-
-      if (!farm) {
-        return res.status(400).json({ msg: "This harvest doesn't exist" });
-      }
-
       await harvest.save();
-      // ok nothing
 
-      await HarvestModel.findByIdAndUpdate(farmId, {
-        $push: {
-          lands: newLand._id,
-        },
-      });
-
-      res.status(200).json({ msg: "Create land success" });
+      res.status(200).json({ msg: "Create harvest successfully", harvest });
     } catch (err) {
       res.status(400).json({ msg: err.message });
     }
   },
-  updateLand: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { landName, landArea, state } = req.body;
-
-      const landId = await LandModel.findById(id);
-
-      if (!landId)
-        return res.status(400).json({ msg: "This land doesn't exist" });
-      else if (!landName || !landArea || !state) {
-        return res.status(400).json({ msg: "Seed name can't be blank!" });
+  updateHarvest: async (req, res) => {
+    HarvestModel.findOne({ _id: req.params.id }, function (err, harvest) {
+      if (err) {
+        res.send(422, "update failed");
+      } else {
+        //update fields
+        for (var field in HarvestModel.schema.paths) {
+          if (field !== "_id" && field !== "__v") {
+            if (req.body[field] !== undefined) {
+              harvest[field] = req.body[field];
+            }
+          }
+        }
+        harvest.save();
+        res.status(200).send({ harvest });
       }
-      await LandModel.findByIdAndUpdate(id, {
-        $set: {
-          landName: landName,
-          landArea: landArea,
-          state: state,
-        },
-      });
-      res.status(200).json({ msg: `Update seed success` });
-    } catch (err) {
-      res.status(400).json({ msg: err.message });
-    }
+    });
   },
-  deleteLand: async (req, res) => {
+  deleteHarvest: async (req, res) => {
     try {
-      const { id } = req.params;
+      const id = req.params.id;
 
-      const land = await LandModel.findById(id);
-
-      if (!land)
-        return res.status(400).json({ msg: "This land doesn't exist" });
-
-      await HarvestModel.findByIdAndUpdate(land.farmId, {
-        $pull: {
-          lands: land._id,
-        },
-      });
-
-      await LandModel.findByIdAndRemove(id);
-      res.status(200).json({ msg: "Delete land success" });
+      await HarvestModel.findByIdAndRemove(id);
+      res.status(200).json({ msg: "Delete harvest success" });
     } catch (err) {
       res.status(400).json({ msg: err.message });
     }
   },
-  getAllLands: async (req, res) => {
+  getAllHarvests: async (req, res) => {
     try {
       const { id } = req.params;
 
       console.log(id);
 
-      const lands = await LandModel.find({ farmId: id }).exec();
+      const lands = await HarvestModel.find({ farmId: id }).exec();
       res.status(200).json(lands);
     } catch (err) {
       res.status(400).json({ msg: err.message });
     }
   },
-  getLand: async (req, res) => {
+  getHarvest: async (req, res) => {
     try {
-      const { id } = req.params;
+      const id = req.params.id;
 
-      const land = await LandModel.findById(id).exec();
+      const harvest = await HarvestModel.findById(id).exec();
 
-      if (!land) {
-        return res.status(400).json({ msg: "This land doesn't exist" });
+      if (!harvest) {
+        return res.status(400).json({ msg: "This harvest doesn't exist" });
       }
 
-      res.status(200).json(land);
+      res.status(200).json(harvest);
     } catch (err) {
       res.status(400).json({ msg: err.message });
     }
   },
 };
+
+export default harvestController;

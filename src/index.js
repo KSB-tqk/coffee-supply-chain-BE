@@ -11,6 +11,7 @@ const __dirname = dirname(__filename);
 import userRouter from "./router/user/user_route.js";
 import farmRouter from "./router/Farm/farm_router.js";
 import FarmProjectRouter from "./router/Farm/farm_project_router.js";
+import harvestRouter from "./router/harvest/harvest_route.js";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use("/users", userRouter);
 app.use("/farm", farmRouter);
 app.use("/farm-project", FarmProjectRouter);
+app.use("/harvest", harvestRouter);
 
 const publicDir = path.join(__dirname, "../public");
 
