@@ -12,7 +12,7 @@ harvestRouter.post("/", harvestController.addHarvest);
 
 harvestRouter.get("/:id", harvestController.getHarvest);
 
-harvestRouter.get("/all", harvestController.getAllHarvests);
+harvestRouter.get("/", harvestController.getAllHarvests);
 
 harvestRouter.patch("/:id", harvestController.updateHarvest);
 
