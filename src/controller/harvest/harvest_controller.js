@@ -14,7 +14,7 @@ const harvestController = {
   updateHarvest: async (req, res) => {
     HarvestModel.findOne({ _id: req.params.id }, function (err, harvest) {
       if (err) {
-        res.send(422, "update failed");
+        res.send(422, "Update transport failed");
       } else {
         //update fields
         for (var field in HarvestModel.schema.paths) {
