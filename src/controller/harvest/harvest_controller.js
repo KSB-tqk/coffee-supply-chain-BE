@@ -12,7 +12,15 @@ const harvestController = {
     }
   },
   updateHarvest: async (req, res) => {
-    HarvestModel.findOne({ _id: req.params.id }, function (err, harvest) {
+    const id = req.params.id;
+
+    const harvest = await HarvestModel.findById(id).exec();
+
+    if (!harvest) {
+      return res.status(400).json({ msg: "This harvest doesn't exist" });
+    }
+
+    HarvestModel.findOne({ _id: id }, function (err, harvest) {
       if (err) {
         res.send(422, "Update transport failed");
       } else {
@@ -33,6 +41,12 @@ const harvestController = {
     try {
       const id = req.params.id;
 
+      const harvest = await HarvestModel.findById(id).exec();
+
+      if (!harvest) {
+        return res.status(400).json({ msg: "This harvest doesn't exist" });
+      }
+
       await HarvestModel.findByIdAndRemove(id);
       res.status(200).json({ msg: "Delete harvest success" });
     } catch (err) {
@@ -41,12 +55,8 @@ const harvestController = {
   },
   getAllHarvests: async (req, res) => {
     try {
-      const { id } = req.params;
-
-      console.log(id);
-
-      const lands = await HarvestModel.find({ farmId: id }).exec();
-      res.status(200).json(lands);
+      const harvest = await HarvestModel.find();
+      res.status(200).json(harvest);
     } catch (err) {
       res.status(400).json({ msg: err.message });
     }
