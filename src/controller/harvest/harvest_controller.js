@@ -11,7 +11,7 @@ const harvestController = {
       }
 
       await harvest.save();
-      // ok
+      // ok nothing
 
       await HarvestModel.findByIdAndUpdate(farmId, {
         $push: {
