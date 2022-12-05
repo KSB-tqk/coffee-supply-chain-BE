@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import extendSchema from "mongoose-extend-schema";
 
 const userSchema = mongoose.Schema(
   {
@@ -54,11 +55,6 @@ const userSchema = mongoose.Schema(
       type: String,
       trim: true,
       unique: true,
-    },
-    enterpriseOwner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Enterprise",
-      trim: true,
     },
     tokens: [
       {

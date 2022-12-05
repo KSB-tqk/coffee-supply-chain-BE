@@ -16,6 +16,7 @@ import transportRouter from "./router/shipping/transport_router.js";
 import shippingRouter from "./router/shipping/shipping_router.js";
 import warehouseStorageRouter from "./router/warehouse_storage/warehouse_storage_router.js";
 import warehouseRouter from "./router/warehouse/warehouse_router.js";
+import produceSupervisionRouter from "./router/produce_supervision_router/produce_supervision_router.js";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use("/transport", transportRouter);
 app.use("/shipping", shippingRouter);
 app.use("/warehouse-storage", warehouseStorageRouter);
 app.use("/warehouse", warehouseRouter);
+app.use("/produce", produceSupervisionRouter);
 
 const publicDir = path.join(__dirname, "../public");
 
