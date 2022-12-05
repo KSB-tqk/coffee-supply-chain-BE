@@ -266,6 +266,21 @@ const farmController = {
       res.status(400).json({ msg: err.message });
     }
   },
+  deleteFarms: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const farm = await FarmModel.findById(id);
+
+      if (!farm)
+        return res.status(400).json({ msg: "This farm doesn't exist" });
+
+      await FarmModel.findByIdAndRemove(id);
+      res.status(200).json({ msg: "Delete farm success" });
+    } catch (err) {
+      res.status(400).json({ msg: err.message });
+    }
+  },
 };
 
 const FarmServices = { seedController, landController, farmController };
