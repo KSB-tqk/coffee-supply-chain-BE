@@ -103,7 +103,7 @@ const farmProjectController = {
     try {
       const { id } = req.params;
 
-      const farmProjects = await FarmProjectModel.find({ farmId: id })
+      const farmProjects = await FarmProjectModel.find()
         .populate(["land", "seed"])
         .exec();
       res.status(200).json(farmProjects);
