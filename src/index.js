@@ -17,13 +17,14 @@ import shippingRouter from "./router/shipping/shipping_router.js";
 import warehouseStorageRouter from "./router/warehouse_storage/warehouse_storage_router.js";
 import warehouseRouter from "./router/warehouse/warehouse_router.js";
 import produceSupervisionRouter from "./router/produce_supervision_router/produce_supervision_router.js";
-
+import morgan from "morgan";
 const app = express();
 
 const port = process.env.PORT;
 mongooseDB.then(() => console.log("Connect db success!"));
 
 app.use(cors());
+app.use(morgan("dev"));
 app.use(
   cors({
     origin: "*",
