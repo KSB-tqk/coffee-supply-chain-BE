@@ -66,6 +66,173 @@
     }
   ],
   "paths": {
+    "/users": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Post user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "firstName": "Hieu",
+                  "lastName": "Monday",
+                  "email": "khanh3@gm.uit.edu.vn",
+                  "walletAddress": "29384bpiasgdf07g213rvupaspfudigapwagsdùgpaiudsgfp",
+                  "roleTypeId": 1,
+                  "password": "admin123"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Login user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "khanh3@gm.uit.edu.vn",
+                  "password": "admin123"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/logout": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Logout",
+        "requestBody": {
+          "content": {}
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/logoutall": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Logout all",
+        "requestBody": {
+          "content": {}
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/": {
+      "get": {
+        "tags": ["User"],
+        "summary": "get user",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Read profile",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["User"],
+        "summary": "patch user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "One Punch Mannnnnn",
+                  "pwd": "admin123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["User"],
+        "summary": "delete user",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
     "/harvest/636b6b8b972e13b0fb3ddb90": {
       "get": {
         "tags": ["Harvest"],
@@ -102,7 +269,7 @@
                 "example": {
                   "projectId": "635e3f7a0eb5d3596f4de9f9",
                   "inspector": "6365f527a2cdd357c6c722cf",
-                  "dateCompleted": "{{currentdate}}",
+                  "dateCompleted": "2022-10-31T10:52:53.608+00:00",
                   "state": "69"
                 }
               }
@@ -143,7 +310,7 @@
                 "example": {
                   "projectId": "635e3f7a0eb5d3596f4de9f9",
                   "inspector": "6365f527a2cdd357c6c722cf",
-                  "dateCompleted": "{{currentdate}}",
+                  "dateCompleted": "2022-10-31T10:52:53.608+00:00",
                   "state": "2"
                 }
               }
@@ -290,8 +457,8 @@
                   "totalInput": "123",
                   "warehouse": "636b78f80aa588b05c1c17c7",
                   "inspector": "636b78f80aa588b05c1c17c7",
-                  "inputDate": "{{currentdate}}",
-                  "outputDate": "{{currentdate}}"
+                  "inputDate": "2022-10-31T10:52:53.608+00:00",
+                  "outputDate": "2022-10-31T10:52:53.608+00:00"
                 }
               }
             }
@@ -333,8 +500,8 @@
                   "totalInput": "0123456789",
                   "warehouse": "636b78f80aa588b05c1c17c7",
                   "inspector": "636b78f80aa588b05c1c17c7",
-                  "inputDate": "{{currentdate}}",
-                  "outputDate": "{{currentdate}}"
+                  "inputDate": "2022-10-31T10:52:53.608+00:00",
+                  "outputDate": "2022-10-31T10:52:53.608+00:00"
                 }
               }
             }
@@ -402,8 +569,8 @@
                   "totalInput": "0123456789",
                   "warehouse": "636b78f80aa588b05c1c17c7",
                   "inspector": "636b78f80aa588b05c1c17c7",
-                  "inputDate": "{{currentdate}}",
-                  "outputDate": "{{currentdate}}"
+                  "inputDate": "2022-10-31T10:52:53.608+00:00",
+                  "outputDate": "2022-10-31T10:52:53.608+00:00"
                 }
               }
             }
@@ -595,173 +762,6 @@
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/users": {
-      "post": {
-        "tags": ["User"],
-        "summary": "Post user",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "firstName": "Hieu",
-                  "lastName": "Monday",
-                  "email": "khanh3@gm.uit.edu.vn",
-                  "walletAddress": "29384bpiasgdf07g213rvupaspfudigapwagsdùgpaiudsgfp",
-                  "roleTypeId": 1,
-                  "password": "admin123"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "noauthAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/users/login": {
-      "post": {
-        "tags": ["User"],
-        "summary": "Login user",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "email": "khanh3@gm.uit.edu.vn",
-                  "password": "admin123"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "noauthAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/users/logout": {
-      "post": {
-        "tags": ["User"],
-        "summary": "Logout",
-        "requestBody": {
-          "content": {}
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/users/logoutall": {
-      "post": {
-        "tags": ["User"],
-        "summary": "Logout all",
-        "requestBody": {
-          "content": {}
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/users/": {
-      "get": {
-        "tags": ["User"],
-        "summary": "get user",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/users/me": {
-      "get": {
-        "tags": ["User"],
-        "summary": "Read profile",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": ["User"],
-        "summary": "patch user",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "name": "One Punch Mannnnnn",
-                  "pwd": "admin123"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": ["User"],
-        "summary": "delete user",
         "responses": {
           "200": {
             "description": "Successful response",
