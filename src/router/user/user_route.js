@@ -24,10 +24,14 @@ userRouter.get("/role/:id", userController.getUserByRoleTypeId);
 
 userRouter.patch("/me", userController.updateCurrentUserInfo);
 
+userRouter.patch("/:id", userController.updateUserInfoById);
+
 userRouter.post("/logout", userController.logoutCurrentUser);
 
 userRouter.post("/logoutall", userController.logoutAllUser);
 
 userRouter.delete("/me", userController.deleteCurrentUser);
+
+userRouter.delete("/:id", userController.deleteUserById);
 
 export default userRouter;

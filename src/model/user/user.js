@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema(
       trim: true,
       required: true,
     },
-    role: {
+    roleTypeId: {
       type: Number,
       required: true,
       default: 1,
