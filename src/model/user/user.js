@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import extendSchema from "mongoose-extend-schema";
 
+const options = { discriminatorKey: "kind" };
+
 const userSchema = mongoose.Schema(
   {
     lastName: {
@@ -67,7 +69,8 @@ const userSchema = mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
+  options
 );
 
 userSchema.methods.toJSON = function () {

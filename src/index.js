@@ -4,6 +4,8 @@ import path from "path";
 import cors from "cors";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "../src/swagger.json" assert { type: "json" };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,6 +20,7 @@ import warehouseStorageRouter from "./router/warehouse_storage/warehouse_storage
 import warehouseRouter from "./router/warehouse/warehouse_router.js";
 import produceSupervisionRouter from "./router/produce_supervision_router/produce_supervision_router.js";
 import morgan from "morgan";
+
 const app = express();
 
 const port = process.env.PORT;
@@ -40,6 +43,7 @@ app.use("/shipping", shippingRouter);
 app.use("/warehouse-storage", warehouseStorageRouter);
 app.use("/warehouse", warehouseRouter);
 app.use("/produce", produceSupervisionRouter);
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const publicDir = path.join(__dirname, "../public");
 
