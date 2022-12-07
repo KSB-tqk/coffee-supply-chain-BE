@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema(
       trim: true,
       required: true,
     },
-    roleTypeId: {
+    role: {
       type: Number,
       required: true,
       default: 1,

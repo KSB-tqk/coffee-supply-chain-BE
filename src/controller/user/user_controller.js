@@ -6,7 +6,7 @@ const userController = {
   addUser: async (req, res) => {
     try {
       var user;
-      switch (req.body.roleTypeId) {
+      switch (req.body.role) {
         case 1:
           user = new TechAdmin(req.body);
           await user.save();
@@ -183,10 +183,10 @@ const userController = {
     }
   },
   getUserByRoleTypeId: async (req, res) => {
-    const roleTypeId = req.params.id;
+    const role = req.params.id;
     try {
       const users = await User.find({
-        roleTypeId: roleTypeId,
+        role: role,
       }).exec();
       res.send(users);
     } catch (e) {
