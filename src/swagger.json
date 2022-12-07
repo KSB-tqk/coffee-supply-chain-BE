@@ -3,7 +3,7 @@
   "info": {
     "title": "Coffee Supply Chain - Mongo",
     "description": "",
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   "servers": [
     {
@@ -66,173 +66,6 @@
     }
   ],
   "paths": {
-    "/users": {
-      "post": {
-        "tags": ["User"],
-        "summary": "Post user",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "firstName": "Hieu",
-                  "lastName": "Monday",
-                  "email": "khanh3@gm.uit.edu.vn",
-                  "walletAddress": "29384bpiasgdf07g213rvupaspfudigapwagsdùgpaiudsgfp",
-                  "roleTypeId": 1,
-                  "password": "admin123"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "noauthAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/users/login": {
-      "post": {
-        "tags": ["User"],
-        "summary": "Login user",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "email": "khanh3@gm.uit.edu.vn",
-                  "password": "admin123"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "noauthAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/users/logout": {
-      "post": {
-        "tags": ["User"],
-        "summary": "Logout",
-        "requestBody": {
-          "content": {}
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/users/logoutall": {
-      "post": {
-        "tags": ["User"],
-        "summary": "Logout all",
-        "requestBody": {
-          "content": {}
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/users/": {
-      "get": {
-        "tags": ["User"],
-        "summary": "get user",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
-    "/users/me": {
-      "get": {
-        "tags": ["User"],
-        "summary": "Read profile",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": ["User"],
-        "summary": "patch user",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "name": "One Punch Mannnnnn",
-                  "pwd": "admin123"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": ["User"],
-        "summary": "delete user",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      }
-    },
     "/harvest/636b6b8b972e13b0fb3ddb90": {
       "get": {
         "tags": ["Harvest"],
@@ -517,22 +350,10 @@
         }
       }
     },
-    "/produce/636cb23b2b2f341bc963dcaf": {
+    "/produce/636cd7d04d676b899b114610": {
       "get": {
         "tags": ["Produce Supervision"],
         "summary": "Get Produce",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {}
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Produce Supervision"],
-        "summary": "Delete Produce",
         "responses": {
           "200": {
             "description": "Successful response",
@@ -576,6 +397,20 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/produce/636cb23b2b2f341bc963dcaf": {
+      "delete": {
+        "tags": ["Produce Supervision"],
+        "summary": "Delete Produce",
         "responses": {
           "200": {
             "description": "Successful response",
@@ -762,6 +597,256 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Post User",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "firstName": "Hieu",
+                  "lastName": "Monday",
+                  "email": "khanh7@gm.uit.edu.vn",
+                  "walletAddress": "29384bpiasgdf07g213rvupaspfudiapwagdgpiusgfp",
+                  "roleTypeId": 2,
+                  "department": 2,
+                  "superRole": "Ok",
+                  "password": "admin123"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Login User",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "khanh6@gm.uit.edu.vn",
+                  "password": "admin123"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/logout": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Logout Current User",
+        "requestBody": {
+          "content": {}
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/logoutall": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Logout All",
+        "requestBody": {
+          "content": {}
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get All User",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/639055af1db90ae1f3784385": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get User By Id",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["User"],
+        "summary": "Patch User By Id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "lastName": "One Punch ",
+                  "firstName": "Mannnnnn"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/department/3": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get User By Department",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/role/1": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get User By RoleTypeId",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Read Profile Current User",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["User"],
+        "summary": "Patch Curren User",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "lastName": "One Punch ",
+                  "firstName": "Mannnnnn"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["User"],
+        "summary": "Delete Current User",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/639053fadcef9c87d32d0207": {
+      "delete": {
+        "tags": ["User"],
+        "summary": "Delete User By Id",
         "responses": {
           "200": {
             "description": "Successful response",
