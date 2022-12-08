@@ -49,4 +49,7 @@ farmRouter.get("/:id", FarmServices.farmController.getFarm);
 // get all farm
 farmRouter.get("/", FarmServices.farmController.getAllFarms);
 
+// delete farm by id
+farmRouter.delete("/:id", FarmServices.farmController.deleteFarms);
+
 export default farmRouter;

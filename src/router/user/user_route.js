@@ -22,6 +22,8 @@ userRouter.get("/department/:id", userController.getUserByDepartmentId);
 
 userRouter.get("/role/:id", userController.getUserByRoleTypeId);
 
+userRouter.get("/list/:page", userController.getListUserPaginate);
+
 userRouter.patch("/me", userController.updateCurrentUserInfo);
 
 userRouter.patch("/:id", userController.updateUserInfoById);

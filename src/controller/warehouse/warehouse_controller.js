@@ -7,9 +7,9 @@ const warehouseController = {
 
       await warehouse.save();
 
-      res.status(200).json({ msg: "Create warehouse successfully", warehouse });
+      res.status(200).send({ msg: "Create warehouse successfully", warehouse });
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   updateWarehouse: async (req, res) => {
@@ -18,7 +18,7 @@ const warehouseController = {
     const warehouse = await WarehouseModel.findById(id).exec();
 
     if (!warehouse) {
-      return res.status(400).json({ msg: "This warehouse doesn't exist" });
+      return res.status(400).send({ msg: "This warehouse doesn't exist" });
     }
 
     WarehouseModel.findOne({ _id: id }, function (err, warehouse) {
@@ -45,21 +45,21 @@ const warehouseController = {
       const warehouse = await WarehouseModel.findById(id).exec();
 
       if (!warehouse) {
-        return res.status(400).json({ msg: "This warehouse doesn't exist" });
+        return res.status(400).send({ msg: "This warehouse doesn't exist" });
       }
 
       await WarehouseModel.findByIdAndRemove(id);
-      res.status(200).json({ msg: "Delete warehouse success" });
+      res.status(200).send({ msg: "Delete warehouse success" });
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   getAllWarehouses: async (req, res) => {
     try {
       const warehouse = await WarehouseModel.find();
-      res.status(200).json(warehouse);
+      res.status(200).send(warehouse);
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   getWarehouse: async (req, res) => {
@@ -69,12 +69,12 @@ const warehouseController = {
       const warehouse = await WarehouseModel.findById(id).exec();
 
       if (!warehouse) {
-        return res.status(400).json({ msg: "This warehouse doesn't exist" });
+        return res.status(400).send({ msg: "This warehouse doesn't exist" });
       }
 
-      res.status(200).json(warehouse);
+      res.status(200).send(warehouse);
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
 };

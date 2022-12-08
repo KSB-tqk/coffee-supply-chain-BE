@@ -7,14 +7,12 @@ const produceSupervisionController = {
 
       await produceSupervision.save();
 
-      res
-        .status(200)
-        .json({
-          msg: "Create produceSupervision successfully",
-          produceSupervision,
-        });
+      res.status(200).send({
+        msg: "Create produceSupervision successfully",
+        produceSupervision,
+      });
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   updateProduceSupervision: async (req, res) => {
@@ -27,7 +25,7 @@ const produceSupervisionController = {
     if (!produceSupervision) {
       return res
         .status(400)
-        .json({ msg: "This produceSupervision doesn't exist" });
+        .send({ msg: "This produceSupervision doesn't exist" });
     }
 
     ProduceSupervisionModel.findOne(
@@ -61,21 +59,21 @@ const produceSupervisionController = {
       if (!produceSupervision) {
         return res
           .status(400)
-          .json({ msg: "This produceSupervision doesn't exist" });
+          .send({ msg: "This produceSupervision doesn't exist" });
       }
 
       await ProduceSupervisionModel.findByIdAndRemove(id);
-      res.status(200).json({ msg: "Delete produceSupervision success" });
+      res.status(200).send({ msg: "Delete produceSupervision success" });
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   getAllProduceSupervisions: async (req, res) => {
     try {
       const produceSupervision = await ProduceSupervisionModel.find();
-      res.status(200).json(produceSupervision);
+      res.status(200).send(produceSupervision);
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   getProduceSupervision: async (req, res) => {
@@ -89,12 +87,12 @@ const produceSupervisionController = {
       if (!produceSupervision) {
         return res
           .status(400)
-          .json({ msg: "This produceSupervision doesn't exist" });
+          .send({ msg: "This produceSupervision doesn't exist" });
       }
 
-      res.status(200).json(produceSupervision);
+      res.status(200).send(produceSupervision);
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
 };

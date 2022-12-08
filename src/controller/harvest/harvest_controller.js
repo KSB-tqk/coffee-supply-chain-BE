@@ -6,9 +6,9 @@ const harvestController = {
 
       await harvest.save();
 
-      res.status(200).json({ msg: "Create harvest successfully", harvest });
+      res.status(200).send({ msg: "Create harvest successfully", harvest });
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   updateHarvest: async (req, res) => {
@@ -17,7 +17,7 @@ const harvestController = {
     const harvest = await HarvestModel.findById(id).exec();
 
     if (!harvest) {
-      return res.status(400).json({ msg: "This harvest doesn't exist" });
+      return res.status(400).send({ msg: "This harvest doesn't exist" });
     }
 
     HarvestModel.findOne({ _id: id }, function (err, harvest) {
@@ -44,21 +44,21 @@ const harvestController = {
       const harvest = await HarvestModel.findById(id).exec();
 
       if (!harvest) {
-        return res.status(400).json({ msg: "This harvest doesn't exist" });
+        return res.status(400).send({ msg: "This harvest doesn't exist" });
       }
 
       await HarvestModel.findByIdAndRemove(id);
-      res.status(200).json({ msg: "Delete harvest success" });
+      res.status(200).send({ msg: "Delete harvest success" });
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   getAllHarvests: async (req, res) => {
     try {
       const harvest = await HarvestModel.find();
-      res.status(200).json(harvest);
+      res.status(200).send(harvest);
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   getHarvest: async (req, res) => {
@@ -68,12 +68,12 @@ const harvestController = {
       const harvest = await HarvestModel.findById(id).exec();
 
       if (!harvest) {
-        return res.status(400).json({ msg: "This harvest doesn't exist" });
+        return res.status(400).send({ msg: "This harvest doesn't exist" });
       }
 
-      res.status(200).json(harvest);
+      res.status(200).send(harvest);
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
 };

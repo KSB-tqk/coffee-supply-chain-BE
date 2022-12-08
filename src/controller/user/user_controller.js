@@ -1,6 +1,7 @@
 import { json } from "express";
 import User from "../../model/user/user.js";
 import TechAdmin from "../../model/user/tech_admin.js";
+import Farmer from "../../model/user/farmer.js";
 
 const userController = {
   addUser: async (req, res) => {
@@ -9,15 +10,12 @@ const userController = {
       switch (req.body.role) {
         case 1:
           user = new TechAdmin(req.body);
-          await user.save();
-          console.log("Tech Admin Save");
           break;
         case 2:
           user = new User(req.body);
-          await user.save();
-          console.log("User Save");
           break;
         case 3:
+          user = new Farmer(req.body);
           break;
         case 4:
           break;
@@ -26,6 +24,7 @@ const userController = {
         default:
       }
 
+      await user.save();
       const token = await user.generateAuthToken();
       res.status(201).send({ user, token });
     } catch (e) {
@@ -61,7 +60,9 @@ const userController = {
 
     try {
       const user = await User.findById(_id);
-      res.send(user);
+      if (!user) {
+        res.status(400).send({ error: "User Not Found" });
+      } else res.send(user);
     } catch (e) {
       res.status(500).send(e.toString());
     }
@@ -107,6 +108,11 @@ const userController = {
       "password",
       "address",
     ];
+
+    if (req.user.role == 1) {
+      allowedUpdates.push("role");
+    }
+
     const isValidOperation = updates.every((update) =>
       allowedUpdates.includes(update)
     );
@@ -118,15 +124,16 @@ const userController = {
     try {
       const user = await User.findById(req.params.id);
 
+      if (!user) {
+        return res.status(400).send({ error: "User Not Found" });
+      }
+
       updates.forEach((update) => {
         user[update] = req.body[update];
       });
 
       await user.save();
 
-      if (!user) {
-        return res.status(404).send(e.toString());
-      }
       res.send(user);
     } catch (e) {
       res.status(400).send(e.toString());
@@ -188,6 +195,22 @@ const userController = {
       const users = await User.find({
         role: role,
       }).exec();
+      res.send(users);
+    } catch (e) {
+      res.status(401).send({ e });
+    }
+  },
+  getListUserPaginate: async (req, res) => {
+    const perPage = 2;
+    const page = req.params.page;
+    try {
+      const users = await User.find()
+        .limit(perPage)
+        .skip(perPage * page)
+        .sort({
+          name: "asc",
+        })
+        .exec();
       res.send(users);
     } catch (e) {
       res.status(401).send({ e });

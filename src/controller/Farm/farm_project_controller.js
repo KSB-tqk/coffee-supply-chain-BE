@@ -11,7 +11,7 @@ const farmProjectController = {
       const farm = await FarmModel.findById(farmId);
 
       if (!farm)
-        return res.status(400).json({ msg: "This farm doesn't exist" });
+        return res.status(400).send({ msg: "This farm doesn't exist" });
 
       const newFarmProject = new FarmProjectModel(req.body);
       await newFarmProject.save();
@@ -22,9 +22,9 @@ const farmProjectController = {
         },
       });
 
-      res.status(200).json({ msg: "Create new farm project success" });
+      res.status(200).send({ msg: "Create new farm project success" });
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   updateFarmProject: async (req, res) => {
@@ -48,17 +48,17 @@ const farmProjectController = {
       const seedProject = await SeedModel.findById(seed).exec();
 
       if (!farmProject)
-        return res.status(400).json({ msg: "This farm project doesn't exist" });
+        return res.status(400).send({ msg: "This farm project doesn't exist" });
       else if (!landProject)
-        return res.status(400).json({ msg: "This land doesn't exist" });
+        return res.status(400).send({ msg: "This land doesn't exist" });
       else if (!seedProject)
-        return res.status(400).json({ msg: "This land doesn't exist" });
+        return res.status(400).send({ msg: "This land doesn't exist" });
       else if (!farmProjectName || !dateCreated || !state) {
-        return res.status(400).json({ msg: "Farm Prject Info can't be blank" });
+        return res.status(400).send({ msg: "Farm Prject Info can't be blank" });
       } else if (totalHarvest < 0) {
         return res
           .status(400)
-          .json({ msg: "Total harvest must be greater than 0" });
+          .send({ msg: "Total harvest must be greater than 0" });
       } else {
         await FarmProjectModel.findByIdAndUpdate(id, {
           $set: {
@@ -72,10 +72,10 @@ const farmProjectController = {
           },
         });
 
-        return res.status(200).json({ msg: "Update farm project success" });
+        return res.status(200).send({ msg: "Update farm project success" });
       }
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   deleteFarmProject: async (req, res) => {
@@ -85,7 +85,7 @@ const farmProjectController = {
       const farmProject = await FarmProjectModel.findById(id);
 
       if (!farmProject)
-        return res.status(400).json({ msg: "This farm project doesn't exist" });
+        return res.status(400).send({ msg: "This farm project doesn't exist" });
 
       await FarmModel.findByIdAndUpdate(farmProject.farmId, {
         $pull: {
@@ -94,9 +94,9 @@ const farmProjectController = {
       });
 
       await FarmProjectModel.findByIdAndRemove(id);
-      res.status(200).json({ msg: "Delete farm project success" });
+      res.status(200).send({ msg: "Delete farm project success" });
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   getAllFarmProjects: async (req, res) => {
@@ -106,9 +106,9 @@ const farmProjectController = {
       const farmProjects = await FarmProjectModel.find()
         .populate(["land", "seed"])
         .exec();
-      res.status(200).json(farmProjects);
+      res.status(200).send(farmProjects);
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   getFarmProject: async (req, res) => {
@@ -120,11 +120,11 @@ const farmProjectController = {
         .exec();
 
       if (!farmProject)
-        return res.status(400).json({ msg: "This farm project doesn't exist" });
+        return res.status(400).send({ msg: "This farm project doesn't exist" });
 
-      res.status(200).json(farmProject);
+      res.status(200).send(farmProject);
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
 };
