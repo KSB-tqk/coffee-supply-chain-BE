@@ -3,6 +3,7 @@ import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import extendSchema from "mongoose-extend-schema";
+import { checkValidObjectId } from "../../helper/data_helper.js";
 
 const options = { discriminatorKey: "kind" };
 
@@ -91,6 +92,14 @@ userSchema.methods.generateAuthToken = async function () {
   await user.save();
 
   return token;
+};
+
+userSchema.methods.checkValidId = function () {
+  const user = this;
+  if (!checkValidObjectId(user._id)) {
+    return false;
+  }
+  return true;
 };
 
 userSchema.statics.findByCredentials = async (email, password) => {

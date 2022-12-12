@@ -3,12 +3,16 @@ import SeedModel from "../../model/Farm/seed.js";
 import LandModel from "../../model/Farm/land.js";
 import FarmModel from "../../model/Farm/farm.js";
 import User from "../../model/user/user.js";
-import { UtilsHelper } from "../../helper/data_helper.js";
+import { checkValidObjectId } from "../../helper/data_helper.js";
 
 const seedController = {
   addSeed: async (req, res) => {
     try {
       const { farmId } = req.body;
+
+      if (!checkValidObjectId(farmId)) {
+        return res.status(400).send({ error: "Invalid Farm Id" });
+      }
 
       const farm = await FarmModel.findById(farmId);
       if (!farm)
@@ -33,6 +37,9 @@ const seedController = {
       const { id } = req.params;
       const { seedName, seedFamily, supplier } = req.body;
 
+      if (!checkValidObjectId(id)) {
+        return res.status(400).send({ error: "Invalid Seed Id" });
+      }
       const seed = await SeedModel.findById(id);
 
       if (!seed) {
@@ -56,6 +63,10 @@ const seedController = {
   deleteSeed: async (req, res) => {
     try {
       const { id } = req.params;
+
+      if (!checkValidObjectId(id)) {
+        return res.status(400).send({ error: "Invalid Seed Id" });
+      }
 
       const seed = await SeedModel.findById(id);
 
@@ -94,6 +105,10 @@ const seedController = {
     try {
       const { id } = req.params;
 
+      if (!checkValidObjectId(id)) {
+        return res.status(400).send({ error: "Invalid Seed Id" });
+      }
+
       const seed = await SeedModel.findById(id).exec();
 
       if (!seed) {
@@ -113,6 +128,10 @@ const landController = {
   addLand: async (req, res) => {
     try {
       const { farmId } = req.body;
+
+      if (!checkValidObjectId(farmId)) {
+        return res.status(400).send({ error: "Invalid Farm Id" });
+      }
 
       const farm = await FarmModel.findById(farmId);
 
@@ -139,6 +158,10 @@ const landController = {
       const { id } = req.params;
       const { landName, landArea, state } = req.body;
 
+      if (!checkValidObjectId(id)) {
+        res.status(400).send({ error: "Invalid Land Id" });
+      }
+
       const landId = await LandModel.findById(id);
 
       if (!landId)
@@ -161,6 +184,10 @@ const landController = {
   deleteLand: async (req, res) => {
     try {
       const { id } = req.params;
+
+      if (!checkValidObjectId(id)) {
+        return res.status(400).send({ error: "Invalid Land Id" });
+      }
 
       const land = await LandModel.findById(id);
 
@@ -195,6 +222,10 @@ const landController = {
     try {
       const { id } = req.params;
 
+      if (!checkValidObjectId(id)) {
+        return res.status(400).send({ error: "Invalid Land Id" });
+      }
+
       const land = await LandModel.findById(id).exec();
 
       if (!land) {
@@ -223,16 +254,17 @@ const farmController = {
   },
   updateFarm: async (req, res) => {
     try {
-      const utilsHelper = new UtilsHelper();
-      console.log("Updating Farm");
-
       const updates = Object.keys(req.body);
 
       const allowedUpdates = ["farmName", "farmAddress", "farmPhoneNumber"];
 
+      if (!checkValidObjectId(req.body.farmOwner)) {
+        res.status(400).send({ error: "Invalid User Id" });
+      }
+
       const user = await User.findById(req.body.farmOwner);
 
-      if (!user || !utilsHelper.checkValidObjectId(req.body.farmOwner)) {
+      if (!user || checkValidObjectId(req.body.farmOwner)) {
         return res.status(404).send({
           error: "User Not Found, Please add user to the farm before updating",
         });
@@ -240,6 +272,10 @@ const farmController = {
 
       if (user.role == 1) {
         allowedUpdates.push("farmOwner");
+      }
+
+      if (!checkValidObjectId(req.params.id)) {
+        return res.status(400).send({ error: "Invalid Farm Id" });
       }
 
       const farm = await FarmModel.findById(req.params.id);
@@ -278,6 +314,10 @@ const farmController = {
     try {
       const { id } = req.params;
 
+      if (!checkValidObjectId(id)) {
+        return res.status(400).send({ error: "Invalid Farm Id" });
+      }
+
       const farm = await FarmModel.findById(id).exec();
 
       if (!farm) return res.status(400).send({ msg: "No exist farm" });
@@ -299,6 +339,10 @@ const farmController = {
   deleteFarms: async (req, res) => {
     try {
       const { id } = req.params;
+
+      if (!checkValidObjectId(id)) {
+        return res.status(400).send({ error: "Invalid Farm Id" });
+      }
 
       const farm = await FarmModel.findById(id);
 

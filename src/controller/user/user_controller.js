@@ -2,6 +2,8 @@ import { json } from "express";
 import User from "../../model/user/user.js";
 import TechAdmin from "../../model/user/tech_admin.js";
 import Farmer from "../../model/user/farmer.js";
+import SystemAdmin from "../../model/user/system_admin.js";
+import { checkValidObjectId } from "../../helper/data_helper.js";
 
 const userController = {
   addUser: async (req, res) => {
@@ -12,14 +14,13 @@ const userController = {
           user = new TechAdmin(req.body);
           break;
         case 2:
-          user = new User(req.body);
+          user = new SystemAdmin(req.body);
           break;
         case 3:
           user = new Farmer(req.body);
           break;
         case 4:
-          break;
-        case 5:
+          user = new User(req.body);
           break;
         default:
       }
@@ -59,6 +60,9 @@ const userController = {
     const _id = req.params.id;
 
     try {
+      if (!checkValidObjectId(_id)) {
+        return res.status(400).send({ error: "Invalid User Id" });
+      }
       const user = await User.findById(_id);
       if (!user) {
         res.status(400).send({ error: "User Not Found" });
@@ -122,6 +126,10 @@ const userController = {
     }
 
     try {
+      if (!checkValidObjectId(req.params.id)) {
+        return res.status(400).send({ error: "Invalid User Id" });
+      }
+
       const user = await User.findById(req.params.id);
 
       if (!user) {

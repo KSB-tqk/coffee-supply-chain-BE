@@ -2,6 +2,7 @@ import FarmModel from "../../model/Farm/farm.js";
 import FarmProjectModel from "../../model/Farm/farm_project.js";
 import LandModel from "../../model/Farm/land.js";
 import SeedModel from "../../model/Farm/seed.js";
+import { checkValidObjectId } from "../../helper/data_helper.js";
 
 const farmProjectController = {
   addFarmProject: async (req, res) => {
@@ -31,6 +32,10 @@ const farmProjectController = {
     try {
       const { id } = req.params;
 
+      if (!checkValidObjectId(id)) {
+        return res.status(400).send({ error: "Invalid Farm Project Id" });
+      }
+
       const {
         farmProjectName,
         land,
@@ -43,8 +48,14 @@ const farmProjectController = {
 
       const farmProject = await FarmProjectModel.findById(id).exec();
 
+      if (!checkValidObjectId(id)) {
+        return res.status(400).send({ error: "Invalid Land Id" });
+      }
       const landProject = await LandModel.findById(land).exec();
 
+      if (!checkValidObjectId(id)) {
+        return res.status(400).send({ error: "Invalid Seed Id" });
+      }
       const seedProject = await SeedModel.findById(seed).exec();
 
       if (!farmProject)
