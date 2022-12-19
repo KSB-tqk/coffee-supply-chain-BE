@@ -94,14 +94,6 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-userSchema.methods.checkValidId = function () {
-  const user = this;
-  if (!checkValidObjectId(user._id)) {
-    return false;
-  }
-  return true;
-};
-
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
   if (!user) {

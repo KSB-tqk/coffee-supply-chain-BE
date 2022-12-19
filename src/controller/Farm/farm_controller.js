@@ -3,7 +3,10 @@ import SeedModel from "../../model/Farm/seed.js";
 import LandModel from "../../model/Farm/land.js";
 import FarmModel from "../../model/Farm/farm.js";
 import User from "../../model/user/user.js";
-import { checkValidObjectId } from "../../helper/data_helper.js";
+import {
+  checkValidObjectId,
+  checkValidAdminAccess,
+} from "../../helper/data_helper.js";
 
 const seedController = {
   addSeed: async (req, res) => {
@@ -258,20 +261,16 @@ const farmController = {
 
       const allowedUpdates = ["farmName", "farmAddress", "farmPhoneNumber"];
 
-      if (!checkValidObjectId(req.body.farmOwner)) {
-        res.status(400).send({ error: "Invalid User Id" });
-      }
+      try {
+        const result = await checkValidAdminAccess(req.body.farmOwner);
 
-      const user = await User.findById(req.body.farmOwner);
-
-      if (!user || checkValidObjectId(req.body.farmOwner)) {
-        return res.status(404).send({
-          error: "User Not Found, Please add user to the farm before updating",
-        });
-      }
-
-      if (user.role == 1) {
-        allowedUpdates.push("farmOwner");
+        if (result) {
+          return res.status(400).send({ error: "User " + result });
+        } else {
+          allowedUpdates.push("farmOwner");
+        }
+      } catch (err) {
+        return res.status(400).send({ error: err.toString() });
       }
 
       if (!checkValidObjectId(req.params.id)) {
