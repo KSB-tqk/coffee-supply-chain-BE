@@ -20,6 +20,7 @@ import warehouseStorageRouter from "./router/warehouse_storage/warehouse_storage
 import warehouseRouter from "./router/warehouse/warehouse_router.js";
 import produceSupervisionRouter from "./router/produce_supervision_router/produce_supervision_router.js";
 import morgan from "morgan";
+import projectRouter from "./router/project/project_router.js";
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use("/shipping", shippingRouter);
 app.use("/warehouse-storage", warehouseStorageRouter);
 app.use("/warehouse", warehouseRouter);
 app.use("/produce", produceSupervisionRouter);
+app.use("/project", projectRouter);
 app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const publicDir = path.join(__dirname, "../public");
