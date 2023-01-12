@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import extendSchema from "mongoose-extend-schema";
 import { checkValidObjectId } from "../../helper/data_helper.js";
+import TokenModel from "./token.js";
 
 const options = { discriminatorKey: "kind" };
 
@@ -59,14 +60,9 @@ const userSchema = mongoose.Schema(
       trim: true,
       unique: true,
     },
-    tokens: [
-      {
-        token: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+    tokenAddress: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
   },
   {
     timestamps: true,
@@ -88,8 +84,16 @@ userSchema.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
 
-  user.tokens = user.tokens.concat({ token });
-  await user.save();
+  const isTokenExist = await TokenModel.exists({ owner: user._id });
+  if (isTokenExist) {
+    const tokenModel = TokenModel.findOne({ owner: user._id });
+    if (tokenModel.listToken == null) tokenModel.listToken = [];
+    tokenModel.listToken = tokenModel.listToken.concat({ token });
+  } else {
+    const tokenModel = new TokenModel({ owner: user._id });
+    tokenModel.listToken = tokenModel.listToken.concat({ token });
+    tokenModel.save();
+  }
 
   return token;
 };
