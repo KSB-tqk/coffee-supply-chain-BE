@@ -61,6 +61,7 @@ const userController = {
 
     try {
       if (!checkValidObjectId(_id)) {
+        console.log("bug here");
         return res.status(400).send({ error: "Invalid User Id" });
       }
       const user = await User.findById(_id);
@@ -220,6 +221,18 @@ const userController = {
         })
         .exec();
       res.send(users);
+    } catch (e) {
+      res.status(401).send({ e });
+    }
+  },
+  getAllUserByFilter: async (req, res) => {
+    try {
+      const users = await User.find({ role: { $ne: req.query.exceptRole } });
+      if (users != null) {
+        return res.send(users);
+      } else {
+        res.status(404).send({ error: "User Not Found" });
+      }
     } catch (e) {
       res.status(401).send({ e });
     }
