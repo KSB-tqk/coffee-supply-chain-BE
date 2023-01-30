@@ -112,6 +112,7 @@ const userController = {
       "email",
       "password",
       "address",
+      "listProject",
     ];
 
     if (req.user.role == 1) {

@@ -63,6 +63,9 @@ const userSchema = mongoose.Schema(
     tokenAddress: {
       type: mongoose.Schema.Types.ObjectId,
     },
+    permission: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
   },
   {
     timestamps: true,
@@ -86,10 +89,16 @@ userSchema.methods.generateAuthToken = async function () {
 
   const isTokenExist = await TokenModel.exists({ owner: user._id });
   if (isTokenExist) {
-    const tokenModel = TokenModel.findOne({ owner: user._id });
+    console.log("Find and Update");
+    const tokenModel = await TokenModel.findOne({ owner: user._id });
+    tokenModel.listToken = [];
+    tokenModel.listToken = tokenModel.listToken.concat({ token });
+    await tokenModel.save();
+    console.log(tokenModel.listToken.toString());
     if (tokenModel.listToken == null) tokenModel.listToken = [];
     tokenModel.listToken = tokenModel.listToken.concat({ token });
   } else {
+    console.log("Create New");
     const tokenModel = new TokenModel({ owner: user._id });
     tokenModel.listToken = tokenModel.listToken.concat({ token });
     tokenModel.save();
