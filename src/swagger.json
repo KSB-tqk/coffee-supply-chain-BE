@@ -2,7 +2,6 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Coffee Supply Chain - Mongo",
-    "description": "",
     "version": "1.0.0"
   },
   "servers": [
@@ -63,6 +62,9 @@
     },
     {
       "name": "Farm Project"
+    },
+    {
+      "name": "Project"
     }
   ],
   "paths": {
@@ -102,7 +104,7 @@
                 "example": {
                   "projectId": "635e3f7a0eb5d3596f4de9f9",
                   "inspector": "6365f527a2cdd357c6c722cf",
-                  "dateCompleted": "2022-12-08T03:00:08.707Z",
+                  "dateCompleted": "2023-01-30T03:00:08.707Z",
                   "state": "69"
                 }
               }
@@ -143,7 +145,7 @@
                 "example": {
                   "projectId": "635e3f7a0eb5d3596f4de9f9",
                   "inspector": "6365f527a2cdd357c6c722cf",
-                  "dateCompleted": "2022-12-08T03:00:08.707Z",
+                  "dateCompleted": "2023-01-30T03:00:08.707Z",
                   "state": "2"
                 }
               }
@@ -290,8 +292,8 @@
                   "totalInput": "123",
                   "warehouse": "636b78f80aa588b05c1c17c7",
                   "inspector": "636b78f80aa588b05c1c17c7",
-                  "inputDate": "2022-12-08T03:00:08.707Z",
-                  "outputDate": "2022-12-08T03:00:08.707Z"
+                  "inputDate": "2023-01-30T03:00:08.707Z",
+                  "outputDate": "2023-01-30T03:00:08.707Z"
                 }
               }
             }
@@ -333,8 +335,8 @@
                   "totalInput": "0123456789",
                   "warehouse": "636b78f80aa588b05c1c17c7",
                   "inspector": "636b78f80aa588b05c1c17c7",
-                  "inputDate": "2022-12-08T03:00:08.707Z",
-                  "outputDate": "2022-12-08T03:00:08.707Z"
+                  "inputDate": "2023-01-30T03:00:08.707Z",
+                  "outputDate": "2023-01-30T03:00:08.707Z"
                 }
               }
             }
@@ -390,8 +392,8 @@
                   "totalInput": "0123456789",
                   "warehouse": "636b78f80aa588b05c1c17c7",
                   "inspector": "636b78f80aa588b05c1c17c7",
-                  "inputDate": "2022-12-08T03:00:08.707Z",
-                  "outputDate": "2022-12-08T03:00:08.707Z"
+                  "inputDate": "2023-01-30T03:00:08.707Z",
+                  "outputDate": "2023-01-30T03:00:08.707Z"
                 }
               }
             }
@@ -619,8 +621,8 @@
                 "example": {
                   "firstName": "Hieu",
                   "lastName": "Monday",
-                  "email": "khanh1@gm.uit.edu.vn",
-                  "walletAddress": "29384bpiasgdf07g213rvupaspfudapwagdgpiusgfp",
+                  "email": "khanh697@gm.uit.edu.vn",
+                  "walletAddress": "3384bpiasgdf07g213rvupapfupwagpigfp",
                   "role": 1,
                   "department": 2,
                   "superRole": "Ok",
@@ -655,7 +657,7 @@
               "schema": {
                 "type": "object",
                 "example": {
-                  "email": "khanh1@gm.uit.edu.vn",
+                  "email": "khanh696@gm.uit.edu.vn",
                   "password": "admin123"
                 }
               }
@@ -725,10 +727,25 @@
         }
       }
     },
-    "/users/list/1": {
+    "/users/filter/": {
       "get": {
         "tags": ["User"],
-        "summary": "Get User List Paginate",
+        "summary": "Get All User Filter",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "exceptRole",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "3"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -739,7 +756,36 @@
         }
       }
     },
-    "/users/639153282ea749432a900271": {
+    "/users/list/": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get User List Paginate",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/6391530ece78d4566ebeb61b": {
       "get": {
         "tags": ["User"],
         "summary": "Get User By Id",
@@ -785,6 +831,11 @@
       "get": {
         "tags": ["User"],
         "summary": "Read Profile Current User",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -832,7 +883,7 @@
         }
       }
     },
-    "/users/639055af1db90ae1f3784385": {
+    "/users/63c1241a40a81cdb318d4ab0": {
       "patch": {
         "tags": ["User"],
         "summary": "Patch User By Id",
@@ -844,12 +895,30 @@
                 "example": {
                   "lastName": "One",
                   "firstName": "Mannnnnn",
-                  "role": 2
+                  "role": 2,
+                  "listProject": [
+                    {
+                      "projectId": "63a28066c00df704e7a6788c",
+                      "listPermission": [
+                        {
+                          "permissionId": 1
+                        },
+                        {
+                          "permissionId": 2
+                        }
+                      ]
+                    }
+                  ]
                 }
               }
             }
           }
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -1102,7 +1171,7 @@
                   "farmName": "Farm A",
                   "farmAddress": "123 QL 9A",
                   "farmPhoneNumber": "0123456789",
-                  "farmOwner": "639153282ea749432a900277"
+                  "farmOwner": "6391530ece78d4566ebeb61b"
                 }
               }
             }
@@ -1234,6 +1303,113 @@
       "get": {
         "tags": ["Farm Project"],
         "summary": "get all farm projects",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/project/": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "Add Project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "manager": "635e3f7a0eb5d3596f4de9f9",
+                  "dateCreated": "2022-12-08T02:59:26.937Z",
+                  "dateCompleted": "2022-12-08T02:59:26.937Z",
+                  "farm": "635e404a25ae38ea69f2a8fc",
+                  "farmProject": "635e404a25ae38ea69f2a8fc",
+                  "harvest": "635e404a25ae38ea69f2a8fc",
+                  "shipping": "635e404a25ae38ea69f2a8fc",
+                  "warehouseStorage": "635e404a25ae38ea69f2a8fc",
+                  "produce": "635e404a25ae38ea69f2a8fc"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get All Project",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/project/63a28066c00df704e7a6788c": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get Project",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Project"],
+        "summary": "Update Project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "manager": "635e3f7a0eb5d3596f4de9f9",
+                  "dateCreated": "2022-12-08T02:59:26.937Z",
+                  "dateCompleted": "2022-12-08T02:59:26.937Z",
+                  "farm": "635e404a25ae38ea69f2a8fc",
+                  "farmProject": "635e404a25ae38ea69f2a8fc",
+                  "harvest": "635e404a25ae38ea69f2a8fc",
+                  "shipping": "635e404a25ae38ea69f2a8fc",
+                  "warehouseStorage": "635e404a25ae38ea69f2a8fc",
+                  "produce": "635e404a25ae38ea69f2a8fc",
+                  "state": 2
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/project/638dc5b3528d1e00ba8d8587": {
+      "delete": {
+        "tags": ["Project"],
+        "summary": "Delete Project",
         "responses": {
           "200": {
             "description": "Successful response",
