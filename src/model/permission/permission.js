@@ -13,7 +13,7 @@ const permissionSchema = mongoose.Schema({
       },
       listPermission: [
         {
-          permissionId: {
+          permission: {
             type: Number,
           },
         },

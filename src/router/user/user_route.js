@@ -24,6 +24,8 @@ userRouter.get("/role/:id", userController.getUserByRoleTypeId);
 
 userRouter.get("/list/:page", userController.getListUserPaginate);
 
+userRouter.patch("/permission", userController.updateUserPermission);
+
 userRouter.patch("/me", userController.updateCurrentUserInfo);
 
 userRouter.patch("/:id", userController.updateUserInfoById);

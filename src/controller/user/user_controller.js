@@ -4,6 +4,7 @@ import TechAdmin from "../../model/user/tech_admin.js";
 import Farmer from "../../model/user/farmer.js";
 import SystemAdmin from "../../model/user/system_admin.js";
 import { checkValidObjectId } from "../../helper/data_helper.js";
+import PermissionModel from "../../model/permission/permission.js";
 
 const userController = {
   addUser: async (req, res) => {
@@ -80,6 +81,7 @@ const userController = {
       "email",
       "password",
       "address",
+      "listProject",
     ];
     const isValidOperation = updates.every((update) =>
       allowedUpdates.includes(update)
@@ -112,7 +114,6 @@ const userController = {
       "email",
       "password",
       "address",
-      "listProject",
     ];
 
     if (req.user.role == 1) {
@@ -236,6 +237,68 @@ const userController = {
       }
     } catch (e) {
       res.status(401).send({ e });
+    }
+  },
+  updateUserPermission: async (req, res) => {
+    try {
+      const user = await User.findById(req.query.id);
+      if (await User.exists({ _id: req.query.id })) {
+        if (await PermissionModel.exists({ owner: req.query.id })) {
+          const permission = await PermissionModel.findOne({ owner: user._id });
+
+          if (permission.listProject == null) {
+            permission.listProject = [];
+          } else {
+            const projectPermission = await PermissionModel.findOne({
+              "listProject.projectId": req.query.projectId,
+            });
+
+            if (projectPermission) {
+              const result = await PermissionModel.findOne(
+                { owner: req.query.id },
+                {
+                  $push: {
+                    projectId: req.query.projectId,
+                    listPermission: [req.query.permission],
+                  },
+                },
+                { upsert: true }
+              );
+              console.log(result);
+            } else {
+              const result = await PermissionModel.findOne(
+                { owner: req.query.id },
+                {
+                  $push: {
+                    projectId: req.query.projectId,
+                    listPermission: [req.query.permission],
+                  },
+                },
+                { upsert: true }
+              );
+              return res.status(200).send(result);
+            }
+          }
+          res.status(200).send({ permission });
+        } else {
+          console.log("Create new");
+          const permission = new PermissionModel({
+            owner: user._id,
+            listProject: [
+              {
+                projectId: req.query.projectId,
+                listPermission: [{ permission: req.query.permission }],
+              },
+            ],
+          });
+          permission.save();
+          res.status(200).send({ permission });
+        }
+      } else {
+        return res.status(400).send({ error: "User Not Found" });
+      }
+    } catch (e) {
+      res.status(400).send(e.toString());
     }
   },
 };
