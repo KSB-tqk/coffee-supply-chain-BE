@@ -37,12 +37,12 @@ const projectSchema = mongoose.Schema({
   },
   warehouseStorage: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "WareHouseStorage",
+    ref: "WarehouseStorage",
     trim: true,
   },
   produce: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Produce",
+    ref: "ProduceSupervision",
     trim: true,
   },
   state: {
