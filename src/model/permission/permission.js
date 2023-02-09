@@ -9,15 +9,14 @@ const permissionSchema = mongoose.Schema({
     {
       projectId: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
         require: true,
       },
-      listPermission: [
-        {
-          permission: {
-            type: Number,
-          },
-        },
-      ],
+      access: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Access",
+        require: true,
+      },
     },
   ],
 });
