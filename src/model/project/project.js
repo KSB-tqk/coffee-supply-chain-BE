@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const projectSchema = mongoose.Schema({
+  projectId: {
+    type: String,
+    trim: true,
+    default: "",
+  },
   manager: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

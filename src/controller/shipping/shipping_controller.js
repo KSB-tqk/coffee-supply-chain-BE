@@ -5,6 +5,7 @@ const shippingController = {
     try {
       const shipping = new ShippingModel(req.body);
 
+      shipping.shippingId = shipping._id;
       await shipping.save();
 
       res.status(200).send({ msg: "Create shipping successfully", shipping });
@@ -26,6 +27,11 @@ const shippingController = {
         res.send(422, "Update transport failed");
       } else {
         //update fields
+        if (shipping.state == 2)
+          return res.status(400).send({
+            error:
+              "Shipping infomation cannot be update because it has been completed",
+          });
         for (var field in ShippingModel.schema.paths) {
           if (field !== "_id" && field !== "__v") {
             if (req.body[field] !== undefined) {
@@ -48,7 +54,9 @@ const shippingController = {
         return res.status(400).send({ msg: "This shipping doesn't exist" });
       }
 
-      await ShippingModel.findByIdAndRemove(id);
+      const shippingChangeState = await ShippingModel.findById(id);
+      shippingChangeState.state = 3;
+      shippingChangeState.save();
       res.status(200).send({ msg: "Delete shipping success" });
     } catch (err) {
       res.status(400).send({ msg: err.message });

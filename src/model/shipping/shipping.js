@@ -4,7 +4,12 @@ const shippingSchema = mongoose.Schema({
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
-    default: null,
+    default: "",
+  },
+  shippingId: {
+    type: String,
+    trim: true,
+    default: "",
   },
   totalInput: {
     type: Number,
@@ -13,16 +18,16 @@ const shippingSchema = mongoose.Schema({
   transport: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Transport",
-    default: null,
+    default: "",
   },
   inspector: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    default: null,
+    default: "",
   },
   vehicleType: {
     type: String,
-    default: null,
+    default: "",
   },
   numberOfVehicle: {
     type: Number,
@@ -39,7 +44,7 @@ const shippingSchema = mongoose.Schema({
   },
   note: {
     type: String,
-    default: null,
+    default: "",
   },
 });
 

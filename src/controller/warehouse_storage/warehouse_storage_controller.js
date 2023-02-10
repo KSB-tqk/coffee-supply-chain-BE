@@ -33,6 +33,11 @@ const warehouseStorageController = {
           res.send(422, "Update transport failed");
         } else {
           //update fields
+          if (warehouseStorage.state == 2)
+            return res.status(400).send({
+              error:
+                "Warehouse Storage infomation cannot be update because it has been completed",
+            });
           for (var field in WarehouseStorageModel.schema.paths) {
             if (field !== "_id" && field !== "__v") {
               if (req.body[field] !== undefined) {
@@ -58,7 +63,9 @@ const warehouseStorageController = {
           .send({ msg: "This warehouseStorage doesn't exist" });
       }
 
-      await WarehouseStorageModel.findByIdAndRemove(id);
+      const warehouseStorageChangeState =
+        await WarehouseStorageModel.findByIdAndRemove(id);
+      warehouseStorageChangeState.state = 3;
       res.status(200).send({ msg: "Delete warehouseStorage success" });
     } catch (err) {
       res.status(400).send({ msg: err.message });

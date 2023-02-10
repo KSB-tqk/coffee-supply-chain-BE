@@ -35,6 +35,11 @@ const produceSupervisionController = {
           res.send(422, "Update transport failed");
         } else {
           //update fields
+          if (produceSupervision.state == 2)
+            return res.status(400).send({
+              error:
+                "Produce Supervision infomation cannot be update because it has been completed",
+            });
           for (var field in ProduceSupervisionModel.schema.paths) {
             if (field !== "_id" && field !== "__v") {
               if (req.body[field] !== undefined) {
@@ -62,7 +67,8 @@ const produceSupervisionController = {
           .send({ msg: "This produceSupervision doesn't exist" });
       }
 
-      await ProduceSupervisionModel.findByIdAndRemove(id);
+      const produceChangeState = await ProduceSupervisionModel.findById(id);
+      produceChangeState.state = 3;
       res.status(200).send({ msg: "Delete produceSupervision success" });
     } catch (err) {
       res.status(400).send({ msg: err.message });

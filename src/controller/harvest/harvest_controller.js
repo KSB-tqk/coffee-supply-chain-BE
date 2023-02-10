@@ -4,6 +4,7 @@ const harvestController = {
     try {
       const harvest = new HarvestModel(req.body);
 
+      harvest.harvestId = harvest._id;
       await harvest.save();
 
       res.status(200).send({ msg: "Create harvest successfully", harvest });
@@ -25,6 +26,11 @@ const harvestController = {
         res.send(422, "Update transport failed");
       } else {
         //update fields
+        if (harvest.state == 2)
+          return res.status(400).send({
+            error:
+              "Harvest infomation cannot be update because it has been completed",
+          });
         for (var field in HarvestModel.schema.paths) {
           if (field !== "_id" && field !== "__v") {
             if (req.body[field] !== undefined) {
@@ -47,7 +53,9 @@ const harvestController = {
         return res.status(400).send({ msg: "This harvest doesn't exist" });
       }
 
-      await HarvestModel.findByIdAndRemove(id);
+      const harvestChangeState = await HarvestModel.findById(id);
+      harvestChangeState.state = 3;
+      harvestChangeState.save();
       res.status(200).send({ msg: "Delete harvest success" });
     } catch (err) {
       res.status(400).send({ msg: err.message });

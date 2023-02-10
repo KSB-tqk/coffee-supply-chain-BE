@@ -39,6 +39,7 @@ const projectController = {
       warehouseStorage.save();
       produce.save();
 
+      project.projectId = project._id;
       await project.save();
 
       res.status(200).send({ msg: "Create project successfully", project });
@@ -58,6 +59,10 @@ const projectController = {
         res.send(422, "Update project failed");
       } else {
         //update fields
+        if (project.state == 2)
+          return res.status(400).send({
+            error: "Project cannot be update because it has been completed",
+          });
         for (var field in ProjectModel.schema.paths) {
           if (field !== "_id" && field !== "__v") {
             if (req.body[field] !== undefined) {
@@ -78,7 +83,9 @@ const projectController = {
         return res.status(400).send({ error: "Invalid User Id" });
       }
 
-      await ProjectModel.findByIdAndRemove(id);
+      const project = await ProjectModel.findById(id);
+      project.state = 3;
+      project.save();
       res.status(200).send({ msg: "Delete project success" });
     } catch (err) {
       res.status(400).send({ msg: err.message });

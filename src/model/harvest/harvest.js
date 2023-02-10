@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const harvestSchema = mongoose.Schema({
+  harvestId: {
+    type: String,
+    trim: true,
+    default: "",
+  },
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
