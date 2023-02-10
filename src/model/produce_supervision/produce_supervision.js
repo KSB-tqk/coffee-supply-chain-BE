@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const produceSupervisionSchema = mongoose.Schema({
-  productId: {
+  projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
     default: null,
