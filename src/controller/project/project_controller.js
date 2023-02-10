@@ -18,6 +18,8 @@ const projectController = {
         shipping: shipping._id,
         warehouseStorage: warehouseStorage._id,
         produce: produce._id,
+        projectName: req.body.projectName,
+        projectCode: req.body.projectCode,
       });
 
       harvest.projectId =
