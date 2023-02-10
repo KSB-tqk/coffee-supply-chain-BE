@@ -55,31 +55,5 @@ app.listen(port || 3000, () => {
   console.log("Server is up on port " + port);
 });
 
-// // For Hardhat
-// import ethers from "hardhat";
-// import contract from "../blockchain/artifacts/contracts/TrackingModel.sol/TrackingModel.json" assert { type: "json" };
-// console.log("contract abi" + JSON.stringify(contract.abi));
-
-// // interact.js
-
-// // Provider
-// const alchemyProvider = new ethers.providers.AlchemyProvider(
-//   (network = "matic"),
-//   "18556d29e398bb540c5ab4a27af51b94d0a22f853b098910bf13d198ff2d48a4"
-// );
-
-// // Signer
-// const signer = new ethers.Wallet(
-//   "retire plate fantasy spirit axis stand upper flock split because wink author",
-//   alchemyProvider
-// );
-
-// // Contract
-// const TrackingContract = new ethers.Contract(
-//   CONTRACT_ADDRESS,
-//   contract.abi,
-//   signer
-// );
-
-// async function main() {}
-// main();
+import { sendData } from "./helper/blockchain_helper.js";
+sendData();

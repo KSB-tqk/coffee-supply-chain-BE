@@ -24,6 +24,7 @@ contract TrackingModel {
         tracking storage newTracking = TrackingModelList[_productId];
         newTracking.contractContentId = _contractContentId;
         newTracking.trackingCreator = _creatorAddress;
+        newTracking.productId = _productId;
     }
 
     function getTrackingBlock(string memory _productId) public view returns (tracking memory)  {
