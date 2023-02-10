@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const warehouseStorageSchema = mongoose.Schema({
   projectId: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    default: null,
   },
   totalInput: {
     type: Number,
@@ -12,10 +12,12 @@ const warehouseStorageSchema = mongoose.Schema({
   warehouse: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Warehouse",
+    default: null,
   },
   inspector: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    default: null,
   },
   inputDate: {
     type: Date,
@@ -35,6 +37,7 @@ const warehouseStorageSchema = mongoose.Schema({
   },
   note: {
     type: String,
+    default: null,
   },
 });
 

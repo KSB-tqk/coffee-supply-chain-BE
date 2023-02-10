@@ -1,10 +1,41 @@
 import { checkValidObjectId } from "../../helper/data_helper.js";
+import harvestModel from "../../model/harvest/harvest.js";
+import ProduceSupervisionModel from "../../model/produce_supervision/produce_supervision.js";
 import ProjectModel from "../../model/project/project.js";
-
+import shippingModel from "../../model/shipping/shipping.js";
+import warehouseStorageModel from "../../model/warehouse_storage/warehouse_storage.js";
 const projectController = {
   addProject: async (req, res) => {
     try {
-      const project = new ProjectModel(req.body);
+      const harvest = new harvestModel();
+      const shipping = new shippingModel();
+      const warehouseStorage = new warehouseStorageModel();
+      const produce = new ProduceSupervisionModel();
+
+      const project = new ProjectModel({
+        manager: req.body.manager,
+        harvest: harvest._id,
+        shipping: shipping._id,
+        warehouseStorage: warehouseStorage._id,
+        produce: produce._id,
+      });
+
+      harvest.projectId =
+        shipping.projectId =
+        warehouseStorage.projectId =
+        produce.projectId =
+          project._id;
+
+      harvest.inspector =
+        shipping.inspector =
+        warehouseStorage.inspector =
+        produce.inspector =
+          project.manager;
+
+      harvest.save();
+      shipping.save();
+      warehouseStorage.save();
+      produce.save();
 
       await project.save();
 
@@ -54,8 +85,6 @@ const projectController = {
   getAllProjects: async (req, res) => {
     try {
       const projects = await ProjectModel.find({})
-        .populate("farm")
-        .populate("farmProject")
         .populate("manager")
         .populate("harvest")
         .populate("shipping")
@@ -72,8 +101,6 @@ const projectController = {
       const id = req.params.id;
 
       const project = await ProjectModel.find({ _id: id })
-        .populate("farm")
-        .populate("farmProject")
         .populate("manager")
         .populate("harvest")
         .populate("shipping")

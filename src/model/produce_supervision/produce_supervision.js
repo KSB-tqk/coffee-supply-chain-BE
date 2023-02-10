@@ -4,17 +4,21 @@ const produceSupervisionSchema = mongoose.Schema({
   productId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
+    default: null,
   },
   totalInput: {
     type: Number,
+    default: 0,
   },
   factory: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Factory",
+    default: null,
   },
   inspector: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    default: null,
   },
   dateCompleted: {
     type: Date,
@@ -42,6 +46,7 @@ const produceSupervisionSchema = mongoose.Schema({
   },
   note: {
     type: String,
+    default: null,
   },
 });
 

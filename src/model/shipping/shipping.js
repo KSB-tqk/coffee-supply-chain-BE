@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const shippingSchema = mongoose.Schema({
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
+    default: null,
   },
   totalInput: {
     type: Number,
@@ -12,16 +12,16 @@ const shippingSchema = mongoose.Schema({
   transport: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Transport",
-    required: true,
+    default: null,
   },
   inspector: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    default: null,
   },
   vehicleType: {
     type: String,
-    required: true,
+    default: null,
   },
   numberOfVehicle: {
     type: Number,
@@ -38,6 +38,7 @@ const shippingSchema = mongoose.Schema({
   },
   note: {
     type: String,
+    default: null,
   },
 });
 

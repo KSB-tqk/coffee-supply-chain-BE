@@ -15,11 +15,6 @@ const projectSchema = mongoose.Schema({
     type: Date,
     required: false,
   },
-  farm: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Farm",
-    trim: true,
-  },
   farmProject: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "FarmProject",

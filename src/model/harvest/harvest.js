@@ -4,7 +4,7 @@ const harvestSchema = mongoose.Schema({
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
-    required: true,
+    default: null,
   },
   totalHarvest: {
     type: Number,
@@ -17,7 +17,7 @@ const harvestSchema = mongoose.Schema({
   inspector: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    default: null,
   },
   dateCompleted: {
     type: Date,
