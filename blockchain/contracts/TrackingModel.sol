@@ -8,7 +8,7 @@ contract TrackingModel {
     address public owner;
     string[] public trackingChain;
 
-    constructor()  {
+    constructor() {
         owner = msg.sender;
     }
 
@@ -20,14 +20,20 @@ contract TrackingModel {
 
     mapping(string => tracking) private TrackingModelList;
 
-    function addTrackingBlock(string memory _productId, string memory _contractContentId, address _creatorAddress) public {
+    function addTrackingBlock(
+        string memory _productId,
+        string memory _contractContentId,
+        address _creatorAddress
+    ) public {
         tracking storage newTracking = TrackingModelList[_productId];
         newTracking.contractContentId = _contractContentId;
         newTracking.trackingCreator = _creatorAddress;
         newTracking.productId = _productId;
     }
 
-    function getTrackingBlock(string memory _productId) public view returns (tracking memory)  {
+    function getTrackingBlock(
+        string memory _productId
+    ) public view returns (tracking memory) {
         return TrackingModelList[_productId];
     }
 }

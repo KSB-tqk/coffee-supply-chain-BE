@@ -23,10 +23,9 @@ export async function sendData() {
     SmartContractAddress
   );
 
-  var oldvalue = await myContract.methods
-    .addTrackingBlock("testProductId", "testContent", address)
+  await myContract.methods
+    .addTrackingBlock("testProductId", "UpdateContentNe", address)
     .send({ from: address });
-  console.log("oldvalue", oldvalue);
 
   var newvalue = await myContract.methods
     .getTrackingBlock("testProductId")

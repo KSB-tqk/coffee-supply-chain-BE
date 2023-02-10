@@ -54,6 +54,3 @@ app.use(express.static(publicDir));
 app.listen(port || 3000, () => {
   console.log("Server is up on port " + port);
 });
-
-import { sendData } from "./helper/blockchain_helper.js";
-sendData();

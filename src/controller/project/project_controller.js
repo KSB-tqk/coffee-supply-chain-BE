@@ -111,10 +111,30 @@ const projectController = {
 
       const project = await ProjectModel.find({ _id: id })
         .populate("manager")
-        .populate("harvest")
-        .populate("shipping")
-        .populate("warehouseStorage")
-        .populate("produce")
+        .populate({
+          path: "harvest",
+          populate: {
+            path: "inspector",
+          },
+        })
+        .populate({
+          path: "shipping",
+          populate: {
+            path: "inspector",
+          },
+        })
+        .populate({
+          path: "warehouseStorage",
+          populate: {
+            path: "inspector",
+          },
+        })
+        .populate({
+          path: "produce",
+          populate: {
+            path: "inspector",
+          },
+        })
         .exec();
 
       if (!project) {
