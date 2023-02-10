@@ -16,9 +16,9 @@ const shippingSchema = mongoose.Schema({
     default: 0,
   },
   transport: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "Transport",
-    default: null,
+    default: "",
   },
   inspector: {
     type: mongoose.Schema.Types.ObjectId,

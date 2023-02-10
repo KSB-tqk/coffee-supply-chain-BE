@@ -11,9 +11,9 @@ const warehouseStorageSchema = mongoose.Schema({
     default: 0,
   },
   warehouse: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "Warehouse",
-    default: null,
+    default: "",
   },
   inspector: {
     type: mongoose.Schema.Types.ObjectId,

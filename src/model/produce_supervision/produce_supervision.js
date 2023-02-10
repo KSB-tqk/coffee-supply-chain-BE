@@ -11,9 +11,9 @@ const produceSupervisionSchema = mongoose.Schema({
     default: 0,
   },
   factory: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "Factory",
-    default: null,
+    default: "",
   },
   inspector: {
     type: mongoose.Schema.Types.ObjectId,
