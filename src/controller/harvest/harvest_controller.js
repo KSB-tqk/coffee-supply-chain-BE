@@ -55,7 +55,10 @@ const harvestController = {
   },
   getAllHarvests: async (req, res) => {
     try {
-      const harvest = await HarvestModel.find();
+      const harvest = await HarvestModel.find()
+        .populate("projectId")
+        .populate("inspector")
+        .exec();
       res.status(200).send(harvest);
     } catch (err) {
       res.status(400).send({ msg: err.message });
@@ -65,7 +68,10 @@ const harvestController = {
     try {
       const id = req.params.id;
 
-      const harvest = await HarvestModel.findById(id).exec();
+      const harvest = await HarvestModel.findById(id)
+        .populate("projectId")
+        .populate("inspector")
+        .exec();
 
       if (!harvest) {
         return res.status(400).send({ msg: "This harvest doesn't exist" });

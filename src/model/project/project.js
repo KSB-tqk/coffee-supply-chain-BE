@@ -6,6 +6,14 @@ const projectSchema = mongoose.Schema({
     ref: "User",
     trim: true,
   },
+  projectName: {
+    type: String,
+    trim: true,
+  },
+  projectCode: {
+    type: String,
+    trim: true,
+  },
   dateCreated: {
     type: Date,
     required: true,
@@ -14,11 +22,6 @@ const projectSchema = mongoose.Schema({
   dateCompleted: {
     type: Date,
     required: false,
-  },
-  farmProject: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "FarmProject",
-    trim: true,
   },
   harvest: {
     type: mongoose.Schema.Types.ObjectId,

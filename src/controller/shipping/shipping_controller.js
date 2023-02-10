@@ -56,7 +56,11 @@ const shippingController = {
   },
   getAllShipping: async (req, res) => {
     try {
-      const shipping = await ShippingModel.find();
+      const shipping = await ShippingModel.find()
+        .populate("projectId")
+        .populate("transport")
+        .populate("inspector")
+        .exec();
       res.status(200).send(shipping);
     } catch (err) {
       res.status(400).send({ msg: err.message });
@@ -66,7 +70,11 @@ const shippingController = {
     try {
       const id = req.params.id;
 
-      const shipping = await ShippingModel.findById(id).exec();
+      const shipping = await ShippingModel.findById(id)
+        .populate("projectId")
+        .populate("transport")
+        .populate("inspector")
+        .exec();
 
       if (!shipping) {
         return res.status(400).send({ msg: "This shipping doesn't exist" });

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const shippingSchema = mongoose.Schema({
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "Project",
     default: null,
   },
   totalInput: {

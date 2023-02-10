@@ -70,7 +70,11 @@ const produceSupervisionController = {
   },
   getAllProduceSupervisions: async (req, res) => {
     try {
-      const produceSupervision = await ProduceSupervisionModel.find();
+      const produceSupervision = await ProduceSupervisionModel.find()
+        .populate("projectId")
+        .populate("factory")
+        .populate("inspector")
+        .exec();
       res.status(200).send(produceSupervision);
     } catch (err) {
       res.status(400).send({ msg: err.message });
@@ -80,9 +84,11 @@ const produceSupervisionController = {
     try {
       const id = req.params.id;
 
-      const produceSupervision = await ProduceSupervisionModel.findById(
-        id
-      ).exec();
+      const produceSupervision = await ProduceSupervisionModel.findById(id)
+        .populate("projectId")
+        .populate("factory")
+        .populate("inspector")
+        .exec();
 
       if (!produceSupervision) {
         return res

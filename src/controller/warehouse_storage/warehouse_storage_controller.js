@@ -66,7 +66,11 @@ const warehouseStorageController = {
   },
   getAllWarehouseStorages: async (req, res) => {
     try {
-      const warehouseStorage = await WarehouseStorageModel.find();
+      const warehouseStorage = await WarehouseStorageModel.find()
+        .populate("projectId")
+        .populate("warehouse")
+        .populate("inspector")
+        .exec();
       res.status(200).send(warehouseStorage);
     } catch (err) {
       res.status(400).send({ msg: err.message });
@@ -76,7 +80,11 @@ const warehouseStorageController = {
     try {
       const id = req.params.id;
 
-      const warehouseStorage = await WarehouseStorageModel.findById(id).exec();
+      const warehouseStorage = await WarehouseStorageModel.findById(id)
+        .populate("projectId")
+        .populate("warehouse")
+        .populate("inspector")
+        .exec();
 
       if (!warehouseStorage) {
         return res
