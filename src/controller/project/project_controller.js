@@ -22,6 +22,12 @@ const projectController = {
         projectCode: req.body.projectCode,
       });
 
+      project.manager = "63e7bfeda66392096b4f6e1e";
+      harvest.inspector = "63bf8be64ca81bddf5802481";
+      produce.inspector = "63bfe6b1ad67eab25201d789";
+      shipping.inspector = "63bf8c14bcb6426a8fae4591";
+      warehouseStorage.inspector = "63bf8cb2ad67eab25201d77f";
+
       harvest.projectId =
         shipping.projectId =
         warehouseStorage.projectId =
