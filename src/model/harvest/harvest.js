@@ -38,6 +38,10 @@ const harvestSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  moisture: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const harvestModel = mongoose.model("Harvest", harvestSchema);
