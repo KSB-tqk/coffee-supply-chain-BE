@@ -94,18 +94,18 @@ const projectController = {
 
         if (project.manager != null) {
           await harvestModel.findByIdAndUpdate(project.harvest, {
-            inspector: project.manager,
+            inspector: "63bf8be64ca81bddf5802481",
           });
           await ProduceSupervisionModel.findByIdAndUpdate(project.produce, {
-            inspector: project.manager,
+            inspector: "63bfe6b1ad67eab25201d789",
           });
           await shippingModel.findByIdAndUpdate(project.shipping, {
-            inspector: project.manager,
+            inspector: "63bf8c14bcb6426a8fae4591",
           });
           await warehouseStorageModel.findByIdAndUpdate(
             project.warehouseStorage,
             {
-              inspector: project.manager,
+              inspector: "63bf8cb2ad67eab25201d77f",
             }
           );
         }
