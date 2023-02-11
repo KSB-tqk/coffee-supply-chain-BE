@@ -28,12 +28,6 @@ const projectController = {
         produce.projectId =
           project._id;
 
-      harvest.inspector =
-        shipping.inspector =
-        warehouseStorage.inspector =
-        produce.inspector =
-          project.manager;
-
       harvest.projectCode =
         shipping.projectCode =
         warehouseStorage.projectCode =
@@ -65,6 +59,8 @@ const projectController = {
         res.send(422, "Update project failed");
       } else {
         //update fields
+        console.log(project);
+        console.log(req.params.id);
         if (project.state == 2) {
           return res.status(400).send({
             error: "Project cannot be update because it has been completed",
@@ -77,6 +73,7 @@ const projectController = {
             }
           }
         }
+
         if (project.state == 2) {
           await harvestModel.findByIdAndUpdate(project.harvest, {
             dateCompleted: Date.now(),
@@ -94,6 +91,25 @@ const projectController = {
             }
           );
         }
+
+        if (project.manager != null) {
+          await harvestModel.findByIdAndUpdate(project.harvest, {
+            inspector: project.manager,
+          });
+          await ProduceSupervisionModel.findByIdAndUpdate(project.produce, {
+            inspector: project.manager,
+          });
+          await shippingModel.findByIdAndUpdate(project.shipping, {
+            inspector: project.manager,
+          });
+          await warehouseStorageModel.findByIdAndUpdate(
+            project.warehouseStorage,
+            {
+              inspector: project.manager,
+            }
+          );
+        }
+
         project.save();
         const theProject = await ProjectModel.findById(project._id)
           .populate("manager")
