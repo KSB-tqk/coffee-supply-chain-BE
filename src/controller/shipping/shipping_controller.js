@@ -66,7 +66,6 @@ const shippingController = {
     try {
       const shipping = await ShippingModel.find()
         .populate("projectId")
-        .populate("transport")
         .populate("inspector")
         .exec();
       res.status(200).send(shipping);
@@ -80,7 +79,6 @@ const shippingController = {
 
       const shipping = await ShippingModel.findById(id)
         .populate("projectId")
-        .populate("transport")
         .populate("inspector")
         .exec();
 
