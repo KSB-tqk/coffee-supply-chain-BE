@@ -20,7 +20,7 @@ const produceSupervisionSchema = mongoose.Schema({
     ref: "User",
     default: null,
   },
-  dateCompleted: {
+  dateInput: {
     type: Date,
     default: Date.now,
   },

@@ -28,6 +28,10 @@ const warehouseStorageSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  dateInput: {
+    type: Date,
+    default: Date.now,
+  },
   totalExport: {
     type: Number,
     default: 0,

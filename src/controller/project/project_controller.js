@@ -60,15 +60,31 @@ const projectController = {
       return res.status(400).send({ error: "Invalid User Id" });
     }
 
-    ProjectModel.findOne({ _id: req.params.id }, function (err, project) {
+    ProjectModel.findOne({ _id: req.params.id }, async function (err, project) {
       if (err) {
         res.send(422, "Update project failed");
       } else {
         //update fields
-        if (project.state == 2)
+        if (project.state == 2) {
+          await harvestModel.findByIdAndUpdate(project.harvest, {
+            dateInput: Date.now,
+          });
+          await ProduceSupervisionModel.findByIdAndUpdate(project.produce, {
+            dateInput: Date.now,
+          });
+          await shippingModel.findByIdAndUpdate(project.shipping, {
+            dateInput: Date.now,
+          });
+          await warehouseStorageModel.findByIdAndUpdate(
+            project.warehouseStorage,
+            {
+              dateInput: Date.now,
+            }
+          );
           return res.status(400).send({
             error: "Project cannot be update because it has been completed",
           });
+        }
         for (var field in ProjectModel.schema.paths) {
           if (field !== "_id" && field !== "__v") {
             if (req.body[field] !== undefined) {

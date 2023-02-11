@@ -33,7 +33,7 @@ const shippingSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  dateExpected: {
+  dateInput: {
     type: Date,
     required: true,
     default: Date.now,

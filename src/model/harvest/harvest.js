@@ -24,7 +24,7 @@ const harvestSchema = mongoose.Schema({
     ref: "User",
     default: null,
   },
-  dateCompleted: {
+  dateInput: {
     type: Date,
     required: true,
     default: Date.now,
