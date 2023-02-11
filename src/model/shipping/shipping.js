@@ -37,6 +37,10 @@ const shippingSchema = mongoose.Schema({
     type: Date,
     default: null,
   },
+  dateExpected: {
+    type: Date,
+    default: null,
+  },
   state: {
     type: Number,
     default: 1,
