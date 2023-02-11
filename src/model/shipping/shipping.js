@@ -46,6 +46,10 @@ const shippingSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  projectCode: {
+    type: String,
+    default: "",
+  },
 });
 
 const shippingModel = mongoose.model("Shipping", shippingSchema);

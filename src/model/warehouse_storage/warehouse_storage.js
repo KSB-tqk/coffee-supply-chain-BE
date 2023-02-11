@@ -40,6 +40,10 @@ const warehouseStorageSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  projectCode: {
+    type: String,
+    defautl: "",
+  },
 });
 
 const warehouseStorageModel = mongoose.model(

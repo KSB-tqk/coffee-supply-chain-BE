@@ -48,6 +48,10 @@ const produceSupervisionSchema = mongoose.Schema({
     type: String,
     default: null,
   },
+  projectCode: {
+    type: String,
+    default: "",
+  },
 });
 
 const ProduceSupervisionModel = mongoose.model(

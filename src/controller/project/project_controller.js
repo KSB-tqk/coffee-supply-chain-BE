@@ -34,6 +34,12 @@ const projectController = {
         produce.inspector =
           project.manager;
 
+      harvest.projectCode =
+        shipping.projectCode =
+        warehouseStorage.projectCode =
+        produce.projectCode =
+          req.body.projectCode;
+
       harvest.save();
       shipping.save();
       warehouseStorage.save();

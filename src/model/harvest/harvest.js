@@ -34,6 +34,10 @@ const harvestSchema = mongoose.Schema({
     required: true,
     default: 1,
   },
+  projectCode: {
+    type: String,
+    default: "",
+  },
 });
 
 const harvestModel = mongoose.model("Harvest", harvestSchema);
