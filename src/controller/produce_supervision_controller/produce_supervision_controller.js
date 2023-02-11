@@ -78,7 +78,6 @@ const produceSupervisionController = {
     try {
       const produceSupervision = await ProduceSupervisionModel.find()
         .populate("projectId")
-        .populate("factory")
         .populate("inspector")
         .exec();
       res.status(200).send(produceSupervision);
@@ -92,7 +91,6 @@ const produceSupervisionController = {
 
       const produceSupervision = await ProduceSupervisionModel.findById(id)
         .populate("projectId")
-        .populate("factory")
         .populate("inspector")
         .exec();
 

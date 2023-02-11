@@ -75,7 +75,6 @@ const warehouseStorageController = {
     try {
       const warehouseStorage = await WarehouseStorageModel.find()
         .populate("projectId")
-        .populate("warehouse")
         .populate("inspector")
         .exec();
       res.status(200).send(warehouseStorage);
@@ -89,7 +88,6 @@ const warehouseStorageController = {
 
       const warehouseStorage = await WarehouseStorageModel.findById(id)
         .populate("projectId")
-        .populate("warehouse")
         .populate("inspector")
         .exec();
 
