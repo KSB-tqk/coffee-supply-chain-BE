@@ -79,18 +79,18 @@ const projectController = {
         }
         if (project.state == 2) {
           await harvestModel.findByIdAndUpdate(project.harvest, {
-            dateInput: Date.now,
+            dateCompleted: Date.now(),
           });
           await ProduceSupervisionModel.findByIdAndUpdate(project.produce, {
-            dateInput: Date.now,
+            dateCompleted: Date.now(),
           });
           await shippingModel.findByIdAndUpdate(project.shipping, {
-            dateInput: Date.now,
+            dateCompleted: Date.now(),
           });
           await warehouseStorageModel.findByIdAndUpdate(
             project.warehouseStorage,
             {
-              dateInput: Date.now,
+              outputDate: Date.now(),
             }
           );
         }

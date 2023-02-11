@@ -20,9 +20,9 @@ const produceSupervisionSchema = mongoose.Schema({
     ref: "User",
     default: null,
   },
-  dateInput: {
+  dateCompleted: {
     type: Date,
-    default: Date.now,
+    default: null,
   },
   totalProduct: {
     type: Number,
@@ -38,7 +38,7 @@ const produceSupervisionSchema = mongoose.Schema({
   },
   expireDate: {
     type: Date,
-    default: Date.now,
+    default: null,
   },
   state: {
     type: Number,

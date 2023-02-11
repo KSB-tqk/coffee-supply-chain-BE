@@ -24,10 +24,9 @@ const harvestSchema = mongoose.Schema({
     ref: "User",
     default: null,
   },
-  dateInput: {
+  dateCompleted: {
     type: Date,
-    required: true,
-    default: Date.now,
+    default: null,
   },
   state: {
     type: Number,

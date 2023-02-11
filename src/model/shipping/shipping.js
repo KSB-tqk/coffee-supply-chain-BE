@@ -33,10 +33,9 @@ const shippingSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  dateInput: {
+  dateCompleted: {
     type: Date,
-    required: true,
-    default: Date.now,
+    default: null,
   },
   state: {
     type: Number,

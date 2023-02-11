@@ -26,11 +26,7 @@ const warehouseStorageSchema = mongoose.Schema({
   },
   outputDate: {
     type: Date,
-    default: Date.now,
-  },
-  dateInput: {
-    type: Date,
-    default: Date.now,
+    default: null,
   },
   totalExport: {
     type: Number,
