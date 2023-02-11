@@ -41,6 +41,10 @@ const harvestSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  temperature: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const harvestModel = mongoose.model("Harvest", harvestSchema);
