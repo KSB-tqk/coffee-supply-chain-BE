@@ -13,7 +13,7 @@ const projectController = {
       const produce = new ProduceSupervisionModel();
 
       const project = new ProjectModel({
-        manager: req.body.manager,
+        manager: "63e7bfeda66392096b4f6e1e",
         harvest: harvest._id,
         shipping: shipping._id,
         warehouseStorage: warehouseStorage._id,
@@ -21,8 +21,6 @@ const projectController = {
         projectName: req.body.projectName,
         projectCode: req.body.projectCode,
       });
-
-      project.manager = "63e7bfeda66392096b4f6e1e";
       harvest.inspector = "63bf8be64ca81bddf5802481";
       produce.inspector = "63bfe6b1ad67eab25201d789";
       shipping.inspector = "63bf8c14bcb6426a8fae4591";
