@@ -13,7 +13,7 @@ const projectController = {
       const produce = new ProduceSupervisionModel();
 
       const project = new ProjectModel({
-        manager: "63e7bfeda66392096b4f6e1e",
+        manager: "63bf87731ebf184de2087a8f",
         harvest: harvest._id,
         shipping: shipping._id,
         warehouseStorage: warehouseStorage._id,
