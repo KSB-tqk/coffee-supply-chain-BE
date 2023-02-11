@@ -30,7 +30,7 @@ const produceSupervisionController = {
 
     ProduceSupervisionModel.findOne(
       { _id: id },
-      function (err, produceSupervision) {
+      async function (err, produceSupervision) {
         if (err) {
           res.send(422, "Update transport failed");
         } else {
@@ -48,6 +48,11 @@ const produceSupervisionController = {
             }
           }
           produceSupervision.save();
+          const producePop = await ProduceSupervisionModel.findById(
+            produceSupervision._id
+          )
+            .populate("projectId")
+            .populate("inspector");
           res.status(200).send({ produceSupervision });
         }
       }

@@ -22,7 +22,7 @@ const shippingController = {
       return res.status(400).send({ msg: "This shipping doesn't exist" });
     }
 
-    ShippingModel.findOne({ _id: id }, function (err, shipping) {
+    ShippingModel.findOne({ _id: id }, async function (err, shipping) {
       if (err) {
         res.send(422, "Update transport failed");
       } else {
@@ -40,7 +40,10 @@ const shippingController = {
           }
         }
         shipping.save();
-        res.status(200).send({ shipping });
+        const shippingPop = await ShippingModel.findById(shipping._id)
+          .populate("projectId")
+          .populate("inspector");
+        res.status(200).send({ shippingPop });
       }
     });
   },

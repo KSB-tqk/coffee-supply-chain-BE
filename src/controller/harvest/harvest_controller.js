@@ -21,7 +21,7 @@ const harvestController = {
       return res.status(400).send({ msg: "This harvest doesn't exist" });
     }
 
-    HarvestModel.findOne({ _id: id }, function (err, harvest) {
+    HarvestModel.findOne({ _id: id }, async function (err, harvest) {
       if (err) {
         res.send(422, "Update transport failed");
       } else {
@@ -39,7 +39,10 @@ const harvestController = {
           }
         }
         harvest.save();
-        res.status(200).send({ harvest });
+        const harvestPop = await HarvestModel.findById(harvest._id)
+          .populate("projectId")
+          .populate("inspector");
+        res.status(200).send({ harvestPop });
       }
     });
   },

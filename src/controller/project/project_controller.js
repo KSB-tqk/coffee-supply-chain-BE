@@ -66,6 +66,18 @@ const projectController = {
       } else {
         //update fields
         if (project.state == 2) {
+          return res.status(400).send({
+            error: "Project cannot be update because it has been completed",
+          });
+        }
+        for (var field in ProjectModel.schema.paths) {
+          if (field !== "_id" && field !== "__v") {
+            if (req.body[field] !== undefined) {
+              project[field] = req.body[field];
+            }
+          }
+        }
+        if (project.state == 2) {
           await harvestModel.findByIdAndUpdate(project.harvest, {
             dateInput: Date.now,
           });
@@ -81,19 +93,36 @@ const projectController = {
               dateInput: Date.now,
             }
           );
-          return res.status(400).send({
-            error: "Project cannot be update because it has been completed",
-          });
-        }
-        for (var field in ProjectModel.schema.paths) {
-          if (field !== "_id" && field !== "__v") {
-            if (req.body[field] !== undefined) {
-              project[field] = req.body[field];
-            }
-          }
         }
         project.save();
-        res.status(200).send({ project });
+        const theProject = await ProjectModel.findById(project._id)
+          .populate("manager")
+          .populate({
+            path: "harvest",
+            populate: {
+              path: "inspector",
+            },
+          })
+          .populate({
+            path: "shipping",
+            populate: {
+              path: "inspector",
+            },
+          })
+          .populate({
+            path: "warehouseStorage",
+            populate: {
+              path: "inspector",
+            },
+          })
+          .populate({
+            path: "produce",
+            populate: {
+              path: "inspector",
+            },
+          });
+
+        res.status(200).send({ theProject });
       }
     });
   },

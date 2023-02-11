@@ -28,7 +28,7 @@ const warehouseStorageController = {
 
     WarehouseStorageModel.findOne(
       { _id: id },
-      function (err, warehouseStorage) {
+      async function (err, warehouseStorage) {
         if (err) {
           res.send(422, "Update transport failed");
         } else {
@@ -46,7 +46,12 @@ const warehouseStorageController = {
             }
           }
           warehouseStorage.save();
-          res.status(200).send({ warehouseStorage });
+          const warehousePop = await WarehouseStorageModel.findById(
+            warehouseStorage._id
+          )
+            .populate("projectId")
+            .populate("inspector");
+          res.status(200).send({ warehousePop });
         }
       }
     );
