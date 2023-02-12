@@ -79,6 +79,7 @@ const projectController = {
         }
 
         if (project.state == 2) {
+          project.dateCompleted = Date.now();
           await harvestModel.findByIdAndUpdate(project.harvest, {
             dateCompleted: Date.now(),
           });
