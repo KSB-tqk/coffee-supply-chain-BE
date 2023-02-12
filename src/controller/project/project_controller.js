@@ -148,7 +148,7 @@ const projectController = {
             Date.now().toString() +
             "|" +
             project.manager.toString() +
-            "|Harvest|" +
+            "|Project|" +
             project.state,
         });
       }
