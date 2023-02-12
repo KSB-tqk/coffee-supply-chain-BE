@@ -38,6 +38,11 @@ const harvestController = {
             }
           }
         }
+
+        if (harvest.state == 2) {
+          harvest.dateCompleted = Date.now();
+        }
+
         harvest.save();
         const harvestPop = await HarvestModel.findById(harvest._id)
           .populate("projectId")
@@ -70,7 +75,8 @@ const harvestController = {
         .populate("projectId")
         .populate("inspector")
         .exec();
-      res.status(200).send(harvest);
+
+      res.status(200).send(harvest.reverse());
     } catch (err) {
       res.status(400).send({ msg: err.message });
     }

@@ -171,7 +171,7 @@ const projectController = {
         .populate("warehouseStorage")
         .populate("produce")
         .exec();
-      res.status(200).send(projects);
+      res.status(200).send(projects.reverse());
     } catch (err) {
       res.status(400).send({ msg: err.message });
     }

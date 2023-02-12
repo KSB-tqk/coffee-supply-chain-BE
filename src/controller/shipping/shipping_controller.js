@@ -39,6 +39,9 @@ const shippingController = {
             }
           }
         }
+        if (shipping.state == 2) {
+          shipping.dateCompleted = Date.now();
+        }
         shipping.save();
         const shippingPop = await ShippingModel.findById(shipping._id)
           .populate("projectId")
@@ -71,7 +74,7 @@ const shippingController = {
         .populate("projectId")
         .populate("inspector")
         .exec();
-      res.status(200).send(shipping);
+      res.status(200).send(shipping.reverse());
     } catch (err) {
       res.status(400).send({ msg: err.message });
     }

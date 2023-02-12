@@ -45,6 +45,9 @@ const warehouseStorageController = {
               }
             }
           }
+          if (warehouseStorage.state == 2) {
+            warehouseStorage.outputDate = Date.now();
+          }
           warehouseStorage.save();
           const warehousePop = await WarehouseStorageModel.findById(
             warehouseStorage._id
@@ -82,7 +85,7 @@ const warehouseStorageController = {
         .populate("projectId")
         .populate("inspector")
         .exec();
-      res.status(200).send(warehouseStorage);
+      res.status(200).send(warehouseStorage.reverse());
     } catch (err) {
       res.status(400).send({ msg: err.message });
     }

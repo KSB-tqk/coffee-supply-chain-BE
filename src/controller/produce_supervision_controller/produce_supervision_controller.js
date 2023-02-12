@@ -47,6 +47,9 @@ const produceSupervisionController = {
               }
             }
           }
+          if (produceSupervision.state == 2) {
+            produceSupervision.dateCompleted = Date.now();
+          }
           produceSupervision.save();
           const producePop = await ProduceSupervisionModel.findById(
             produceSupervision._id
@@ -85,7 +88,7 @@ const produceSupervisionController = {
         .populate("projectId")
         .populate("inspector")
         .exec();
-      res.status(200).send(produceSupervision);
+      res.status(200).send(produceSupervision.reverse());
     } catch (err) {
       res.status(400).send({ msg: err.message });
     }
