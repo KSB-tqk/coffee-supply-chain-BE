@@ -147,7 +147,7 @@ const projectController = {
           contractContent:
             Date.now().toString() +
             "|" +
-            project.inspector.toString() +
+            project.manager.toString() +
             "|Harvest|" +
             project.state,
         });
