@@ -36,7 +36,7 @@ const produceSupervisionSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  expireDate: {
+  expiredDate: {
     type: Date,
     default: null,
   },

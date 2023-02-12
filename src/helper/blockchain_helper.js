@@ -1,6 +1,7 @@
 import Web3 from "web3";
 import Provider from "@truffle/hdwallet-provider";
 import fs from "fs";
+import { MetaMaskInpageProvider } from "@metamask/providers";
 
 const contractJson = fs.readFileSync(
   "blockchain/contracts/TrackingModelAbi.json"

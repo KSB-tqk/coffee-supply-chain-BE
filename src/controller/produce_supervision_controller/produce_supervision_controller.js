@@ -53,7 +53,7 @@ const produceSupervisionController = {
           )
             .populate("projectId")
             .populate("inspector");
-          res.status(200).send({ produceSupervision });
+          res.status(200).send({ producePop });
         }
       }
     );
