@@ -221,7 +221,7 @@ const projectController = {
         return res.status(400).send({ msg: "This project doesn't exist" });
       }
 
-      res.status(200).send({ project: project });
+      res.status(200).send(project);
     } catch (err) {
       res.status(400).send({ msg: err.message });
     }
