@@ -54,7 +54,15 @@ const warehouseStorageController = {
           )
             .populate("projectId")
             .populate("inspector");
-          res.status(200).send({ warehousePop });
+          res.status(200).send({
+            warehouse: warehousePop,
+            contractContent:
+              Date.now().toString() +
+              "|" +
+              warehouseStorage.inspector.toString() +
+              "|Warehouse|" +
+              warehouseStorage.state,
+          });
         }
       }
     );

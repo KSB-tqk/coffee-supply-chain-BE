@@ -142,7 +142,15 @@ const projectController = {
             },
           });
 
-        res.status(200).send({ theProject });
+        res.status(200).send({
+          project: theProject,
+          contractContent:
+            Date.now().toString() +
+            "|" +
+            project.inspector.toString() +
+            "|Harvest|" +
+            project.state,
+        });
       }
     });
   },

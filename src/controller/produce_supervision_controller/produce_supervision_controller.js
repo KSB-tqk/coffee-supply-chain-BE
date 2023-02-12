@@ -56,7 +56,15 @@ const produceSupervisionController = {
           )
             .populate("projectId")
             .populate("inspector");
-          res.status(200).send({ producePop });
+          res.status(200).send({
+            produce: producePop,
+            contractContent:
+              Date.now().toString() +
+              "|" +
+              produceSupervision.inspector.toString() +
+              "|Produce|" +
+              produceSupervision.state,
+          });
         }
       }
     );

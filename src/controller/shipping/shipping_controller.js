@@ -46,7 +46,15 @@ const shippingController = {
         const shippingPop = await ShippingModel.findById(shipping._id)
           .populate("projectId")
           .populate("inspector");
-        res.status(200).send({ shippingPop });
+        res.status(200).send({
+          shipping: shippingPop,
+          contractContent:
+            Date.now().toString() +
+            "|" +
+            shipping.inspector.toString() +
+            "|Shipping|" +
+            shipping.state,
+        });
       }
     });
   },

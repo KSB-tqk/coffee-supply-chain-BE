@@ -47,7 +47,15 @@ const harvestController = {
         const harvestPop = await HarvestModel.findById(harvest._id)
           .populate("projectId")
           .populate("inspector");
-        res.status(200).send({ harvestPop });
+        res.status(200).send({
+          harvest: harvestPop,
+          contractContent:
+            Date.now().toString() +
+            "|" +
+            harvest.inspector.toString() +
+            "|Harvest|" +
+            harvest.state,
+        });
       }
     });
   },
