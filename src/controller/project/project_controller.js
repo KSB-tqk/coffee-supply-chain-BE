@@ -189,7 +189,7 @@ const projectController = {
     try {
       const id = req.params.id;
 
-      const project = await ProjectModel.find({ _id: id })
+      const project = await ProjectModel.findById(id)
         .populate("manager")
         .populate({
           path: "harvest",
