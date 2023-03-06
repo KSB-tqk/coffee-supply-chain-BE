@@ -16,18 +16,28 @@ userRouter.get("/", userController.getAllUserInfo);
 
 userRouter.get("/me", userController.getCurrentUserInfo);
 
-userRouter.get("/:id", userController.getUserById);
+userRouter.get("/filter", userController.getAllUserByFilter);
 
 userRouter.get("/department/:id", userController.getUserByDepartmentId);
 
 userRouter.get("/role/:id", userController.getUserByRoleTypeId);
 
+userRouter.get("/list/:page", userController.getListUserPaginate);
+
+userRouter.patch("/permission", userController.updateUserPermission);
+
 userRouter.patch("/me", userController.updateCurrentUserInfo);
+
+userRouter.patch("/:id", userController.updateUserInfoById);
 
 userRouter.post("/logout", userController.logoutCurrentUser);
 
 userRouter.post("/logoutall", userController.logoutAllUser);
 
 userRouter.delete("/me", userController.deleteCurrentUser);
+
+userRouter.delete("/:id", userController.deleteUserById);
+
+userRouter.get("/:id", userController.getUserById);
 
 export default userRouter;

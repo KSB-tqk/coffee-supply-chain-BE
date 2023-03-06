@@ -1,7 +1,12 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import extendSchema from "mongoose-extend-schema";
+import { checkValidObjectId } from "../../helper/data_helper.js";
+import TokenModel from "./token.js";
+
+const options = { discriminatorKey: "kind" };
 
 const userSchema = mongoose.Schema(
   {
@@ -55,23 +60,11 @@ const userSchema = mongoose.Schema(
       trim: true,
       unique: true,
     },
-    enterpriseOwner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Enterprise",
-      trim: true,
-    },
-    tokens: [
-      {
-        token: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
   },
   {
     timestamps: true,
-  }
+  },
+  options
 );
 
 userSchema.methods.toJSON = function () {
@@ -88,8 +81,20 @@ userSchema.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
 
-  user.tokens = user.tokens.concat({ token });
-  await user.save();
+  const isTokenExist = await TokenModel.exists({ owner: user._id });
+  if (isTokenExist) {
+    const tokenModel = await TokenModel.findOne({ owner: user._id });
+    tokenModel.listToken = [];
+    tokenModel.listToken = tokenModel.listToken.concat({ token });
+    await tokenModel.save();
+    console.log(tokenModel.listToken.toString());
+    if (tokenModel.listToken == null) tokenModel.listToken = [];
+    tokenModel.listToken = tokenModel.listToken.concat({ token });
+  } else {
+    const tokenModel = new TokenModel({ owner: user._id });
+    tokenModel.listToken = tokenModel.listToken.concat({ token });
+    tokenModel.save();
+  }
 
   return token;
 };

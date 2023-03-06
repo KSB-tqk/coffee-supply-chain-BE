@@ -6,9 +6,9 @@ const transportController = {
 
       await transport.save();
 
-      res.status(200).json({ msg: "Create transport successfully", transport });
+      res.status(200).send({ msg: "Create transport successfully", transport });
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   updateTransport: async (req, res) => {
@@ -17,7 +17,7 @@ const transportController = {
     const harvest = await TransportModel.findById(id).exec();
 
     if (!harvest) {
-      return res.status(400).json({ msg: "This transport doesn't exist" });
+      return res.status(400).send({ msg: "This transport doesn't exist" });
     }
 
     TransportModel.findOne({ _id: req.params.id }, function (err, transport) {
@@ -44,13 +44,13 @@ const transportController = {
       const harvest = await TransportModel.findById(id).exec();
 
       if (!harvest) {
-        return res.status(400).json({ msg: "This harvest doesn't exist" });
+        return res.status(400).send({ msg: "This harvest doesn't exist" });
       }
 
       await TransportModel.findByIdAndRemove(id);
-      res.status(200).json({ msg: "Delete transport success" });
+      res.status(200).send({ msg: "Delete transport success" });
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   getAllTransports: async (req, res) => {
@@ -60,9 +60,9 @@ const transportController = {
       console.log(id);
 
       const lands = await TransportModel.find({ farmId: id }).exec();
-      res.status(200).json(lands);
+      res.status(200).send(lands);
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
   getTransport: async (req, res) => {
@@ -72,12 +72,12 @@ const transportController = {
       const transport = await TransportModel.findById(id).exec();
 
       if (!transport) {
-        return res.status(400).json({ msg: "This transport doesn't exist" });
+        return res.status(400).send({ msg: "This transport doesn't exist" });
       }
 
-      res.status(200).json(transport);
+      res.status(200).send(transport);
     } catch (err) {
-      res.status(400).json({ msg: err.message });
+      res.status(400).send({ msg: err.message });
     }
   },
 };

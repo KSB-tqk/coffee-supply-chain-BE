@@ -1,11 +1,32 @@
 import { json } from "express";
 import User from "../../model/user/user.js";
+import TechAdmin from "../../model/user/tech_admin.js";
+import Farmer from "../../model/user/farmer.js";
+import SystemAdmin from "../../model/user/system_admin.js";
+import { checkValidObjectId } from "../../helper/data_helper.js";
+import PermissionModel from "../../model/permission/permission.js";
+import AccessModel from "../../model/permission/acesss.js";
 
 const userController = {
   addUser: async (req, res) => {
-    const user = new User(req.body);
-
     try {
+      var user;
+      switch (req.body.role) {
+        case 1:
+          user = new TechAdmin(req.body);
+          break;
+        case 2:
+          user = new SystemAdmin(req.body);
+          break;
+        case 3:
+          user = new Farmer(req.body);
+          break;
+        case 4:
+          user = new User(req.body);
+          break;
+        default:
+      }
+
       await user.save();
       const token = await user.generateAuthToken();
       res.status(201).send({ user, token });
@@ -41,8 +62,13 @@ const userController = {
     const _id = req.params.id;
 
     try {
+      if (!checkValidObjectId(_id)) {
+        return res.status(400).send({ error: "Invalid User Id" });
+      }
       const user = await User.findById(_id);
-      res.send(user);
+      if (!user) {
+        res.status(400).send({ error: "User Not Found" });
+      } else res.send(user);
     } catch (e) {
       res.status(500).send(e.toString());
     }
@@ -50,7 +76,7 @@ const userController = {
   updateCurrentUserInfo: async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = [
-      "fullName",
+      "firstName",
       "lastName",
       "email",
       "password",
@@ -75,6 +101,50 @@ const userController = {
         return res.status(404).send(e.toString());
       }
       res.send(req.user);
+    } catch (e) {
+      res.status(400).send(e.toString());
+    }
+  },
+  updateUserInfoById: async (req, res) => {
+    const updates = Object.keys(req.body);
+    const allowedUpdates = [
+      "firstName",
+      "lastName",
+      "email",
+      "password",
+      "address",
+    ];
+
+    if (req.user.role == 1) {
+      allowedUpdates.push("role");
+    }
+
+    const isValidOperation = updates.every((update) =>
+      allowedUpdates.includes(update)
+    );
+
+    if (!isValidOperation) {
+      return res.status(400).send({ error: "Invalid updates" });
+    }
+
+    try {
+      if (!checkValidObjectId(req.params.id)) {
+        return res.status(400).send({ error: "Invalid User Id" });
+      }
+
+      const user = await User.findById(req.params.id);
+
+      if (!user) {
+        return res.status(400).send({ error: "User Not Found" });
+      }
+
+      updates.forEach((update) => {
+        user[update] = req.body[update];
+      });
+
+      await user.save();
+
+      res.send(user);
     } catch (e) {
       res.status(400).send(e.toString());
     }
@@ -110,11 +180,19 @@ const userController = {
       res.status(500).send(e.toString());
     }
   },
+  deleteUserById: async (req, res) => {
+    try {
+      const user = await User.findByIdAndDelete(req.params.id);
+      res.send(user);
+    } catch (e) {
+      res.status(500).send(e.toString());
+    }
+  },
   getUserByDepartmentId: async (req, res) => {
     const department = req.params.id;
     try {
       const users = await User.find({
-        department: { $gte: department },
+        department: department,
       }).exec();
       res.send(users);
     } catch (e) {
@@ -122,14 +200,90 @@ const userController = {
     }
   },
   getUserByRoleTypeId: async (req, res) => {
-    const roleTypeId = req.params.id;
+    const role = req.params.id;
     try {
       const users = await User.find({
-        role: { $gte: roleTypeId },
+        role: role,
       }).exec();
       res.send(users);
     } catch (e) {
       res.status(401).send({ e });
+    }
+  },
+  getListUserPaginate: async (req, res) => {
+    const perPage = 2;
+    const page = req.params.page;
+    try {
+      const users = await User.find()
+        .limit(perPage)
+        .skip(perPage * page)
+        .sort({
+          name: "asc",
+        })
+        .exec();
+      res.send(users);
+    } catch (e) {
+      res.status(401).send({ e });
+    }
+  },
+  getAllUserByFilter: async (req, res) => {
+    try {
+      const users = await User.find({ role: { $ne: req.query.exceptRole } });
+      if (users != null) {
+        return res.send(users);
+      } else {
+        res.status(404).send({ error: "User Not Found" });
+      }
+    } catch (e) {
+      res.status(401).send({ e });
+    }
+  },
+  updateUserPermission: async (req, res) => {
+    try {
+      const user = await User.findById(req.query.id);
+      if (await User.exists({ _id: req.query.id })) {
+        if (await PermissionModel.exists({ owner: req.query.id })) {
+          console.log("User ID: " + user._id);
+          const permission = await PermissionModel.findOne({ owner: user._id });
+
+          if (permission.listProject == null) {
+            permission.listProject = [];
+          } else {
+            console.log("project ID : " + req.query.projectId);
+            const projectPermission = await PermissionModel.findOne({
+              "listProject.projectId": req.query.projectId,
+            });
+
+            console.log("project permission : " + projectPermission);
+          }
+          res.status(200).send({ permission });
+        } else {
+          console.log("Create new");
+          const access = new AccessModel({
+            listAccess: [
+              {
+                accessItem: req.query.permissionId,
+              },
+            ],
+          });
+          access.save();
+          const permission = new PermissionModel({
+            owner: user._id,
+            listProject: [
+              {
+                projectId: req.query.projectId,
+                access: access._id,
+              },
+            ],
+          });
+          permission.save();
+          res.status(200).send({ permission });
+        }
+      } else {
+        return res.status(400).send({ error: "User Not Found" });
+      }
+    } catch (e) {
+      res.status(400).send(e.toString());
     }
   },
 };

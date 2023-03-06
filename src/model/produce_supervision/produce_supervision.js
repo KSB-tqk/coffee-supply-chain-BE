@@ -1,23 +1,18 @@
 import mongoose from "mongoose";
 
-const shippingSchema = mongoose.Schema({
+const produceSupervisionSchema = mongoose.Schema({
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
     default: null,
   },
-  shippingId: {
-    type: String,
-    trim: true,
-    default: "",
-  },
   totalInput: {
     type: Number,
     default: 0,
   },
-  transport: {
+  factory: {
     type: String,
-    ref: "Transport",
+    ref: "Factory",
     default: "",
   },
   inspector: {
@@ -25,19 +20,23 @@ const shippingSchema = mongoose.Schema({
     ref: "User",
     default: null,
   },
-  vehicleType: {
-    type: String,
-    default: "",
-  },
-  numberOfVehicle: {
-    type: Number,
-    default: 0,
-  },
   dateCompleted: {
     type: Date,
     default: null,
   },
-  dateExpected: {
+  totalProduct: {
+    type: Number,
+    default: 0,
+  },
+  humidity: {
+    type: Number,
+    default: 0,
+  },
+  dryingTemperature: {
+    type: Number,
+    default: 0,
+  },
+  expiredDate: {
     type: Date,
     default: null,
   },
@@ -47,7 +46,7 @@ const shippingSchema = mongoose.Schema({
   },
   note: {
     type: String,
-    default: "",
+    default: null,
   },
   projectCode: {
     type: String,
@@ -55,6 +54,8 @@ const shippingSchema = mongoose.Schema({
   },
 });
 
-const shippingModel = mongoose.model("Shipping", shippingSchema);
-
-export default shippingModel;
+const ProduceSupervisionModel = mongoose.model(
+  "ProduceSupervision",
+  produceSupervisionSchema
+);
+export default ProduceSupervisionModel;

@@ -1,40 +1,54 @@
 import mongoose, { mongo } from "mongoose";
 
 const farmSchema = mongoose.Schema({
-    farmName: {
-        type: String,
-        trim: true,
-        required: true,
+  farmName: {
+    type: String,
+    trim: true,
+    required: true,
+  },
+  farmAddress: {
+    type: String,
+    trim: true,
+    required: true,
+  },
+  farmPhoneNumber: {
+    type: String,
+    trim: true,
+    required: true,
+  },
+  farmOwner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  seeds: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Seed",
     },
-    farmAddress: {
-        type: String,
-        trim: true,
-        required: true,
+  ],
+  lands: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Land",
     },
-    farmPhoneNumber: {
-        type: String,
-        trim: true,
-        required: true,
+  ],
+  farmProjects: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "FarmProject",
     },
-    farmOwner:{
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User',
-    },
-    seeds: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Seed',
-    }],
-    lands: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Land'
-    }],
-    farmProjects: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'FarmProject',
-    }]
+  ],
+  dateCreate: {
+    type: Date,
+    default: Date.now,
+  },
+  state: {
+    type: Number,
+    default: 1,
+  },
 });
 
-const FarmModel = mongoose.model('Farm', farmSchema);
+const FarmModel = mongoose.model("Farm", farmSchema);
 
 export default FarmModel;

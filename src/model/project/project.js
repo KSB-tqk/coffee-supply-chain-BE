@@ -1,9 +1,22 @@
 import mongoose from "mongoose";
 
 const projectSchema = mongoose.Schema({
+  projectId: {
+    type: String,
+    trim: true,
+    default: "",
+  },
   manager: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    trim: true,
+  },
+  projectName: {
+    type: String,
+    trim: true,
+  },
+  projectCode: {
+    type: String,
     trim: true,
   },
   dateCreated: {
@@ -14,16 +27,6 @@ const projectSchema = mongoose.Schema({
   dateCompleted: {
     type: Date,
     required: false,
-  },
-  farm: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Farm",
-    trim: true,
-  },
-  farmProject: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "FarmProject",
-    trim: true,
   },
   harvest: {
     type: mongoose.Schema.Types.ObjectId,
@@ -37,12 +40,12 @@ const projectSchema = mongoose.Schema({
   },
   warehouseStorage: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "WareHouseStorage",
+    ref: "WarehouseStorage",
     trim: true,
   },
   produce: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Produce",
+    ref: "ProduceSupervision",
     trim: true,
   },
   state: {
@@ -52,6 +55,6 @@ const projectSchema = mongoose.Schema({
   },
 });
 
-const projectModel = mongoose.model("Project", projectSchema);
+const ProjectModel = mongoose.model("Project", projectSchema);
 
-export default projectModel;
+export default ProjectModel;
