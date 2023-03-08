@@ -25,7 +25,6 @@ const landSchema = mongoose.Schema({
     trim: true,
     default: 0,
   },
-
   state: {
     type: Number,
     required: true,

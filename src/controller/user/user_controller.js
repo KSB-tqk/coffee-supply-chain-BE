@@ -249,12 +249,23 @@ const userController = {
           if (permission.listProject == null) {
             permission.listProject = [];
           } else {
-            console.log("project ID : " + req.query.projectId);
-            const projectPermission = await PermissionModel.findOne({
-              "listProject.projectId": req.query.projectId,
-            });
-
-            console.log("project permission : " + projectPermission);
+            const projectPermission = permission.listProject.find(
+              (item) => req.query.projectId.str === item.projectId.str
+            );
+            const access = await AccessModel.findById(projectPermission.access);
+            const accessItem = req.query.permissionId;
+            if (
+              access.listAccess.filter((item) => item.accessItem == accessItem)
+                .length > 0
+            )
+              return res.status(400).send({
+                error:
+                  "User has already been granted this access, Please try again",
+              });
+            else {
+              access.listAccess = access.listAccess.concat({ accessItem });
+              access.save();
+            }
           }
           res.status(200).send({ permission });
         } else {
@@ -284,6 +295,34 @@ const userController = {
       }
     } catch (e) {
       res.status(400).send(e.toString());
+    }
+  },
+
+  // Permission
+  getUserPermissionById: async (req, res) => {
+    const user = await User.findById(req.query.id);
+    if (user != null) {
+      const permission = await PermissionModel.findOne({
+        owner: user._id,
+      }).populate({
+        path: "listProject",
+        populate: {
+          path: "access",
+        },
+      });
+
+      if (permission.listProject == null) {
+        permission.listProject = [];
+      } else {
+        const projectPermission = permission.listProject.find(
+          (item) => req.query.projectId.str === item.projectId.str
+        );
+        const access = await AccessModel.findById(projectPermission.access);
+        console.log(access);
+      }
+      return res.status(200).send({ permission });
+    } else {
+      return res.status(404).send({ error: "User Not Found" });
     }
   },
 };

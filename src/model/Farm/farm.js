@@ -62,10 +62,6 @@ const farmSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  state: {
-    type: Number,
-    default: 4,
-  },
 });
 
 const FarmModel = mongoose.model("Farm", farmSchema);

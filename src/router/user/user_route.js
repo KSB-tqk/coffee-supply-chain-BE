@@ -12,6 +12,8 @@ userRouter.post("/login", userController.loginUser);
 
 userRouter.use(auth);
 
+userRouter.get("/permission", userController.getUserPermissionById);
+
 userRouter.get("/", userController.getAllUserInfo);
 
 userRouter.get("/me", userController.getCurrentUserInfo);
@@ -39,5 +41,4 @@ userRouter.delete("/me", userController.deleteCurrentUser);
 userRouter.delete("/:id", userController.deleteUserById);
 
 userRouter.get("/:id", userController.getUserById);
-
 export default userRouter;
