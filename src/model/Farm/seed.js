@@ -1,28 +1,37 @@
 import mongoose from "mongoose";
 
 const seedSchema = mongoose.Schema({
-    seedName: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    seedFamily: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    supplier: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    farmId: {
-        type: String,
-        required: true,
-        trim: true,
-    }
+  seedId: {
+    type: String,
+    required: true,
+    default: null,
+  },
+  farmId: {
+    type: String,
+    required: true,
+    trim: true,
+    default: null,
+  },
+  seedName: {
+    type: String,
+    required: true,
+    trim: true,
+    default: "",
+  },
+  seedFamily: {
+    type: String,
+    required: true,
+    trim: true,
+    default: "",
+  },
+  supplier: {
+    type: String,
+    required: true,
+    trim: true,
+    default: "",
+  },
 });
 
-const SeedModel = mongoose.model('Seed', seedSchema);
+const SeedModel = mongoose.model("Seed", seedSchema);
 
 export default SeedModel;

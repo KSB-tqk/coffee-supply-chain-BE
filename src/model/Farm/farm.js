@@ -1,25 +1,44 @@
 import mongoose, { mongo } from "mongoose";
 
 const farmSchema = mongoose.Schema({
-  farmName: {
+  farmId: {
+    type: String,
+    required: true,
+    default: null,
+  },
+  farmCode: {
     type: String,
     trim: true,
     required: true,
+    default: "",
+  },
+  statusFarm: {
+    type: Number,
+    required: true,
+    default: 2,
+  },
+  farmName: {
+    type: String,
+    trim: true,
+    default: "",
   },
   farmAddress: {
     type: String,
     trim: true,
     required: true,
+    default: "",
   },
   farmPhoneNumber: {
     type: String,
     trim: true,
     required: true,
+    default: "",
   },
   farmOwner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: "User",
+    default: null,
   },
   seeds: [
     {
@@ -45,7 +64,7 @@ const farmSchema = mongoose.Schema({
   },
   state: {
     type: Number,
-    default: 1,
+    default: 4,
   },
 });
 
