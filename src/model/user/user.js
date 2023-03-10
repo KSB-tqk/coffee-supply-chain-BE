@@ -27,7 +27,6 @@ const userSchema = mongoose.Schema(
     },
     email: {
       type: String,
-      unique: true,
       trim: true,
       required: true,
       validate(value) {
@@ -58,7 +57,6 @@ const userSchema = mongoose.Schema(
     walletAddress: {
       type: String,
       trim: true,
-      unique: true,
     },
   },
   {
