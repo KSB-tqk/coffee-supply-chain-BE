@@ -48,3 +48,9 @@ export async function checkValidUserInfo(user) {
 
   return null;
 }
+
+export function onError(errorCode, errorMessage) {
+  return JSON.parse(
+    `{ "code": ${errorCode}, "message": "${errorMessage}", "isError": ${true} }`
+  );
+}

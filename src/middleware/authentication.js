@@ -1,6 +1,7 @@
 import User from "../model/user/user.js";
 import jwt from "jsonwebtoken";
 import TokenModel from "../model/user/token.js";
+import { onError } from "../helper/data_helper.js";
 
 const auth = async (req, res, next) => {
   try {
@@ -13,7 +14,9 @@ const auth = async (req, res, next) => {
     });
 
     if (!validToken) {
-      return res.status(401).send({ error: "Please authenticate." });
+      return res
+        .status(401)
+        .send(onError(401, "Unauthorized, please try again."));
     }
     const user = await User.findById(decoded._id);
 
@@ -22,7 +25,7 @@ const auth = async (req, res, next) => {
     next();
   } catch (e) {
     console.log(e);
-    res.status(401).send({ error: "Please authenticate." });
+    res.status(401).send(onError(401, "Unauthorized, please try again."));
   }
 };
 
