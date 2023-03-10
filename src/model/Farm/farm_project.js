@@ -1,53 +1,73 @@
 import mongoose from "mongoose";
 
 const farmProjectSchema = mongoose.Schema({
-    farmId: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    farmProjectName: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    enterprise: {
-        type: String,
-        required: true,
-        default: "HK Solution - Tracebility",
-        trim: true,
-    },
-    land: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Land',
-    },
-    seed: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Seed',
-    },
-    dateCreated: {
-        type: Date,
-        required: true,
-        default: Date.now,
-    },
-    dateCompleted: {
-        type: Date,
-        required: false,
-    },
-    totalHarvest: {
-        type: Number,
-        required: true,
-        default: 0,
-    },
-    state: {
-        type: Number,
-        required: true,
-        default: 1,
-    },
+  farmProjectId: {
+    type: String,
+    required: true,
+    default: null,
+  },
+  farmId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    trim: true,
+    default: null,
+  },
+  farmProjectCode: {
+    type: String,
+    required: true,
+    trim: true,
+    default: "",
+  },
+  enterprise: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    default: null,
+    trim: true,
+  },
+  land: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "Land",
+    default: null,
+  },
+  seed: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "Seed",
+    default: null,
+  },
+  dateCreated: {
+    type: Date,
+    required: true,
+    default: Date.now,
+  },
+  dateHarvested: {
+    type: Date,
+    required: false,
+    default: null,
+  },
+  fertilizerUsed: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  totalHarvest: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  state: {
+    type: Number,
+    required: true,
+    default: 4,
+  },
+  note: {
+    type: String,
+    required: false,
+    default: "",
+  },
 });
 
-const FarmProjectModel = mongoose.model('FarmProject', farmProjectSchema);
+const FarmProjectModel = mongoose.model("FarmProject", farmProjectSchema);
 
 export default FarmProjectModel;

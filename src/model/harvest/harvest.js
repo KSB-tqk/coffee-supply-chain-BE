@@ -4,7 +4,7 @@ const harvestSchema = mongoose.Schema({
   harvestId: {
     type: String,
     trim: true,
-    default: "",
+    default: null,
   },
   projectId: {
     type: mongoose.Schema.Types.ObjectId,

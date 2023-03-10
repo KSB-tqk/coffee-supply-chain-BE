@@ -5,7 +5,6 @@ const enterpriseSchema = mongoose.Schema(
     enterpriseName: {
       type: String,
       trim: true,
-      unique: true,
     },
     enterpriseAvatar: {
       type: String,
@@ -34,4 +33,4 @@ enterpriseSchema.virtual("employees", {
 
 const Enterprise = mongoose.model("Enterprise", enterpriseSchema);
 
-export default Enterprise
+export default Enterprise;

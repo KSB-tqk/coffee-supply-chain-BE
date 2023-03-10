@@ -6,30 +6,37 @@ import SystemAdmin from "../../model/user/system_admin.js";
 import { checkValidObjectId } from "../../helper/data_helper.js";
 import PermissionModel from "../../model/permission/permission.js";
 import AccessModel from "../../model/permission/acesss.js";
+import { checkValidUserInfo } from "../../helper/data_helper.js";
 
 const userController = {
   addUser: async (req, res) => {
     try {
       var user;
-      switch (req.body.role) {
-        case 1:
-          user = new TechAdmin(req.body);
-          break;
-        case 2:
-          user = new SystemAdmin(req.body);
-          break;
-        case 3:
-          user = new Farmer(req.body);
-          break;
-        case 4:
-          user = new User(req.body);
-          break;
-        default:
-      }
+      const isValidUserInfo = await checkValidUserInfo(req.body);
+      console.log(isValidUserInfo);
+      if (isValidUserInfo == null) {
+        switch (req.body.role) {
+          case 1:
+            user = new TechAdmin(req.body);
+            break;
+          case 2:
+            user = new SystemAdmin(req.body);
+            break;
+          case 3:
+            user = new Farmer(req.body);
+            break;
+          case 4:
+            user = new User(req.body);
+            break;
+          default:
+        }
 
-      await user.save();
-      const token = await user.generateAuthToken();
-      res.status(201).send({ user, token });
+        await user.save();
+        const token = await user.generateAuthToken();
+        res.status(201).send({ user, token });
+      } else {
+        res.status(400).send({ error: isValidUserInfo });
+      }
     } catch (e) {
       res.status(400).send(e);
     }
@@ -249,12 +256,23 @@ const userController = {
           if (permission.listProject == null) {
             permission.listProject = [];
           } else {
-            console.log("project ID : " + req.query.projectId);
-            const projectPermission = await PermissionModel.findOne({
-              "listProject.projectId": req.query.projectId,
-            });
-
-            console.log("project permission : " + projectPermission);
+            const projectPermission = permission.listProject.find(
+              (item) => req.query.projectId.str === item.projectId.str
+            );
+            const access = await AccessModel.findById(projectPermission.access);
+            const accessItem = req.query.permissionId;
+            if (
+              access.listAccess.filter((item) => item.accessItem == accessItem)
+                .length > 0
+            )
+              return res.status(400).send({
+                error:
+                  "User has already been granted this access, Please try again",
+              });
+            else {
+              access.listAccess = access.listAccess.concat({ accessItem });
+              access.save();
+            }
           }
           res.status(200).send({ permission });
         } else {
@@ -284,6 +302,34 @@ const userController = {
       }
     } catch (e) {
       res.status(400).send(e.toString());
+    }
+  },
+
+  // Permission
+  getUserPermissionById: async (req, res) => {
+    const user = await User.findById(req.query.id);
+    if (user != null) {
+      const permission = await PermissionModel.findOne({
+        owner: user._id,
+      }).populate({
+        path: "listProject",
+        populate: {
+          path: "access",
+        },
+      });
+
+      if (permission.listProject == null) {
+        permission.listProject = [];
+      } else {
+        const projectPermission = permission.listProject.find(
+          (item) => req.query.projectId.str === item.projectId.str
+        );
+        const access = await AccessModel.findById(projectPermission.access);
+        console.log(access);
+      }
+      return res.status(200).send({ permission });
+    } else {
+      return res.status(404).send({ error: "User Not Found" });
     }
   },
 };
