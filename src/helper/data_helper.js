@@ -23,6 +23,14 @@ export async function checkValidAdminAccess(userId) {
   return "Unauthorized User";
 }
 
+export async function checkFarmer(userId) {
+  const user = await User.findById(userId);
+
+  if (user.role != 3) {
+    return false;
+  } else return true;
+}
+
 export async function checkValidUserInfo(user) {
   const userInfo = await User.find({ email: user.email });
   console.log("User Info ", userInfo.length);

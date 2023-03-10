@@ -1,258 +1,47 @@
-import mongoose from "mongoose";
-import SeedModel from "../../model/Farm/seed.js";
-import LandModel from "../../model/Farm/land.js";
 import FarmModel from "../../model/Farm/farm.js";
 import User from "../../model/user/user.js";
 import {
   checkValidObjectId,
   checkValidAdminAccess,
+  checkFarmer,
 } from "../../helper/data_helper.js";
 
-const seedController = {
-  addSeed: async (req, res) => {
-    try {
-      const { farmId } = req.body;
-
-      if (!checkValidObjectId(farmId)) {
-        return res.status(400).send({ error: "Invalid Farm Id" });
-      }
-
-      const farm = await FarmModel.findById(farmId);
-      if (!farm)
-        return res.status(400).send({ msg: "This farm doesn't exist" });
-
-      const newSeed = new SeedModel(req.body);
-      await newSeed.save();
-
-      await FarmModel.findByIdAndUpdate(farmId, {
-        $push: {
-          seeds: newSeed._id,
-        },
-      });
-
-      res.status(200).send({ msg: "Create land success" });
-    } catch (err) {
-      res.status(400).send({ msg: err.message });
-    }
-  },
-  updateSeed: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { seedName, seedFamily, supplier } = req.body;
-
-      if (!checkValidObjectId(id)) {
-        return res.status(400).send({ error: "Invalid Seed Id" });
-      }
-      const seed = await SeedModel.findById(id);
-
-      if (!seed) {
-        return res.status(400).send({ msg: "This seed doesn't exist" });
-      } else if (!seedName || !seedFamily || !supplier) {
-        return res.status(400).send({ msg: "Seed info can't be blank!" });
-      }
-
-      await SeedModel.findByIdAndUpdate(id, {
-        $set: {
-          seedName: seedName,
-          seedFamily: seedFamily,
-          supplier: supplier,
-        },
-      });
-      res.status(200).send({ msg: `Update seed success` });
-    } catch (err) {
-      res.status(400).send({ msg: err.message });
-    }
-  },
-  deleteSeed: async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      if (!checkValidObjectId(id)) {
-        return res.status(400).send({ error: "Invalid Seed Id" });
-      }
-
-      const seed = await SeedModel.findById(id);
-
-      if (!seed)
-        return res.status(400).send({ msg: "This seed doesn't exist" });
-
-      console.log(seed._id);
-
-      console.log(seed.farmId);
-
-      await FarmModel.findByIdAndUpdate(seed.farmId, {
-        $pull: {
-          seeds: seed._id,
-        },
-      });
-
-      await SeedModel.findByIdAndRemove(id);
-      res.status(200).send({ msg: "Delete seed success" });
-    } catch (err) {
-      res.status(400).send({ msg: err.message });
-    }
-  },
-  getAllSeeds: async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      console.log(id);
-
-      const seeds = await SeedModel.find({ farmId: id }).exec();
-      res.status(200).send(seeds);
-    } catch (err) {
-      res.status(400).send({ msg: err.message });
-    }
-  },
-  getSeed: async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      if (!checkValidObjectId(id)) {
-        return res.status(400).send({ error: "Invalid Seed Id" });
-      }
-
-      const seed = await SeedModel.findById(id).exec();
-
-      if (!seed) {
-        return res.status(400).send({ msg: "This seed doesn't exist" });
-      }
-
-      res.status(200).send(seed);
-    } catch (err) {
-      res.status(400).send({ msg: err.message });
-    }
-  },
-};
-
-// Land Controller //
-
-const landController = {
-  addLand: async (req, res) => {
-    try {
-      const { farmId } = req.body;
-
-      if (!checkValidObjectId(farmId)) {
-        return res.status(400).send({ error: "Invalid Farm Id" });
-      }
-
-      const farm = await FarmModel.findById(farmId);
-
-      if (!farm) {
-        return res.status(400).send({ msg: "This farm doesn't exist" });
-      }
-
-      const newLand = new LandModel(req.body);
-      await newLand.save();
-
-      await FarmModel.findByIdAndUpdate(farmId, {
-        $push: {
-          lands: newLand._id,
-        },
-      });
-
-      res.status(200).send({ msg: "Create land success" });
-    } catch (err) {
-      res.status(400).send({ msg: err.message });
-    }
-  },
-  updateLand: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { landName, landArea, state } = req.body;
-
-      if (!checkValidObjectId(id)) {
-        res.status(400).send({ error: "Invalid Land Id" });
-      }
-
-      const landId = await LandModel.findById(id);
-
-      if (!landId)
-        return res.status(400).send({ msg: "This land doesn't exist" });
-      else if (!landName || !landArea || !state) {
-        return res.status(400).send({ msg: "Seed name can't be blank!" });
-      }
-      await LandModel.findByIdAndUpdate(id, {
-        $set: {
-          landName: landName,
-          landArea: landArea,
-          state: state,
-        },
-      });
-      res.status(200).send({ msg: `Update seed success` });
-    } catch (err) {
-      res.status(400).send({ msg: err.message });
-    }
-  },
-  deleteLand: async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      if (!checkValidObjectId(id)) {
-        return res.status(400).send({ error: "Invalid Land Id" });
-      }
-
-      const land = await LandModel.findById(id);
-
-      if (!land)
-        return res.status(400).send({ msg: "This land doesn't exist" });
-
-      await FarmModel.findByIdAndUpdate(land.farmId, {
-        $pull: {
-          lands: land._id,
-        },
-      });
-
-      await LandModel.findByIdAndRemove(id);
-      res.status(200).send({ msg: "Delete land success" });
-    } catch (err) {
-      res.status(400).send({ msg: err.message });
-    }
-  },
-  getAllLands: async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      console.log(id);
-
-      const lands = await LandModel.find({ farmId: id }).exec();
-      res.status(200).send(lands);
-    } catch (err) {
-      res.status(400).send({ msg: err.message });
-    }
-  },
-  getLand: async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      if (!checkValidObjectId(id)) {
-        return res.status(400).send({ error: "Invalid Land Id" });
-      }
-
-      const land = await LandModel.findById(id).exec();
-
-      if (!land) {
-        return res.status(400).send({ msg: "This land doesn't exist" });
-      }
-
-      res.status(200).send(land);
-    } catch (err) {
-      res.status(400).send({ msg: err.message });
-    }
-  },
-};
 
 // Farm Controller
 
 const farmController = {
   addFarm: async (req, res) => {
-    try {
-      const newFarm = new FarmModel(req.body);
-      await newFarm.save();
+    try {     
+      const farmCode = req.body.farmCode;
+      const farmOwner = req.body.farmOwner;
 
-      res.status(200).send({ msg: "Create farm success", farm: newFarm });
+      const checkFarmCodeExist = await FarmModel.findOne({ farmCode: farmCode });
+      const checkFarmOwnerExist = await User.findById(farmOwner);
+
+      if(checkFarmCodeExist) {
+        res.status(400).send({ code: 400, message: "Farm Code already exists" });
+      } else if (!checkFarmOwnerExist) {
+        res.status(400).send({ code: 400, message: "User doesn't exist" });
+      } else if(checkFarmer(farmOwner) === false) {
+        res.status(400).send({ code: 400, message: "User isn't Farmer" })
+      } else {
+        const newFarm = new FarmModel(req.body);
+
+        newFarm.farmId = newFarm._id;
+
+        await newFarm.save();
+
+        res.status(200).send({ code: 200, message: "Create farm success", farm: newFarm });
+      }   
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send({ code: 400,  message: err.message });
+    }
+  },
+  addFarmerIntoFarm: async (req, res) => {
+    try {
+      
+    } catch (err) {
+      res.status(400).send({ code: 400, message: err.message });
     }
   },
   updateFarm: async (req, res) => {
@@ -303,7 +92,7 @@ const farmController = {
       } else {
         return res
           .status(200)
-          .send({ msg: `Update farm success`, farmId: farm._id });
+          .send({ msg: `Update farm success`, farm: farm });
       }
     } catch (err) {
       res.status(400).send({ msg: err.toString() });
@@ -317,7 +106,7 @@ const farmController = {
         return res.status(400).send({ error: "Invalid Farm Id" });
       }
 
-      const farm = await FarmModel.findById(id).exec();
+      const farm = await FarmModel.findById(id).populate("farmOwner").exec();
 
       if (!farm) return res.status(400).send({ msg: "No exist farm" });
 
@@ -356,6 +145,6 @@ const farmController = {
   },
 };
 
-const FarmServices = { seedController, landController, farmController };
+const FarmServices = { farmController };
 
 export default FarmServices;
