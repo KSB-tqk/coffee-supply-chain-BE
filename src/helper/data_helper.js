@@ -1,5 +1,7 @@
 import Web3 from "web3";
+import PermissionModel from "../model/permission/permission.js";
 import User from "../model/user/user.js";
+import jwt from "jsonwebtoken";
 
 export function checkValidObjectId(objectId) {
   if (objectId.match(/^[0-9a-fA-F]{24}$/)) {
@@ -63,6 +65,25 @@ export function onError(errorCode, errorMessage) {
   );
 }
 
-export function onValidRoleTypeId(roleTypeId, user) {
-  return user.role == roleTypeId;
+export async function onValidUserRole(token, role) {
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const user = await User.findOne({ _id: decoded._id });
+  return user != null && user.role == role;
+}
+
+export async function compareUserIdWithToken(token, userId) {
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  return decoded._id == userId;
+}
+
+export async function onLogoutCurrentUser(token) {
+  const result = await PermissionModel.updateOne(
+    { "listToken.token": token },
+    {
+      $pullAll: {
+        "listToken.token": token,
+      },
+    }
+  );
+  return result;
 }

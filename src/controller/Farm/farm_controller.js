@@ -5,6 +5,9 @@ import {
   checkValidAdminAccess,
   checkFarmer,
   onError,
+  onValidUserRole,
+  checkValidUserInfo,
+  compareUserIdWithToken,
 } from "../../helper/data_helper.js";
 
 // Farm Controller
@@ -43,13 +46,11 @@ const farmController = {
 
         const resultNewFarm = await newFarm.populate("farmOwner");
 
-        res
-          .status(200)
-          .send({
-            code: 200,
-            message: "Create farm success",
-            farm: resultNewFarm,
-          });
+        res.status(200).send({
+          code: 200,
+          message: "Create farm success",
+          farm: resultNewFarm,
+        });
       }
     } catch (err) {
       res.status(400).send(onError(400, err.message));
@@ -85,11 +86,23 @@ const farmController = {
 
       const allowedUpdates = ["farmName", "farmAddress", "farmPhoneNumber"];
 
-      try {
-        const result = await checkValidAdminAccess(req.body.farmOwner);
+      const farm = await FarmModel.findById(req.params.id);
 
-        if (result) {
-          return res.status(400).send(onError(400, "User " + result));
+      if (!farm)
+        return res.status(400).send(onError(400, "This farm doesn't exist"));
+      else if (!farm.farmName || !farm.farmAddress || !farm.farmPhoneNumber) {
+        return res.status(400).send(onError(400, "Farm info can't be blank!"));
+      }
+
+      try {
+        const result = await compareUserIdWithToken(
+          req.header("Authorization").replace("Bearer ", ""),
+          farm.farmOwner
+        );
+        if (!result) {
+          return res
+            .status(400)
+            .send(onError(400, "Unauthorized Farm Owner, please try again."));
         } else {
           allowedUpdates.push("farmOwner");
         }
@@ -99,14 +112,6 @@ const farmController = {
 
       if (!checkValidObjectId(req.params.id)) {
         return res.status(400).send(onError(400, "Invalid Farm Id"));
-      }
-
-      const farm = await FarmModel.findById(req.params.id);
-
-      if (!farm)
-        return res.status(400).send(onError(400, "This farm doesn't exist"));
-      else if (!farm.farmName || !farm.farmAddress || !farm.farmPhoneNumber) {
-        return res.status(400).send(onError(400, "Farm info can't be blank!"));
       }
 
       const isValidOperation = updates.every((update) =>
@@ -150,9 +155,19 @@ const farmController = {
   },
   getAllFarms: async (req, res) => {
     try {
-      const farms = await FarmModel.find().exec();
-
-      res.status(200).send(farms);
+      if (
+        await onValidUserRole(
+          req.header("Authorization").replace("Bearer ", ""),
+          1 // RoleTypeId (TechAdmin - 1)
+        )
+      ) {
+        const farms = await FarmModel.find().exec();
+        res.status(200).send(farms);
+      } else {
+        return res
+          .status(400)
+          .send(onError(400, "Permission denied, please check and try again."));
+      }
     } catch (err) {
       res.status(400).send(onError(400, err.message));
     }
