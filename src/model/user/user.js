@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import extendSchema from "mongoose-extend-schema";
 import { checkValidObjectId } from "../../helper/data_helper.js";
-import TokenModel from "./token.js";
+import PermissionModel from "../permission/permission.js";
 
 const options = { discriminatorKey: "kind" };
 
@@ -79,9 +79,9 @@ userSchema.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
 
-  const isTokenExist = await TokenModel.exists({ owner: user._id });
+  const isTokenExist = await PermissionModel.exists({ owner: user._id });
   if (isTokenExist) {
-    const tokenModel = await TokenModel.findOne({ owner: user._id });
+    const tokenModel = await PermissionModel.findOne({ owner: user._id });
     tokenModel.listToken = [];
     tokenModel.listToken = tokenModel.listToken.concat({ token });
     await tokenModel.save();
@@ -89,7 +89,7 @@ userSchema.methods.generateAuthToken = async function () {
     if (tokenModel.listToken == null) tokenModel.listToken = [];
     tokenModel.listToken = tokenModel.listToken.concat({ token });
   } else {
-    const tokenModel = new TokenModel({ owner: user._id });
+    const tokenModel = new PermissionModel({ owner: user._id });
     tokenModel.listToken = tokenModel.listToken.concat({ token });
     tokenModel.save();
   }
