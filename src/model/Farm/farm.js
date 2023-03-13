@@ -3,6 +3,7 @@ import mongoose, { mongo } from "mongoose";
 const farmSchema = mongoose.Schema({
   farmId: {
     type: String,
+    trim: true,
     default: null,
   },
   farmCode: {
@@ -19,6 +20,7 @@ const farmSchema = mongoose.Schema({
   farmName: {
     type: String,
     trim: true,
+    requiredt: true,
     default: "",
   },
   farmAddress: {
@@ -39,6 +41,12 @@ const farmSchema = mongoose.Schema({
     ref: "User",
     default: null,
   },
+  farmers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   seeds: [
     {
       type: mongoose.Schema.Types.ObjectId,
