@@ -7,6 +7,7 @@ import { checkValidObjectId, onError } from "../../helper/data_helper.js";
 import PermissionModel from "../../model/permission/permission.js";
 import AccessModel from "../../model/permission/acesss.js";
 import { checkValidUserInfo } from "../../helper/data_helper.js";
+import validator from "validator";
 
 const userController = {
   addUser: async (req, res) => {
@@ -43,6 +44,9 @@ const userController = {
   },
   loginUser: async (req, res) => {
     try {
+      if (!validator.isEmail(req.body.email)) {
+        return res.status(400).send(onError(400, "Invalid Email Format"));
+      }
       const user = await User.findByCredentials(
         req.body.email,
         req.body.password

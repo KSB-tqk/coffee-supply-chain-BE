@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 const farmProjectSchema = mongoose.Schema({
   farmProjectId: {
     type: String,
-    required: true,
     default: null,
   },
   farmId: {
@@ -20,7 +19,6 @@ const farmProjectSchema = mongoose.Schema({
   },
   enterprise: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     default: null,
     trim: true,
   },
