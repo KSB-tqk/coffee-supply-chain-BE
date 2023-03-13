@@ -1,14 +1,14 @@
 import User from "../model/user/user.js";
 import jwt from "jsonwebtoken";
-import TokenModel from "../model/user/token.js";
 import { onError } from "../helper/data_helper.js";
+import PermissionModel from "../model/permission/permission.js";
 
 const auth = async (req, res, next) => {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const validToken = await TokenModel.findOne({
+    const validToken = await PermissionModel.findOne({
       owner: decoded._id,
       "listToken.token": token,
     });

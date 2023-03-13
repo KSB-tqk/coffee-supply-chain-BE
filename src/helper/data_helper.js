@@ -62,3 +62,7 @@ export function onError(errorCode, errorMessage) {
     `{ "code": ${errorCode}, "message": "${errorMessage}", "isError": ${true} }`
   );
 }
+
+export function onValidRoleTypeId(roleTypeId, user) {
+  return user.role == roleTypeId;
+}
