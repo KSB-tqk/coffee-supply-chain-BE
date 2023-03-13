@@ -4,6 +4,7 @@ import {
   checkValidObjectId,
   checkValidAdminAccess,
   checkFarmer,
+  onError,
 } from "../../helper/data_helper.js";
 
 
@@ -11,27 +12,42 @@ import {
 
 const farmController = {
   addFarm: async (req, res) => {
-    try {     
-      const farmCode = req.body.farmCode;
-      const farmOwner = req.body.farmOwner;
+    try { 
+      const {
+        farmCode,
+        farmName,
+        farmAddress,
+        farmPhoneNumber,
+        farmOwner,
+      } = req.body;
 
       const checkFarmCodeExist = await FarmModel.findOne({ farmCode: farmCode });
-      const checkFarmOwnerExist = await User.findById(farmOwner);
+      const checkFarmOwnerExist = await User.findOne({ email: farmOwner });
+
+      console.log(checkFarmOwnerExist._id.toString());
 
       if(checkFarmCodeExist) {
         res.status(400).send({ code: 400, message: "Farm Code already exists" });
       } else if (!checkFarmOwnerExist) {
         res.status(400).send({ code: 400, message: "User doesn't exist" });
-      } else if(checkFarmer(farmOwner) === false) {
-        res.status(400).send({ code: 400, message: "User isn't Farmer" })
+      } else if(checkFarmOwnerExist.role !== 3) {
+        res.status(400).send({ code: 400, message: "User isn't a Farmer" })
       } else {
-        const newFarm = new FarmModel(req.body);
+        const newFarm = new FarmModel({
+          farmCode: farmCode,
+          farmName: farmName,
+          farmAddress: farmAddress,
+          farmPhoneNumber: farmPhoneNumber,
+          farmOwner: checkFarmOwnerExist._id.toString(),
+        });
 
         newFarm.farmId = newFarm._id;
 
         await newFarm.save();
 
-        res.status(200).send({ code: 200, message: "Create farm success", farm: newFarm });
+        const resultNewFarm = await newFarm.populate('farmOwner');
+
+        res.status(200).send({ code: 200, message: "Create farm success", farm: (resultNewFarm)});
       }   
     } catch (err) {
       res.status(400).send({ code: 400,  message: err.message });
@@ -39,7 +55,24 @@ const farmController = {
   },
   addFarmerIntoFarm: async (req, res) => {
     try {
-      
+      const famrId = req.params; // id of farm
+      const {
+        emailNewFarmer
+      } = req.body ;
+
+      const checkFarmerExist = await FarmModel.findById(req.params);
+
+      const checkUserExist = await User.findOne({email: emailNewFarmer});
+
+      const checkUserWasAdded = await FarmModel.find({farmer: {"$exists": checkUserExist._id}});
+
+      if(!checkFarmerExist) {
+        res.status(400).send(onError(400, "This farm doesn't exist"));
+      } else if(!checkUserExist) {
+        res.status(400).send(onError(400, "This email doesn't exist"));
+      } else if(!checkUserWasAdded) {
+        res.status(400).send(onError(400, "This user was added in farmer"));
+      }
     } catch (err) {
       res.status(400).send({ code: 400, message: err.message });
     }

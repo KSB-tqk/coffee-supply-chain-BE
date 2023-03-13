@@ -5,7 +5,7 @@ import cors from "cors";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "../src/swagger.json" assert { type: "json" };
+// import swaggerDocument from "../src/swagger.json" assert { type: "json" };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -45,7 +45,7 @@ app.use("/warehouse-storage", warehouseStorageRouter);
 app.use("/warehouse", warehouseRouter);
 app.use("/produce", produceSupervisionRouter);
 app.use("/project", projectRouter);
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const publicDir = path.join(__dirname, "../public");
 
