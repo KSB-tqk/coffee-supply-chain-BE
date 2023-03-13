@@ -3,7 +3,6 @@ import mongoose, { mongo } from "mongoose";
 const farmSchema = mongoose.Schema({
   farmId: {
     type: String,
-    required: true,
     default: null,
   },
   farmCode: {
