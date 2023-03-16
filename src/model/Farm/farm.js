@@ -43,8 +43,10 @@ const farmSchema = mongoose.Schema({
   },
   farmers: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      farmer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
     },
   ],
   seeds: [

@@ -6,7 +6,13 @@ import auth from "../../middleware/authentication.js";
 
 const farmRouter = express.Router();
 
-/* -----------Seed----------- */
+farmRouter.use(auth);
+
+//
+//
+//-----------------------
+//----------Seed---------
+/* ---------------------- */
 // add new seed
 farmRouter.post("/seed/", SeedService.seedController.addSeed);
 
@@ -22,7 +28,11 @@ farmRouter.get("/seed/all/:id", SeedService.seedController.getAllSeeds);
 // get detail seed
 farmRouter.get("/seed/:id", SeedService.seedController.getSeed);
 
-/* -----------Land----------- */
+//
+//
+//-----------------------
+//----------Land---------
+/* ---------------------- */
 // add new land
 farmRouter.post("/land/", LandService.landController.addLand);
 
@@ -38,7 +48,11 @@ farmRouter.get("/land/all/:id", LandService.landController.getAllLands);
 // get detail land
 farmRouter.get("/land/:id", LandService.landController.getLand);
 
-/* -----------Farm----------- */
+//
+//
+//-----------------------
+//----------Farm---------
+/* ---------------------- */
 // add farm
 farmRouter.post("/", FarmServices.farmController.addFarm);
 
@@ -53,5 +67,11 @@ farmRouter.get("/", FarmServices.farmController.getAllFarms);
 
 // delete farm by id
 farmRouter.delete("/:id", FarmServices.farmController.deleteFarms);
+
+// add farmer into farm
+farmRouter.post(
+  "/add-farmer/:id",
+  FarmServices.farmController.addFarmerIntoFarm
+);
 
 export default farmRouter;
