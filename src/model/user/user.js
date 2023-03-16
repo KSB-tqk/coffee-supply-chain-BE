@@ -85,7 +85,6 @@ userSchema.methods.generateAuthToken = async function () {
     tokenModel.listToken = [];
     tokenModel.listToken = tokenModel.listToken.concat({ token });
     await tokenModel.save();
-    console.log(tokenModel.listToken.toString());
     if (tokenModel.listToken == null) tokenModel.listToken = [];
     tokenModel.listToken = tokenModel.listToken.concat({ token });
   } else {

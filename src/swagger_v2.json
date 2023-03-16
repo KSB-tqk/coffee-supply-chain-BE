@@ -1,0 +1,1591 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Coffee Supply Chain - Mongo",
+    "description": "<h3>RPC URL: <a href='https://polygon-mumbai.g.alchemy.com/v2/dansTXmThZA3jPgRwOuk0DIHn9obm666'>https://polygon-mumbai.g.alchemy.com/v2/dansTXmThZA3jPgRwOuk0DIHn9obm666</a></h3> <br> <h3>Smart Contract Address: <a>0x456E5aC29729C18d4C43ef3a1aA91074E9b3bD38</a></h3> <br> <h3>PolygonScan : <a href='https://mumbai.polygonscan.com/'>https://mumbai.polygonscan.com/</a></h3> <br> <h3>Contract ABI : <code>[{'inputs':[],'stateMutability':'nonpayable','type':'constructor'},{'inputs':[{'internalType':'string','name':'_productId','type':'string'},{'internalType':'string','name':'_contractContentId','type':'string'},{'internalType':'address','name':'_creatorAddress','type':'address'}],'name':'addTrackingBlock','outputs':[],'stateMutability':'nonpayable','type':'function'},{'inputs':[{'internalType':'string','name':'_productId','type':'string'}],'name':'getTrackingBlock','outputs':[{'components':[{'internalType':'address','name':'trackingCreator','type':'address'},{'internalType':'string','name':'contractContentId','type':'string'},{'internalType':'string','name':'productId','type':'string'}],'internalType':'struct TrackingModel.tracking','name':'','type':'tuple'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'owner','outputs':[{'internalType':'address','name':'','type':'address'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'uint256','name':'','type':'uint256'}],'name':'trackingChain','outputs':[{'internalType':'string','name':'','type':'string'}],'stateMutability':'view','type':'function'}]</code></h3>",
+    "version": "1.0.2"
+  },
+  "servers": [
+    {
+      "url": "http://ec2-13-231-245-116.ap-northeast-1.compute.amazonaws.com:3000"
+    },
+    {
+      "url": "http://localhost:3001"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "noauthAuth": {
+        "type": "http",
+        "scheme": "noauth"
+      },
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Harvest"
+    },
+    {
+      "name": "Transport"
+    },
+    {
+      "name": "Warehouse Storage"
+    },
+    {
+      "name": "Produce Supervision"
+    },
+    {
+      "name": "Warehouse"
+    },
+    {
+      "name": "Shipping"
+    },
+    {
+      "name": "User"
+    },
+    {
+      "name": "Farm"
+    },
+    {
+      "name": "Farm > Seed"
+    },
+    {
+      "name": "Farm > Land"
+    },
+    {
+      "name": "Farm Project"
+    },
+    {
+      "name": "Project"
+    },
+    {
+      "name": "Enterprice"
+    }
+  ],
+  "paths": {
+    "/harvest/63e860098898eeca8c26761b": {
+      "get": {
+        "tags": ["Harvest"],
+        "summary": "Get Harvest",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Harvest"],
+        "summary": "Update Harvest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "projectId": "635e3f7a0eb5d3596f4de9f9",
+                  "inspector": "6365f527a2cdd357c6c722cf",
+                  "state": "2"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/harvest/": {
+      "get": {
+        "tags": ["Harvest"],
+        "summary": "Get All Harvest",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Harvest"],
+        "summary": "Post Harvest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "projectId": "635e3f7a0eb5d3596f4de9f9",
+                  "inspector": "6365f527a2cdd357c6c722cf",
+                  "state": "1"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/harvest/636b6b8b972e13b0fb3ddb90": {
+      "delete": {
+        "tags": ["Harvest"],
+        "summary": "Delete Harvest",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/transport/636b78f80aa588b05c1c17c6": {
+      "get": {
+        "tags": ["Transport"],
+        "summary": "Get Transport",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Transport"],
+        "summary": "Delete Transport",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Transport"],
+        "summary": "Update Transport",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "transportName": "TransportName",
+                  "transportPhoneNumber": "0123456789",
+                  "transportAddress": "13 Le Van Sy"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/transport/": {
+      "get": {
+        "tags": ["Transport"],
+        "summary": "Get All Transport",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Transport"],
+        "summary": "Post Transport",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "transportName": "TransportName",
+                  "transportPhoneNumber": "0123456789",
+                  "transportAddress": "123 Le Van Sy"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/warehouse-storage/63e5cddb6de09f73d32d55b3": {
+      "get": {
+        "tags": ["Warehouse Storage"],
+        "summary": "Get Warehouse Storage",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/warehouse-storage/": {
+      "get": {
+        "tags": ["Warehouse Storage"],
+        "summary": "Get All Warehouse Storage",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Warehouse Storage"],
+        "summary": "Post Warehouse Storage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "projectId": "636b78f80aa588b05c1c17c7",
+                  "totalInput": "0123456789",
+                  "warehouse": "636b78f80aa588b05c1c17c7",
+                  "inspector": "636b78f80aa588b05c1c17c7",
+                  "inputDate": "2023-01-30T03:00:08.707Z",
+                  "outputDate": "2023-01-30T03:00:08.707Z"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/warehouse-storage/636cb23b2b2f341bc963dcaf": {
+      "delete": {
+        "tags": ["Warehouse Storage"],
+        "summary": "Delete Warehouse Storage",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Warehouse Storage"],
+        "summary": "Update Warehouse Storage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "projectId": "636b78f80aa588b05c1c17c7",
+                  "totalInput": "123",
+                  "warehouse": "636b78f80aa588b05c1c17c7",
+                  "inspector": "636b78f80aa588b05c1c17c7",
+                  "inputDate": "2023-01-30T03:00:08.707Z",
+                  "outputDate": "2023-01-30T03:00:08.707Z"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/produce/63e8792865b95f009983b1e6": {
+      "get": {
+        "tags": ["Produce Supervision"],
+        "summary": "Get Produce",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/produce/": {
+      "get": {
+        "tags": ["Produce Supervision"],
+        "summary": "Get All Produce",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Produce Supervision"],
+        "summary": "Post Produce",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "projectId": "636b78f80aa588b05c1c17c7",
+                  "totalInput": "0123456789",
+                  "warehouse": "636b78f80aa588b05c1c17c7",
+                  "inspector": "636b78f80aa588b05c1c17c7",
+                  "inputDate": "2023-01-30T03:00:08.707Z",
+                  "outputDate": "2023-01-30T03:00:08.707Z"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/produce/636cb23b2b2f341bc963dcaf": {
+      "delete": {
+        "tags": ["Produce Supervision"],
+        "summary": "Delete Produce",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/produce/63e865831a06be264f3f7f3f": {
+      "patch": {
+        "tags": ["Produce Supervision"],
+        "summary": "Update Produce",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "projectId": "636b78f80aa588b05c1c17c7",
+                  "totalInput": "123",
+                  "warehouse": "63e5cddb6de09f73d32d55b3",
+                  "inspector": "63c12f898d16392649adf4ec",
+                  "inputDate": "2023-01-30T03:00:08.707Z",
+                  "outputDate": "2023-01-30T03:00:08.707Z",
+                  "expireDate": "2023-01-30T03:00:08.707Z",
+                  "state": 4
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/warehouse/636cc0a3491cb1e8763ad7be": {
+      "get": {
+        "tags": ["Warehouse"],
+        "summary": "Get Warehouse",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Warehouse"],
+        "summary": "Delete Warehouse",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Warehouse"],
+        "summary": "Update Warehouse",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "warehouseName": "Warehouse Name",
+                  "warehousePhoneNumber": "18324681"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/warehouse/": {
+      "get": {
+        "tags": ["Warehouse"],
+        "summary": "Get All Warehouse",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Warehouse"],
+        "summary": "Post Warehouse",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "warehouseName": "Warehouse Name",
+                  "warehousePhoneNumber": "18324681"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/shipping/63e7ca98bff97bdf094c7402": {
+      "get": {
+        "tags": ["Shipping"],
+        "summary": "Get Shipping",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/shipping/": {
+      "get": {
+        "tags": ["Shipping"],
+        "summary": "Get All Shipping",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Shipping"],
+        "summary": "Post Shipping",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "projectId": "636b78f80aa588b05c1c17c6",
+                  "transport": "636b78f80aa588b05c1c17c7",
+                  "inspector": "636b78f80aa588b05c1c17c7",
+                  "vehicleType": "Truck",
+                  "numberOfVehicle": 2
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/shipping/636b8538651d7b515bde51a8": {
+      "delete": {
+        "tags": ["Shipping"],
+        "summary": "Delete Shipping",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Shipping"],
+        "summary": "Update Shipping",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "projectId": "636b78f80aa588b05c1c17c6",
+                  "transport": "636b78f80aa588b05c1c17c7",
+                  "inspector": "636b78f80aa588b05c1c17c7",
+                  "vehicleType": "Overload Truck",
+                  "numberOfVehicle": 12
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Post User",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "firstName": "Khanh",
+                  "lastName": "Tran Quoc",
+                  "email": "khanhtran1@gmail.com",
+                  "walletAddress": "0x25D3357BAD02c91219280EAcbf931C60390B4265",
+                  "role": 1,
+                  "department": 2,
+                  "superRole": "Ok",
+                  "password": "admin123"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Login User",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": "khanhtran@gmail.com",
+                  "password": "admin123"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/logout": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Logout Current User",
+        "requestBody": {
+          "content": {}
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/logoutall": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Logout All",
+        "requestBody": {
+          "content": {}
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get All User",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/filter/": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get All User Filter",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "exceptRole",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "3"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/list/": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get User List Paginate",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/640edba9a3be967698f7c85d": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get User By Id",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/permission": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get User Permission By Id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "640edba9a3be967698f7c85d"
+          },
+          {
+            "name": "projectId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "63a28066c00df704e7a6788c"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/department/3": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get User By Department",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/role/1": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get User By Role",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Read Profile Current User",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["User"],
+        "summary": "Patch Curren User",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "lastName": "One Punch ",
+                  "firstName": "Mannnnnn",
+                  "role": 3
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["User"],
+        "summary": "Delete Current User",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/63c1241a40a81cdb318d4ab0": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Patch User By Id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "lastName": "One",
+                  "firstName": "Mannnnnn",
+                  "listProject": [
+                    {
+                      "projectId": "63a28066c00df704e7a6788c",
+                      "listPermission": [
+                        {
+                          "permissionId": 1
+                        },
+                        {
+                          "permissionId": 2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/permission/": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Patch User Permission",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "lastName": "One",
+                  "firstName": "Mannnnnn",
+                  "role": 2,
+                  "listProject": [
+                    {
+                      "projectId": "63a28066c00df704e7a6788c",
+                      "listPermission": [
+                        {
+                          "permissionId": 1
+                        },
+                        {
+                          "permissionId": 2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "640ae98d66cb95bcebabfea8"
+          },
+          {
+            "name": "projectId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "63a28066c00df704e7a6788c"
+          },
+          {
+            "name": "permissionId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "4"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/6365f527a2cdd357c6c722cf": {
+      "delete": {
+        "tags": ["User"],
+        "summary": "Delete User By Id",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm/seed/all/": {
+      "get": {
+        "tags": ["Farm > Seed"],
+        "summary": "get all seed",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm/seed/6412c79e6a7e25a1f3d59f28": {
+      "get": {
+        "tags": ["Farm > Seed"],
+        "summary": "get seed by id",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Farm > Seed"],
+        "summary": "update seed",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "farmId": "640d5f994c62a777b9986115",
+                  "seedName": "Cà phê 102",
+                  "seedFamily": "Seed Family 102",
+                  "supplier": "Supplier 102"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Farm > Seed"],
+        "summary": "Delete Seed",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm/seed/": {
+      "post": {
+        "tags": ["Farm > Seed"],
+        "summary": "Add Seed",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "farmId": "640d5f994c62a777b9986114",
+                  "seedName": "Cà phê",
+                  "seedFamily": "Seed Family 101",
+                  "supplier": "Supplier 101"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm/land/": {
+      "post": {
+        "tags": ["Farm > Land"],
+        "summary": "Add land",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "farmId": "640d5f994c62a777b9986114",
+                  "landName": "Test land Name",
+                  "landArea": 100,
+                  "state": 1
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm/land/all": {
+      "get": {
+        "tags": ["Farm > Land"],
+        "summary": "get all land",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm/land/6412c1cc5fef4153f5d97766": {
+      "get": {
+        "tags": ["Farm > Land"],
+        "summary": "get detail land",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Farm > Land"],
+        "summary": "update land",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "farmId": "640d5f994c62a777b9986115",
+                  "landName": "land Name 101",
+                  "landArea": 101,
+                  "state": 2
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Farm > Land"],
+        "summary": "delete land",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm/640ef7cfa6da99475cb8ecff": {
+      "patch": {
+        "tags": ["Farm"],
+        "summary": "Update Farm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "farmName": "Farm A",
+                  "farmAddress": "123 QL 9A",
+                  "farmPhoneNumber": "0123456789",
+                  "farmOwner": "640d5e4ddaed24709b27909e"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm/64129e6d96c2097bc5ea257d": {
+      "get": {
+        "tags": ["Farm"],
+        "summary": "get farm",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm/": {
+      "get": {
+        "tags": ["Farm"],
+        "summary": "get all farms",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Farm"],
+        "summary": "Create new farm Copy",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "farmCode": "3A-Farm",
+                  "farmName": "Farm A",
+                  "farmAddress": "123 QL 1A",
+                  "farmPhoneNumber": "0123456789",
+                  "farmOwner": "khanhtran@gmail.com"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm/635e3f7a0eb5d3596f4de9f9": {
+      "delete": {
+        "tags": ["Farm"],
+        "summary": "Delete Farm",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm/add-farmer/64129e6d96c2097bc5ea257d": {
+      "post": {
+        "tags": ["Farm"],
+        "summary": "Add Farmer into Farm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "emailNewFarmer": "khanhtran@gmail.com"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm-project/": {
+      "post": {
+        "tags": ["Farm Project"],
+        "summary": "Add Farm Project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "farmId": "640d5f994c62a777b9986114",
+                  "farmProjectName": "Test Project",
+                  "land": "6412c1cc5fef4153f5d97766",
+                  "seed": "6412c79e6a7e25a1f3d59f28",
+                  "farmProjectCode": "FarmCodeTest"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm-project/6412b44904a04b9b579fe218": {
+      "get": {
+        "tags": ["Farm Project"],
+        "summary": "get farm project",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Farm Project"],
+        "summary": "update farm project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "farmId": "640d5f994c62a777b9986114",
+                  "farmProjectName": "Project Name 101",
+                  "land": "6412c18b6ffd93ec42c6b00a",
+                  "seed": "6412c4222d13daff31e0875f",
+                  "farmProjectCode": "Project Code 101",
+                  "state": 1
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm-project/all": {
+      "get": {
+        "tags": ["Farm Project"],
+        "summary": "get all farm projects",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/farm-project/6412c7c56a7e25a1f3d59f39": {
+      "delete": {
+        "tags": ["Farm Project"],
+        "summary": "delete farm project",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/project/": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "Add Project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "projectName": "NgaiSieuGa",
+                  "projectCode": "123TESTcode"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get All Project",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/project/63e88c7d33297f65886879bd": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get Project",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Project"],
+        "summary": "Update Project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "state": 2
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/project/63e5f6f786728d41756ae423": {
+      "delete": {
+        "tags": ["Project"],
+        "summary": "Delete Project",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

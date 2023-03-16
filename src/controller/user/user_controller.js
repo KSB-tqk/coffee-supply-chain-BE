@@ -56,9 +56,7 @@ const userController = {
         req.body.password
       );
       const token = await user.generateAuthToken();
-      console.log("Token", token.toString());
       res.send({ user, token });
-      console.log(user.toString(), token.toString());
     } catch (e) {
       res.status(400).send(onError(400, e.message));
     }

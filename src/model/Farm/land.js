@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 const landSchema = mongoose.Schema({
   landId: {
     type: String,
-    required: true,
     trim: true,
     default: null,
   },

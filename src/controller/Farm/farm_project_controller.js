@@ -3,16 +3,22 @@ import FarmProjectModel from "../../model/Farm/farm_project.js";
 import LandModel from "../../model/Farm/land.js";
 import SeedModel from "../../model/Farm/seed.js";
 import { checkValidObjectId, onError } from "../../helper/data_helper.js";
+import { onValidFarmProjectInfo } from "../../helper/farm/farm_data_helper.js";
 
 const farmProjectController = {
   addFarmProject: async (req, res) => {
     try {
-      const { farmId } = req.body;
+      const farmId = req.body.farmId;
 
       const farm = await FarmModel.findById(farmId);
 
       if (!farm)
-        return res.status(400).send({ msg: "This farm doesn't exist" });
+        return res.status(400).send(onError(400, "This farm doesn't exist"));
+
+      const isValidFarmProjectInfo = await onValidFarmProjectInfo(req.body);
+
+      if (isValidFarmProjectInfo != null)
+        return res.status(400).send(onError(400, isValidFarmProjectInfo));
 
       const newFarmProject = new FarmProjectModel(req.body);
       newFarmProject.farmProjectId = newFarmProject._id;
@@ -34,7 +40,7 @@ const farmProjectController = {
       const { id } = req.params;
 
       if (!checkValidObjectId(id)) {
-        return res.status(400).send({ error: "Invalid Farm Project Id" });
+        return res.status(400).send(onError(400, "Invalid Farm Project Id"));
       }
 
       const {
@@ -50,29 +56,33 @@ const farmProjectController = {
       const farmProject = await FarmProjectModel.findById(id).exec();
 
       if (!checkValidObjectId(id)) {
-        return res.status(400).send({ error: "Invalid Land Id" });
+        return res.status(400).send(onError(400, "Invalid Land Id"));
       }
       const landProject = await LandModel.findById(land).exec();
 
       if (!checkValidObjectId(id)) {
-        return res.status(400).send({ error: "Invalid Seed Id" });
+        return res.status(400).send(onError(400, "Invalid Seed Id"));
       }
       const seedProject = await SeedModel.findById(seed).exec();
 
       if (!farmProject)
-        return res.status(400).send({ msg: "This farm project doesn't exist" });
+        return res
+          .status(400)
+          .send(onError(400, "This farm project doesn't exist"));
       else if (!landProject)
-        return res.status(400).send({ msg: "This land doesn't exist" });
+        return res.status(400).send(onError(400, "This land doesn't exist"));
       else if (!seedProject)
-        return res.status(400).send({ msg: "This land doesn't exist" });
-      else if (!farmProjectName || !dateCreated || !state) {
-        return res.status(400).send({ msg: "Farm Prject Info can't be blank" });
+        return res.status(400).send(onError(400, "This seed doesn't exist"));
+      else if (!farmProjectName || !state) {
+        return res
+          .status(400)
+          .send(onError(400, "Farm Prject Info can't be blank"));
       } else if (totalHarvest < 0) {
         return res
           .status(400)
-          .send({ msg: "Total harvest must be greater than 0" });
+          .send(onError(400, "Total harvest must be greater than 0"));
       } else {
-        await FarmProjectModel.findByIdAndUpdate(id, {
+        const farmProject = await FarmProjectModel.findByIdAndUpdate(id, {
           $set: {
             farmProjectName: farmProjectName,
             land: land,
@@ -84,10 +94,10 @@ const farmProjectController = {
           },
         });
 
-        return res.status(200).send({ msg: "Update farm project success" });
+        return res.status(200).send(farmProject);
       }
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   deleteFarmProject: async (req, res) => {
@@ -97,7 +107,9 @@ const farmProjectController = {
       const farmProject = await FarmProjectModel.findById(id);
 
       if (!farmProject)
-        return res.status(400).send({ msg: "This farm project doesn't exist" });
+        return res
+          .status(400)
+          .send(onError(400, "This farm project doesn't exist"));
 
       await FarmModel.findByIdAndUpdate(farmProject.farmId, {
         $pull: {
@@ -108,7 +120,7 @@ const farmProjectController = {
       await FarmProjectModel.findByIdAndRemove(id);
       res.status(200).send({ msg: "Delete farm project success" });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   getAllFarmProjects: async (req, res) => {
@@ -120,7 +132,7 @@ const farmProjectController = {
         .exec();
       res.status(200).send(farmProjects);
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   getFarmProject: async (req, res) => {
@@ -132,11 +144,13 @@ const farmProjectController = {
         .exec();
 
       if (!farmProject)
-        return res.status(400).send({ msg: "This farm project doesn't exist" });
+        return res
+          .status(400)
+          .send(onError(400, "This farm project doesn't exist"));
 
       res.status(200).send(farmProject);
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
 };

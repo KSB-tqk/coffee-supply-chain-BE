@@ -23,7 +23,7 @@ farmRouter.patch("/seed/:id", SeedService.seedController.updateSeed);
 farmRouter.delete("/seed/:id", SeedService.seedController.deleteSeed);
 
 // get all seed by farm ID
-farmRouter.get("/seed/all/:id", SeedService.seedController.getAllSeeds);
+farmRouter.get("/seed/all/", SeedService.seedController.getAllSeeds);
 
 // get detail seed
 farmRouter.get("/seed/:id", SeedService.seedController.getSeed);
@@ -43,7 +43,7 @@ farmRouter.patch("/land/:id", LandService.landController.updateLand);
 farmRouter.delete("/land/:id", LandService.landController.deleteLand);
 
 // get all land by farm ID
-farmRouter.get("/land/all/:id", LandService.landController.getAllLands);
+farmRouter.get("/land/all/", LandService.landController.getAllLands);
 
 // get detail land
 farmRouter.get("/land/:id", LandService.landController.getLand);
