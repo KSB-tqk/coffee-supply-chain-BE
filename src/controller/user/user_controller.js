@@ -176,10 +176,12 @@ const userController = {
   },
   logoutCurrentUser: async (req, res) => {
     try {
-      await onLogoutCurrentUser(
+      const result = await onLogoutCurrentUser(
         req.header("Authorization").replace("Bearer ", "")
       );
-      res.send();
+
+      // TODO add logic login
+      res.status(200).send(result);
     } catch (e) {
       res.status(500).send(onError(500, e.toString()));
     }

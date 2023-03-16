@@ -77,13 +77,12 @@ export async function compareUserIdWithToken(token, userId) {
 }
 
 export async function onLogoutCurrentUser(token) {
-  const result = await PermissionModel.updateOne(
-    { "listToken.token": token },
-    {
-      $pullAll: {
-        "listToken.token": token,
-      },
-    }
-  );
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const result = await PermissionModel.findOne({
+    owner: decoded._id,
+    "listToken.token": token,
+  });
+  result.listToken = [];
+  result.save();
   return result;
 }
