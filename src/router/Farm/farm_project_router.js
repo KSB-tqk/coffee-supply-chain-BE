@@ -4,6 +4,8 @@ import auth from "../../middleware/authentication.js";
 
 const FarmProjectRouter = express.Router();
 
+FarmProjectRouter.use(auth);
+
 // add new farm project
 FarmProjectRouter.post(
   "/",

@@ -40,6 +40,10 @@ const farmController = {
           farmOwner: checkFarmOwnerExist._id.toString(),
         });
 
+        newFarm.farmers = [];
+        newFarm.farmers = newFarm.farmers.concat({
+          farmer: checkFarmOwnerExist._id,
+        });
         newFarm.farmId = newFarm._id;
 
         await newFarm.save();
@@ -61,21 +65,45 @@ const farmController = {
       const famrId = req.params; // id of farm
       const { emailNewFarmer } = req.body;
 
-      const checkFarmerExist = await FarmModel.findById(req.params);
+      const farmModel = await FarmModel.findById(req.params.id);
 
-      const checkUserExist = await User.findOne({ email: emailNewFarmer });
+      const userModel = await User.findOne({ email: emailNewFarmer });
 
-      const checkUserWasAdded = await FarmModel.find({
-        farmer: { $exists: checkUserExist._id },
+      if (userModel == null) {
+        return res
+          .status(400)
+          .send(
+            onError(
+              400,
+              "This email doesn't link to any account yet, please try again."
+            )
+          );
+      }
+
+      const checkUserWasAdded = await FarmModel.findOne({
+        "farmers.farmer": userModel._id,
       });
 
-      if (!checkFarmerExist) {
-        res.status(400).send(onError(400, "This farm doesn't exist"));
-      } else if (!checkUserExist) {
-        res.status(400).send(onError(400, "This email doesn't exist"));
-      } else if (!checkUserWasAdded) {
-        res.status(400).send(onError(400, "This user was added in farmer"));
+      if (farmModel == null) {
+        return res.status(400).send(onError(400, "This farm doesn't exist"));
+      } else if (checkUserWasAdded) {
+        return res
+          .status(400)
+          .send(
+            onError(
+              400,
+              "This user was already been added to the farm, please try again."
+            )
+          );
       }
+
+      if (farmModel.farmers == null) farmModel.farmers = [];
+      farmModel.farmers = farmModel.farmers.concat({
+        farmer: userModel._id,
+      });
+      farmModel.save();
+
+      return res.status(200).send(farmModel);
     } catch (err) {
       res.status(400).send(onError(400, err.message));
     }

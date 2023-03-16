@@ -13,10 +13,6 @@ const auth = async (req, res, next) => {
       "listToken.token": token,
     });
 
-    console.log("Token", token);
-    console.log("Owner", decoded._id);
-    console.log("ValidToken", validToken);
-
     if (!validToken) {
       return res
         .status(401)
