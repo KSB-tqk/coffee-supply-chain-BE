@@ -3,7 +3,11 @@ import User from "../../model/user/user.js";
 import TechAdmin from "../../model/user/tech_admin.js";
 import Farmer from "../../model/user/farmer.js";
 import SystemAdmin from "../../model/user/system_admin.js";
-import { checkValidObjectId, onError } from "../../helper/data_helper.js";
+import {
+  checkValidObjectId,
+  onError,
+  onLogoutCurrentUser,
+} from "../../helper/data_helper.js";
 import PermissionModel from "../../model/permission/permission.js";
 import AccessModel from "../../model/permission/acesss.js";
 import { checkValidUserInfo } from "../../helper/data_helper.js";
@@ -94,9 +98,16 @@ const userController = {
       "password",
       "address",
     ];
+
+    if (req.user.role == 1) {
+      allowedUpdates.push("role");
+    }
+
     const isValidOperation = updates.every((update) =>
       allowedUpdates.includes(update)
     );
+
+    console.log("isValidOperation", updates);
 
     if (!isValidOperation) {
       return res.status(400).send(onError(400, "Invalid updates"));
@@ -135,6 +146,8 @@ const userController = {
       allowedUpdates.includes(update)
     );
 
+    console.log("isValidOperation", isValidOperation);
+
     if (!isValidOperation) {
       return res.status(400).send(onError(400, "Invalid updates"));
     }
@@ -163,13 +176,12 @@ const userController = {
   },
   logoutCurrentUser: async (req, res) => {
     try {
-      req.user.tokens = req.user.tokens.filter((token) => {
-        return token.token !== req.token;
-      });
+      const result = await onLogoutCurrentUser(
+        req.header("Authorization").replace("Bearer ", "")
+      );
 
-      await req.user.save();
-
-      res.send();
+      // TODO add logic login
+      res.status(200).send(result);
     } catch (e) {
       res.status(500).send(onError(500, e.toString()));
     }
@@ -327,15 +339,16 @@ const userController = {
         },
       });
 
-      if (permission.listProject == null) {
-        permission.listProject = [];
-      } else {
-        const projectPermission = permission.listProject.find(
-          (item) => req.query.projectId.str === item.projectId.str
-        );
-        const access = await AccessModel.findById(projectPermission.access);
-        console.log(access);
-      }
+      // if (permission.listProject == null) {
+      //   permission.listProject = [];
+      // } else {
+      //   const projectPermission = permission.listProject.find(
+      //     (item) => req.query.projectId.str === item.projectId.str
+      //   );
+      //   // const access = await AccessModel.findById(projectPermission.access);
+      //   // console.log(access);
+      // }
+
       return res.status(200).send({ permission });
     } else {
       return res.status(404).send(onError(400, "User Not Found"));
