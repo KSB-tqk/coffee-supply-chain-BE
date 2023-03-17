@@ -29,6 +29,7 @@ const userController = {
             break;
           case 3:
             user = new Farmer(req.body);
+            user.farmList = [];
             break;
           case 4:
             user = new User(req.body);

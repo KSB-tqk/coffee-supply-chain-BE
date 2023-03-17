@@ -116,6 +116,12 @@ const farmController = {
           farmModel.farmOwner
         )
       ) {
+        if (userModel.farmList == null) userModel.farmList = [];
+
+        userModel.farmList = userModel.farmList.concat({
+          farm: farmModel._id,
+        });
+        userModel.save();
         farmModel.farmers = farmModel.farmers.concat({
           farmer: userModel._id,
         });
@@ -288,8 +294,11 @@ const farmController = {
           //only farmOwner can delete theirself
           (await compareUserIdWithToken(bearerHeader, farmModel.farmOwner))
         ) {
+          userModel.farmList.pull({ farm: farmModel._id });
+          await userModel.save();
           farmModel.farmers.pull({ farmer: id });
-          farmModel.save();
+          await farmModel.save();
+          return res.status(200).send(await FarmModel.findById(farmModel._id));
         } else {
           return res
             .status(400)
