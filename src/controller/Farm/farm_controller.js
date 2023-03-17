@@ -9,6 +9,7 @@ import {
   checkValidUserInfo,
   compareUserIdWithToken,
 } from "../../helper/data_helper.js";
+import UserRole from "../../enum/user_role.js";
 
 // Farm Controller
 
@@ -44,6 +45,12 @@ const farmController = {
         newFarm.farmers = newFarm.farmers.concat({
           farmer: checkFarmOwnerExist._id,
         });
+        if (checkFarmOwnerExist == null) checkFarmOwnerExist.farmList = [];
+
+        checkFarmOwnerExist.farmList = checkFarmOwnerExist.farmList.concat({
+          farm: newFarm._id,
+        });
+        checkFarmOwnerExist.save();
         newFarm.farmId = newFarm._id;
 
         await newFarm.save();
@@ -62,8 +69,9 @@ const farmController = {
   },
   addFarmerIntoFarm: async (req, res) => {
     try {
-      const famrId = req.params; // id of farm
       const { emailNewFarmer } = req.body;
+
+      console.log("email", emailNewFarmer);
 
       const farmModel = await FarmModel.findById(req.params.id);
 
@@ -81,6 +89,7 @@ const farmController = {
       }
 
       const checkUserWasAdded = await FarmModel.findOne({
+        farmId: farmModel._id,
         "farmers.farmer": userModel._id,
       });
 
@@ -98,10 +107,25 @@ const farmController = {
       }
 
       if (farmModel.farmers == null) farmModel.farmers = [];
-      farmModel.farmers = farmModel.farmers.concat({
-        farmer: userModel._id,
-      });
-      farmModel.save();
+
+      if (
+        // Only farmOwner can add farmer into farm
+        // check if the request author is farmOwner or not
+        await compareUserIdWithToken(
+          req.header("Authorization"),
+          farmModel.farmOwner
+        )
+      ) {
+        farmModel.farmers = farmModel.farmers.concat({
+          farmer: userModel._id,
+        });
+
+        farmModel.save();
+      } else {
+        return res
+          .status(400)
+          .send(onError(400, "Permission denied, please check and try again."));
+      }
 
       return res.status(200).send(farmModel);
     } catch (err) {
@@ -124,7 +148,7 @@ const farmController = {
 
       try {
         const result = await compareUserIdWithToken(
-          req.header("Authorization").replace("Bearer ", ""),
+          req.header("Authorization"),
           farm.farmOwner
         );
         if (!result) {
@@ -184,10 +208,7 @@ const farmController = {
   getAllFarms: async (req, res) => {
     try {
       if (
-        await onValidUserRole(
-          req.header("Authorization").replace("Bearer ", ""),
-          1 // RoleTypeId (TechAdmin - 1)
-        )
+        await onValidUserRole(req.header("Authorization"), UserRole.TechAdmin)
       ) {
         const farms = await FarmModel.find().exec();
         res.status(200).send(farms);
@@ -217,6 +238,76 @@ const farmController = {
       res.status(200).send({ msg: "Delete farm success", farmId: farm._id });
     } catch (err) {
       res.status(400).send(onError(400, err.message));
+    }
+  },
+  removeUserFromFarm: async (req, res) => {
+    try {
+      const email = req.body.email;
+      const userModel = await User.findOne({ email: email });
+
+      if (userModel == null) {
+        return res
+          .status(400)
+          .send(
+            onError(
+              400,
+              "This email doesn't link to any account yet, please try again."
+            )
+          );
+      }
+
+      const id = userModel._id;
+      const farmModel = await FarmModel.findOne({
+        _id: req.params.id,
+        "farmers.farmer": id,
+      });
+
+      if (farmModel != null) {
+        const bearerHeader = req.header("Authorization");
+        console.log("id == farmModel.farmOwner", id == farmModel.farmOwner);
+        console.log(
+          "compare delete user with token",
+          await compareUserIdWithToken(bearerHeader, id)
+        );
+        console.log(
+          "compare user with farmer",
+          await compareUserIdWithToken(bearerHeader, farmModel.farmOwner)
+        );
+        if (
+          // check if the request author is farmOwner or not
+          (id == farmModel.farmOwner &&
+            (await compareUserIdWithToken(
+              bearerHeader,
+              farmModel.farmOwner
+            ))) ||
+          //check if the request author is deleting theirself
+          (id != farmModel.farmOwner &&
+            (await compareUserIdWithToken(bearerHeader, id))) ||
+          //check if the request author is the farmOwner
+          //farmOwner can delete all
+          //only farmOwner can delete theirself
+          (await compareUserIdWithToken(bearerHeader, farmModel.farmOwner))
+        ) {
+          farmModel.farmers.pull({ farmer: id });
+          farmModel.save();
+        } else {
+          return res
+            .status(400)
+            .send(onError(400, "Permission denied, please try again."));
+        }
+      } else
+        return res
+          .status(400)
+          .send(
+            onError(
+              400,
+              "Farmer does not join this farm, please check anh try again."
+            )
+          );
+
+      res.status(200).send(farmModel);
+    } catch (e) {
+      res.status(500).send(onError(500, e.toString()));
     }
   },
 };

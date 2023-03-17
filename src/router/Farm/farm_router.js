@@ -74,4 +74,9 @@ farmRouter.post(
   FarmServices.farmController.addFarmerIntoFarm
 );
 
+// remove farmer from farm
+farmRouter.post(
+  "/remove-farmer/:id",
+  FarmServices.farmController.removeUserFromFarm
+);
 export default farmRouter;

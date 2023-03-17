@@ -70,7 +70,11 @@ const userController = {
     }
   },
   getCurrentUserInfo: async (req, res) => {
-    res.send(req.user);
+    try {
+      res.send(req.user);
+    } catch (e) {
+      res.status(500).send(onError(500, e.toString()));
+    }
   },
   getUserById: async (req, res) => {
     const _id = req.params.id;
@@ -174,11 +178,8 @@ const userController = {
   },
   logoutCurrentUser: async (req, res) => {
     try {
-      const result = await onLogoutCurrentUser(
-        req.header("Authorization").replace("Bearer ", "")
-      );
-
-      // TODO add logic login
+      console.log(req.header("Authorization"));
+      const result = await onLogoutCurrentUser(req.header("Authorization"));
       res.status(200).send(result);
     } catch (e) {
       res.status(500).send(onError(500, e.toString()));

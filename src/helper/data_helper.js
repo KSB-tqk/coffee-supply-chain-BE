@@ -65,18 +65,22 @@ export function onError(errorCode, errorMessage) {
   );
 }
 
-export async function onValidUserRole(token, role) {
+export async function onValidUserRole(bearerHeader, role) {
+  const token = await getTokenFromBearerTokenHeader(bearerHeader);
+  console.log("Token", token);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   const user = await User.findOne({ _id: decoded._id });
   return user != null && user.role == role;
 }
 
-export async function compareUserIdWithToken(token, userId) {
+export async function compareUserIdWithToken(bearerHeader, userId) {
+  const token = await getTokenFromBearerTokenHeader(bearerHeader);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   return decoded._id == userId;
 }
 
-export async function onLogoutCurrentUser(token) {
+export async function onLogoutCurrentUser(bearerHeader) {
+  const token = await getTokenFromBearerTokenHeader(bearerHeader);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   const result = await PermissionModel.findOne({
     owner: decoded._id,
@@ -84,5 +88,10 @@ export async function onLogoutCurrentUser(token) {
   });
   result.listToken = [];
   result.save();
+  return result;
+}
+
+async function getTokenFromBearerTokenHeader(header) {
+  const result = header.replace("Bearer ", "");
   return result;
 }
