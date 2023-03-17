@@ -64,7 +64,12 @@ const userController = {
   },
   getAllUserInfo: async (req, res) => {
     try {
-      const users = await User.find({});
+      const users = await User.find({}).populate({
+        path: "farmList",
+        populate: {
+          path: "farm",
+        },
+      });
       res.send(users);
     } catch (e) {
       res.status(500).send(onError(500, e.toString()));
@@ -72,7 +77,13 @@ const userController = {
   },
   getCurrentUserInfo: async (req, res) => {
     try {
-      res.send(req.user);
+      const user = await User.findById(req.user._id).populate({
+        path: "farmList",
+        populate: {
+          path: "farm",
+        },
+      });
+      res.status(200).send(user);
     } catch (e) {
       res.status(500).send(onError(500, e.toString()));
     }
@@ -84,10 +95,17 @@ const userController = {
       if (!checkValidObjectId(_id)) {
         return res.status(400).send(onError(400, "Invalid User Id"));
       }
-      const user = await User.findById(_id);
+      const user = await User.findById(_id).populate({
+        path: "farmList",
+        populate: {
+          path: "farm",
+        },
+      });
       if (!user) {
         res.status(400).send(onError(400, "User Not Found"));
-      } else res.send(user);
+      } else {
+        res.send(user);
+      }
     } catch (e) {
       res.status(500).send(onError(500, e.toString()));
     }
@@ -160,7 +178,12 @@ const userController = {
         return res.status(400).send(onError(400, "Invalid User Id"));
       }
 
-      const user = await User.findById(req.params.id);
+      const user = await User.findById(req.params.id).populate({
+        path: "farmList",
+        populate: {
+          path: "farm",
+        },
+      });
 
       if (!user) {
         return res.status(400).send(onError(400, "User Not Found"));
@@ -217,7 +240,14 @@ const userController = {
     try {
       const users = await User.find({
         department: department,
-      }).exec();
+      })
+        .exec()
+        .populate({
+          path: "farmList",
+          populate: {
+            path: "farm",
+          },
+        });
       res.send(users);
     } catch (e) {
       res.status(401).send(onError(401, e.toString()));
@@ -228,7 +258,14 @@ const userController = {
     try {
       const users = await User.find({
         role: role,
-      }).exec();
+      })
+        .exec()
+        .populate({
+          path: "farmList",
+          populate: {
+            path: "farm",
+          },
+        });
       res.send(users);
     } catch (e) {
       res.status(401).send(onError(401, e.toString()));
@@ -244,7 +281,13 @@ const userController = {
         .sort({
           name: "asc",
         })
-        .exec();
+        .exec()
+        .populate({
+          path: "farmList",
+          populate: {
+            path: "farm",
+          },
+        });
       res.send(users);
     } catch (e) {
       res.status(401).send(onError(401, e.toString()));
@@ -252,7 +295,14 @@ const userController = {
   },
   getAllUserByFilter: async (req, res) => {
     try {
-      const users = await User.find({ role: { $ne: req.query.exceptRole } });
+      const users = await User.find({
+        role: { $ne: req.query.exceptRole },
+      }).populate({
+        path: "farmList",
+        populate: {
+          path: "farm",
+        },
+      });
       if (users != null) {
         return res.send(users);
       } else {
