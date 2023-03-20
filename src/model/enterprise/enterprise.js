@@ -31,6 +31,6 @@ enterpriseSchema.virtual("employees", {
   foreignField: "enterpriseOwner",
 });
 
-const Enterprise = mongoose.model("Enterprise", enterpriseSchema);
+const EnterpriseModel = mongoose.model("Enterprise", enterpriseSchema);
 
-export default Enterprise;
+export default EnterpriseModel;

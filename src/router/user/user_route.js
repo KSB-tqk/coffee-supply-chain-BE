@@ -40,5 +40,8 @@ userRouter.delete("/me", userController.deleteCurrentUser);
 
 userRouter.delete("/:id", userController.deleteUserById);
 
+userRouter.get("/search-email", userController.getUserByEmail);
+
 userRouter.get("/:id", userController.getUserById);
+
 export default userRouter;

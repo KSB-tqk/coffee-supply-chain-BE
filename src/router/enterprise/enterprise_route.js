@@ -1,27 +1,18 @@
 import express from "express";
 import Enterprise from "../../model/enterprise.js";
 import auth from "../../middleware/authentication.js";
+import enterpriseController from "../../controller/enterprise/enterprise_controller.js";
 
-const EnterpriseRouter = express.Router();
+const enterpriseRouter = express.Router();
 
-EnterpriseRouter.post("/", auth, async (req, res) => {
-  const enterprise = new Enterprise(req.body);
+enterpriseRouter.post("/", enterpriseController.addEnterprise);
 
-  try {
-    await enterprise.save();
-    res.status(201).send({ enterprise });
-  } catch (e) {
-    res.status(400).send(e);
-  }
-});
+enterpriseRouter.get("/:id", enterpriseController.getEnterprise);
 
-EnterpriseRouter.get("/", auth, async (req, res) => {
-  try {
-    const enterprise = Enterprise.find();
-    res.send(enterprise);
-  } catch (e) {
-    res.status(400).send(e);
-  }
-});
+enterpriseRouter.get("/", enterpriseController.getAllEnterprises);
 
-export default EnterpriseRouter;
+enterpriseRouter.patch("/:id", enterpriseController.updateEnterprise);
+
+enterpriseRouter.delete("/:id", enterpriseController.deleteEnterprise);
+
+export default enterpriseRouter;

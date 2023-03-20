@@ -48,6 +48,15 @@ const projectSchema = mongoose.Schema({
     ref: "ProduceSupervision",
     trim: true,
   },
+  projectLogList: [
+    {
+      projectLog: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "StepLog",
+        trim: true,
+      },
+    },
+  ],
   state: {
     type: Number,
     default: 1,

@@ -1,4 +1,11 @@
-import { checkValidObjectId } from "../../helper/data_helper.js";
+import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import UserRole from "../../enum/user_role.js";
+import {
+  checkValidObjectId,
+  onError,
+  onValidUserRole,
+} from "../../helper/data_helper.js";
+import { onValidProjectInfo } from "../../helper/project/project_data_helper.js";
 import harvestModel from "../../model/harvest/harvest.js";
 import ProduceSupervisionModel from "../../model/produce_supervision/produce_supervision.js";
 import ProjectModel from "../../model/project/project.js";
@@ -7,13 +14,28 @@ import warehouseStorageModel from "../../model/warehouse_storage/warehouse_stora
 const projectController = {
   addProject: async (req, res) => {
     try {
+      const isValidUser = await onValidUserRole(req.header("Authorization"), [
+        UserRole.SystemAdmin,
+      ]);
+
+      if (!isValidUser)
+        return res
+          .status(400)
+          .send(onError(400, "Permission denied" + ERROR_MESSAGE));
+
+      const isValidProjectInfo = await onValidProjectInfo(req.body);
+
+      if (!isValidProjectInfo)
+        return res
+          .status(400)
+          .send(onError(400, "Invalid Project Info" + ERROR_MESSAGE));
+
       const harvest = new harvestModel();
       const shipping = new shippingModel();
       const warehouseStorage = new warehouseStorageModel();
       const produce = new ProduceSupervisionModel();
 
       const project = new ProjectModel({
-        manager: "63bf87731ebf184de2087a8f",
         harvest: harvest._id,
         shipping: shipping._id,
         warehouseStorage: warehouseStorage._id,
@@ -21,10 +43,8 @@ const projectController = {
         projectName: req.body.projectName,
         projectCode: req.body.projectCode,
       });
-      harvest.inspector = "63bf8be64ca81bddf5802481";
-      produce.inspector = "63bfe6b1ad67eab25201d789";
-      shipping.inspector = "63bf8c14bcb6426a8fae4591";
-      warehouseStorage.inspector = "63bf8cb2ad67eab25201d77f";
+
+      project.projectLogList = [];
 
       harvest.projectId =
         shipping.projectId =
