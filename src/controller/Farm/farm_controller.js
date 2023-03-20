@@ -362,6 +362,19 @@ const farmController = {
           .status(400)
           .send(onError(400, "Seed Not Found" + ERROR_MESSAGE));
 
+      // check if seedId already been added to farm
+      if (
+        await FarmModel.findOne({
+          _id: req.params.id,
+          "seedList.seed": req.body.seedId,
+        })
+      )
+        return res
+          .status(400)
+          .send(
+            onError(400, "Seed had already been added to farm" + ERROR_MESSAGE)
+          );
+
       farm.seedList = farm.seedList.concat({ seed: req.body.seedId });
       farm.save();
 
@@ -408,11 +421,24 @@ const farmController = {
           .send(onError(400, "Farm Not Found" + ERROR_MESSAGE));
       if (farm.landList == null) farm.landList = [];
 
-      // check if seedId Exist
+      // check if landId Exist
       if (!(await LandModel.findById(req.body.landId)))
         return res
           .status(400)
           .send(onError(400, "Land Not Found" + ERROR_MESSAGE));
+
+      // check if landId already been added to farm
+      if (
+        await FarmModel.findOne({
+          _id: req.params.id,
+          "landList.land": req.body.landId,
+        })
+      )
+        return res
+          .status(400)
+          .send(
+            onError(400, "Land had already been added to farm" + ERROR_MESSAGE)
+          );
 
       farm.landList = farm.landList.concat({ land: req.body.landId });
       farm.save();
@@ -466,6 +492,22 @@ const farmController = {
         return res
           .status(400)
           .send(onError(400, "FarmProject Not Found" + ERROR_MESSAGE));
+
+      // check if seedId already been added to farm
+      if (
+        await FarmModel.findOne({
+          _id: req.params.id,
+          "farmProjectList.farmProject": req.body.farmProjectId,
+        })
+      )
+        return res
+          .status(400)
+          .send(
+            onError(
+              400,
+              "Farm Project had already been added to farm" + ERROR_MESSAGE
+            )
+          );
 
       farm.farmProjectList = farm.farmProjectList.concat({
         farmProject: req.body.farmProjectId,
