@@ -7,11 +7,15 @@ import {
   checkValidObjectId,
   onError,
   onLogoutCurrentUser,
+  onValidUserRole,
 } from "../../helper/data_helper.js";
 import PermissionModel from "../../model/permission/permission.js";
 import AccessModel from "../../model/permission/acesss.js";
 import { checkValidUserInfo } from "../../helper/data_helper.js";
 import validator from "validator";
+import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import UserRole from "../../enum/user_role.js";
+import Staff from "../../model/user/staff.js";
 
 const userController = {
   addUser: async (req, res) => {
@@ -32,10 +36,22 @@ const userController = {
             user.farmList = [];
             break;
           case 4:
-            user = new User(req.body);
+            user = new Staff(req.body);
             break;
           default:
+            user = new User(req.body);
         }
+
+        // check if user is valid to create staff account
+        if (
+          user.role == UserRole.Staff &&
+          !(await onValidUserRole(req.header("Authorization"), [
+            UserRole.SystemAdmin,
+          ]))
+        )
+          return res
+            .status(400)
+            .send(onError(400, "Permission denied" + ERROR_MESSAGE));
 
         await user.save();
         const token = await user.generateAuthToken();
@@ -124,11 +140,17 @@ const userController = {
       allowedUpdates.push("role");
     }
 
+    if (
+      await onValidUserRole(req.header("Authorization"), [UserRole.SystemAdmin])
+    ) {
+      allowedUpdates.push("department");
+    }
+
     const isValidOperation = updates.every((update) =>
       allowedUpdates.includes(update)
     );
 
-    console.log("isValidOperation", updates);
+    console.log("allowed Update", allowedUpdates);
 
     if (!isValidOperation) {
       return res.status(400).send(onError(400, "Invalid updates"));
@@ -163,11 +185,17 @@ const userController = {
       allowedUpdates.push("role");
     }
 
+    if (
+      await onValidUserRole(req.header("Authorization"), [UserRole.SystemAdmin])
+    ) {
+      allowedUpdates.push("department");
+    }
+
     const isValidOperation = updates.every((update) =>
       allowedUpdates.includes(update)
     );
 
-    console.log("isValidOperation", isValidOperation);
+    console.log("allowed update", allowedUpdates);
 
     if (!isValidOperation) {
       return res.status(400).send(onError(400, "Invalid updates"));
@@ -241,13 +269,14 @@ const userController = {
       const users = await User.find({
         department: department,
       })
-        .exec()
         .populate({
           path: "farmList",
           populate: {
             path: "farm",
           },
-        });
+        })
+        .exec();
+
       res.send(users);
     } catch (e) {
       res.status(401).send(onError(401, e.toString()));
@@ -259,13 +288,13 @@ const userController = {
       const users = await User.find({
         role: role,
       })
-        .exec()
         .populate({
           path: "farmList",
           populate: {
             path: "farm",
           },
-        });
+        })
+        .exec();
       res.send(users);
     } catch (e) {
       res.status(401).send(onError(401, e.toString()));
@@ -281,13 +310,13 @@ const userController = {
         .sort({
           name: "asc",
         })
-        .exec()
         .populate({
           path: "farmList",
           populate: {
             path: "farm",
           },
-        });
+        })
+        .exec();
       res.send(users);
     } catch (e) {
       res.status(401).send(onError(401, e.toString()));
@@ -402,6 +431,26 @@ const userController = {
       return res.status(200).send({ permission });
     } else {
       return res.status(404).send(onError(400, "User Not Found"));
+    }
+  },
+
+  getUserByEmail: async (req, res) => {
+    try {
+      const user = await User.findOne({ email: req.body.email }).populate({
+        path: "listProject",
+        populate: {
+          path: "access",
+        },
+      });
+
+      if (user == null)
+        return res
+          .status(400)
+          .send(onError(400, "User Not Found" + ERROR_MESSAGE));
+
+      res.send(user);
+    } catch (e) {
+      res.status(500).send(onError(500, e.toString()));
     }
   },
 };

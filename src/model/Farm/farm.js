@@ -41,7 +41,7 @@ const farmSchema = mongoose.Schema({
     ref: "User",
     default: null,
   },
-  farmers: [
+  farmerList: [
     {
       farmer: {
         type: mongoose.Schema.Types.ObjectId,
@@ -49,22 +49,28 @@ const farmSchema = mongoose.Schema({
       },
     },
   ],
-  seeds: [
+  seedList: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Seed",
+      seed: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Seed",
+      },
     },
   ],
-  lands: [
+  landList: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Land",
+      land: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Land",
+      },
     },
   ],
-  farmProjects: [
+  farmProjectList: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "FarmProject",
+      farmProject: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FarmProject",
+      },
     },
   ],
   dateCreate: {

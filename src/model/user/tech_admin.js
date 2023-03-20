@@ -5,7 +5,10 @@ const options = { discriminatorKey: "kind" };
 
 const TechAdmin = User.discriminator(
   "TechAdmin",
-  new mongoose.Schema({ superRole: { type: String } }, options)
+  new mongoose.Schema(
+    { isTechAdmin: { type: Boolean, default: true } },
+    options
+  )
 );
 
 export default TechAdmin;

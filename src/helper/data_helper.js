@@ -3,12 +3,16 @@ import PermissionModel from "../model/permission/permission.js";
 import User from "../model/user/user.js";
 import jwt from "jsonwebtoken";
 
+// Validate object id
 export function checkValidObjectId(objectId) {
   if (objectId.match(/^[0-9a-fA-F]{24}$/)) {
     return true;
   } else return false;
 }
 
+//
+//  Validate data and permission for user
+//
 export async function checkValidAdminAccess(userId) {
   if (!checkValidObjectId(userId)) {
     return "Invalid Id";
@@ -59,18 +63,16 @@ export async function checkValidUserInfo(user) {
   return null;
 }
 
-export function onError(errorCode, errorMessage) {
-  return JSON.parse(
-    `{ "code": ${errorCode}, "message": "${errorMessage}", "isError": ${true} }`
-  );
-}
-
 export async function onValidUserRole(bearerHeader, role) {
   const token = await getTokenFromBearerTokenHeader(bearerHeader);
-  console.log("Token", token);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   const user = await User.findOne({ _id: decoded._id });
-  return user != null && user.role == role;
+  if (user != null) {
+    for (let i = 0; i < role.length; i++) {
+      if (role[i] == user.role) return true;
+    }
+  }
+  return false;
 }
 
 export async function compareUserIdWithToken(bearerHeader, userId) {
@@ -91,6 +93,25 @@ export async function onLogoutCurrentUser(bearerHeader) {
   return result;
 }
 
+export async function onValidUserId(userId) {
+  return await User.findById(userId);
+}
+
+export async function onValidUserEmail(userEmail) {
+  return await User.findOne({
+    email: userEmail,
+  });
+}
+// ----- End User data validator -----
+
+// On Request Error
+export function onError(errorCode, errorMessage) {
+  return JSON.parse(
+    `{ "code": ${errorCode}, "message": "${errorMessage}", "isError": ${true} }`
+  );
+}
+
+// Export Bearer Token from Request
 async function getTokenFromBearerTokenHeader(header) {
   const result = header.replace("Bearer ", "");
   return result;

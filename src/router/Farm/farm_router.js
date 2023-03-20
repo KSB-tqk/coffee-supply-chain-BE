@@ -74,9 +74,45 @@ farmRouter.post(
   FarmServices.farmController.addFarmerIntoFarm
 );
 
+//-----------------------
+//--------FarmSeed-------
+// add seed into farm
+farmRouter.post("/add-seed/:id", FarmServices.farmController.addSeedIntoFarm);
+
+// remove seed from farm
+farmRouter.delete(
+  "/remove-seed/:id",
+  FarmServices.farmController.removeSeedFromFarm
+);
+
+//-----------------------
+//--------FarmLand-------
+// add land into farm
+farmRouter.post("/add-land/:id", FarmServices.farmController.addLandIntoFarm);
+
+// remove land from farm
+farmRouter.delete(
+  "/remove-land/:id",
+  FarmServices.farmController.removeLandFromFarm
+);
+
+//-----------------------
+//-------FarmProject-----
+// add farm project into farm
+farmRouter.post(
+  "/add-farmproject/:id",
+  FarmServices.farmController.addFarmProjectIntoFarm
+);
+
+// remove farm project from farm
+farmRouter.delete(
+  "/remove-farmproject/:id",
+  FarmServices.farmController.removeFarmProjectFromFarm
+);
+
 // remove farmer from farm
 farmRouter.post(
   "/remove-farmer/:id",
-  FarmServices.farmController.removeUserFromFarm
+  FarmServices.farmController.removeFarmerFromFarm
 );
 export default farmRouter;

@@ -3,12 +3,17 @@ import User from "./user.js";
 
 const options = { discriminatorKey: "kind" };
 
-const SystemAdmin = User.discriminator(
-  "SystemAdmin",
+const Staff = User.discriminator(
+  "Staff",
   new mongoose.Schema(
-    { isSystemAdmin: { type: Boolean, default: true } },
+    {
+      isStaff: {
+        type: Boolean,
+        default: true,
+      },
+    },
     options
   )
 );
 
-export default SystemAdmin;
+export default Staff;
