@@ -1,19 +1,19 @@
 import express from "express";
 import auth from "../../middleware/authentication.js";
-import shippingController from "../../controller/transport/transport_controller.js";
+import transportController from "../../controller/transport/transport_controller.js";
 
-const shippingRouter = express.Router();
+const transportRouter = express.Router();
 
-shippingRouter.use(auth);
+transportRouter.use(auth);
 
-shippingRouter.post("/", shippingController.addShipping);
+transportRouter.post("/", transportController.addShipping);
 
-shippingRouter.get("/:id", shippingController.getShipping);
+transportRouter.get("/:id", transportController.getShipping);
 
-shippingRouter.get("/", shippingController.getAllShipping);
+transportRouter.get("/", transportController.getAllShipping);
 
-shippingRouter.patch("/:id", shippingController.updateShipping);
+transportRouter.patch("/:id", transportController.updateShipping);
 
-shippingRouter.delete("/:id", shippingController.deleteShipping);
+transportRouter.delete("/:id", transportController.deleteShipping);
 
-export default shippingRouter;
+export default transportRouter;

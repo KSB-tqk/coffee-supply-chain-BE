@@ -1,18 +1,21 @@
 import mongoose from "mongoose";
 
-const transportSchema = mongoose.Schema({
+const transportDriverSchema = mongoose.Schema({
   transportName: {
     type: String,
     required: true,
   },
-  transportPhoneNumber: {
+  phoneNumber: {
     type: String,
   },
-  transportAddress: {
+  address: {
     type: String,
   },
 });
 
-const transportModel = mongoose.model("Transport", transportSchema);
+const transportDriverModel = mongoose.model(
+  "TransportDriver",
+  transportDriverSchema
+);
 
-export default transportModel;
+export default transportDriverModel;

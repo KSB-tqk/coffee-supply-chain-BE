@@ -1,19 +1,19 @@
 import express from "express";
 import auth from "../../middleware/authentication.js";
-import transportController from "../../controller/transport/transport_driver_controller.js";
+import transportDriverController from "../../controller/transport/transport_driver_controller.js";
 
-const transportRouter = express.Router();
+const transportDriverRouter = express.Router();
 
-transportRouter.use(auth);
+transportDriverRouter.use(auth);
 
-transportRouter.post("/", transportController.addTransport);
+transportDriverRouter.post("/", transportDriverController.addTransport);
 
-transportRouter.get("/:id", transportController.getTransport);
+transportDriverRouter.get("/:id", transportDriverController.getTransport);
 
-transportRouter.get("/", transportController.getAllTransports);
+transportDriverRouter.get("/", transportDriverController.getAllTransports);
 
-transportRouter.patch("/:id", transportController.updateTransport);
+transportDriverRouter.patch("/:id", transportDriverController.updateTransport);
 
-transportRouter.delete("/:id", transportController.deleteTransport);
+transportDriverRouter.delete("/:id", transportDriverController.deleteTransport);
 
-export default transportRouter;
+export default transportDriverRouter;

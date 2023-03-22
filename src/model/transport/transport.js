@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const shippingSchema = mongoose.Schema({
+const transportSchema = mongoose.Schema({
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
@@ -55,6 +55,6 @@ const shippingSchema = mongoose.Schema({
   },
 });
 
-const shippingModel = mongoose.model("Shipping", shippingSchema);
+const transportModel = mongoose.model("Transport", transportSchema);
 
-export default shippingModel;
+export default transportModel;

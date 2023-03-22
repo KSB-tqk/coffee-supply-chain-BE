@@ -9,7 +9,7 @@ import { onValidProjectInfo } from "../../helper/project/project_data_helper.js"
 import harvestModel from "../../model/harvest/harvest.js";
 import ProduceSupervisionModel from "../../model/produce_supervision/produce_supervision.js";
 import ProjectModel from "../../model/project/project.js";
-import shippingModel from "../../model/transport/transport.js";
+import transportModel from "../../model/transport/transport.js";
 import warehouseStorageModel from "../../model/warehouse_storage/warehouse_storage.js";
 const projectController = {
   addProject: async (req, res) => {
@@ -34,7 +34,7 @@ const projectController = {
         return res.status(400).send(onError(400, isValidProjectInfo));
 
       const harvest = new harvestModel();
-      const shipping = new shippingModel();
+      const shipping = new transportModel();
       const warehouseStorage = new warehouseStorageModel();
       const produce = new ProduceSupervisionModel();
 
@@ -109,7 +109,7 @@ const projectController = {
           await ProduceSupervisionModel.findByIdAndUpdate(project.produce, {
             dateCompleted: Date.now(),
           });
-          await shippingModel.findByIdAndUpdate(project.shipping, {
+          await transportModel.findByIdAndUpdate(project.shipping, {
             dateCompleted: Date.now(),
           });
           await warehouseStorageModel.findByIdAndUpdate(
@@ -127,7 +127,7 @@ const projectController = {
           await ProduceSupervisionModel.findByIdAndUpdate(project.produce, {
             inspector: "63bfe6b1ad67eab25201d789",
           });
-          await shippingModel.findByIdAndUpdate(project.shipping, {
+          await transportModel.findByIdAndUpdate(project.shipping, {
             inspector: "63bf8c14bcb6426a8fae4591",
           });
           await warehouseStorageModel.findByIdAndUpdate(
