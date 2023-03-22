@@ -1,5 +1,5 @@
-import LandModel from "../../model/Farm/land.js";
-import SeedModel from "../../model/Farm/seed.js";
+import LandModel from "../../model/farm/land.js";
+import SeedModel from "../../model/farm/seed.js";
 
 export async function onValidFarmProjectInfo(farmProject) {
   const land = await LandModel.findOne({ _id: farmProject.land });

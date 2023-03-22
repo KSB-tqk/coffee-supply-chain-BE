@@ -1,4 +1,4 @@
-import ShippingModel from "../../model/shipping/shipping.js";
+import ShippingModel from "../../model/transport/transport.js";
 
 const shippingController = {
   addShipping: async (req, res) => {

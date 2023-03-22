@@ -1,4 +1,4 @@
-import FarmModel from "../../model/Farm/farm.js";
+import FarmModel from "../../model/farm/farm.js";
 import User from "../../model/user/user.js";
 import {
   checkValidObjectId,
@@ -11,9 +11,9 @@ import {
 } from "../../helper/data_helper.js";
 import UserRole from "../../enum/user_role.js";
 import { ERROR_MESSAGE } from "../../enum/app_const.js";
-import SeedModel from "../../model/Farm/seed.js";
-import LandModel from "../../model/Farm/land.js";
-import FarmProjectModel from "../../model/Farm/farm_project.js";
+import SeedModel from "../../model/farm/seed.js";
+import LandModel from "../../model/farm/land.js";
+import FarmProjectModel from "../../model/farm/farm_project.js";
 
 // Farm Controller
 
@@ -362,6 +362,19 @@ const farmController = {
           .status(400)
           .send(onError(400, "Seed Not Found" + ERROR_MESSAGE));
 
+      // check if seedId already been added to farm
+      if (
+        await FarmModel.findOne({
+          _id: req.params.id,
+          "seedList.seed": req.body.seedId,
+        })
+      )
+        return res
+          .status(400)
+          .send(
+            onError(400, "Seed had already been added to farm" + ERROR_MESSAGE)
+          );
+
       farm.seedList = farm.seedList.concat({ seed: req.body.seedId });
       farm.save();
 
@@ -408,11 +421,24 @@ const farmController = {
           .send(onError(400, "Farm Not Found" + ERROR_MESSAGE));
       if (farm.landList == null) farm.landList = [];
 
-      // check if seedId Exist
+      // check if landId Exist
       if (!(await LandModel.findById(req.body.landId)))
         return res
           .status(400)
           .send(onError(400, "Land Not Found" + ERROR_MESSAGE));
+
+      // check if landId already been added to farm
+      if (
+        await FarmModel.findOne({
+          _id: req.params.id,
+          "landList.land": req.body.landId,
+        })
+      )
+        return res
+          .status(400)
+          .send(
+            onError(400, "Land had already been added to farm" + ERROR_MESSAGE)
+          );
 
       farm.landList = farm.landList.concat({ land: req.body.landId });
       farm.save();
@@ -462,14 +488,35 @@ const farmController = {
       if (farm.farmProjectList == null) farm.farmProjectList = [];
 
       // check if seedId Exist
-      if (!(await FarmProjectModel.findById(req.body.farmProjectId)))
+      const farmProject = await FarmProjectModel.findById(
+        req.body.farmProjectId
+      );
+      if (!farmProject)
         return res
           .status(400)
           .send(onError(400, "FarmProject Not Found" + ERROR_MESSAGE));
 
+      // check if seedId already been added to farm
+      if (
+        await FarmModel.findOne({
+          _id: req.params.id,
+          "farmProjectList.farmProject": req.body.farmProjectId,
+        })
+      )
+        return res
+          .status(400)
+          .send(
+            onError(
+              400,
+              "Farm Project had already been added to farm" + ERROR_MESSAGE
+            )
+          );
+
       farm.farmProjectList = farm.farmProjectList.concat({
         farmProject: req.body.farmProjectId,
       });
+      farmProject.farmId = farm._id;
+      farmProject.save();
       await farm.save();
 
       res.send(farm);
@@ -492,12 +539,17 @@ const farmController = {
           );
 
       // check if farmProjectId Exist
-      if (!(await FarmProjectModel.findById(req.body.farmProjectId)))
+      const farmProject = await FarmProjectModel.findById(
+        req.body.farmProjectId
+      );
+      if (!farmProject)
         return res
           .status(400)
           .send(onError(400, "FarmProject Not Found" + ERROR_MESSAGE));
 
       farm.farmProjectList.pull({ farmProject: req.body.farmProjectId });
+      farmProject.farmId = null;
+      farmProject.save();
       await farm.save();
 
       res.send(await FarmModel.findById(req.params.id));
