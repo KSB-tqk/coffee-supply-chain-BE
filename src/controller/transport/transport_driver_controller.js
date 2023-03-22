@@ -1,4 +1,4 @@
-import TransportModel from "../../model/shipping/transport.js";
+import TransportModel from "../../model/transport/transport_driver.js";
 const transportController = {
   addTransport: async (req, res) => {
     try {

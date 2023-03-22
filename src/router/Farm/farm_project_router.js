@@ -1,5 +1,5 @@
 import express from "express";
-import FarmProjectServices from "../../controller/Farm/farm_project_controller.js";
+import FarmProjectServices from "../../controller/farm/farm_project_controller.js";
 import auth from "../../middleware/authentication.js";
 
 const FarmProjectRouter = express.Router();
@@ -28,6 +28,12 @@ FarmProjectRouter.delete(
 FarmProjectRouter.get(
   "/all",
   FarmProjectServices.farmProjectController.getAllFarmProjects
+);
+
+// get all farm project that are non-farm
+FarmProjectRouter.get(
+  "/non-farm",
+  FarmProjectServices.farmProjectController.getAllNonFarmAssignFarmProject
 );
 
 // get detail farm project

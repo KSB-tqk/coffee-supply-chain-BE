@@ -1,4 +1,4 @@
-import FarmModel from "../../model/Farm/farm.js";
+import FarmModel from "../../model/farm/farm.js";
 import User from "../../model/user/user.js";
 import {
   checkValidObjectId,
@@ -11,9 +11,9 @@ import {
 } from "../../helper/data_helper.js";
 import UserRole from "../../enum/user_role.js";
 import { ERROR_MESSAGE } from "../../enum/app_const.js";
-import SeedModel from "../../model/Farm/seed.js";
-import LandModel from "../../model/Farm/land.js";
-import FarmProjectModel from "../../model/Farm/farm_project.js";
+import SeedModel from "../../model/farm/seed.js";
+import LandModel from "../../model/farm/land.js";
+import FarmProjectModel from "../../model/farm/farm_project.js";
 
 // Farm Controller
 
@@ -488,7 +488,10 @@ const farmController = {
       if (farm.farmProjectList == null) farm.farmProjectList = [];
 
       // check if seedId Exist
-      if (!(await FarmProjectModel.findById(req.body.farmProjectId)))
+      const farmProject = await FarmProjectModel.findById(
+        req.body.farmProjectId
+      );
+      if (!farmProject)
         return res
           .status(400)
           .send(onError(400, "FarmProject Not Found" + ERROR_MESSAGE));
@@ -512,6 +515,8 @@ const farmController = {
       farm.farmProjectList = farm.farmProjectList.concat({
         farmProject: req.body.farmProjectId,
       });
+      farmProject.farmId = farm._id;
+      farmProject.save();
       await farm.save();
 
       res.send(farm);
@@ -534,12 +539,17 @@ const farmController = {
           );
 
       // check if farmProjectId Exist
-      if (!(await FarmProjectModel.findById(req.body.farmProjectId)))
+      const farmProject = await FarmProjectModel.findById(
+        req.body.farmProjectId
+      );
+      if (!farmProject)
         return res
           .status(400)
           .send(onError(400, "FarmProject Not Found" + ERROR_MESSAGE));
 
       farm.farmProjectList.pull({ farmProject: req.body.farmProjectId });
+      farmProject.farmId = null;
+      farmProject.save();
       await farm.save();
 
       res.send(await FarmModel.findById(req.params.id));

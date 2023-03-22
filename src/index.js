@@ -11,11 +11,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import userRouter from "./router/user/user_route.js";
-import farmRouter from "./router/Farm/farm_router.js";
-import FarmProjectRouter from "./router/Farm/farm_project_router.js";
+import farmRouter from "./router/farm/farm_router.js";
+import FarmProjectRouter from "./router/farm/farm_project_router.js";
 import harvestRouter from "./router/harvest/harvest_route.js";
-import transportRouter from "./router/shipping/transport_router.js";
-import shippingRouter from "./router/shipping/shipping_router.js";
+import transportRouter from "./router/transport/transport_driver_router.js";
+import shippingRouter from "./router/transport/transport_router.js";
 import warehouseStorageRouter from "./router/warehouse_storage/warehouse_storage_router.js";
 import warehouseRouter from "./router/warehouse/warehouse_router.js";
 import produceSupervisionRouter from "./router/produce_supervision_router/produce_supervision_router.js";

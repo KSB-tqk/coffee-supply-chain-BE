@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import { checkValidObjectId, onError } from "../../helper/data_helper.js";
 import { onValidSeedInfo } from "../../helper/farm/seed_data_helper.js";
-import FarmModel from "../../model/Farm/farm.js";
-import SeedModel from "../../model/Farm/seed.js";
+import FarmModel from "../../model/farm/farm.js";
+import SeedModel from "../../model/farm/seed.js";
 
 const seedController = {
   addSeed: async (req, res) => {

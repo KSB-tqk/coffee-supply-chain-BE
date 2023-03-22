@@ -1,3 +1,4 @@
+import { onError } from "../../helper/data_helper.js";
 import HarvestModel from "../../model/harvest/harvest.js";
 const harvestController = {
   addHarvest: async (req, res) => {
@@ -9,7 +10,7 @@ const harvestController = {
 
       res.status(200).send({ msg: "Create harvest successfully", harvest });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(err.message));
     }
   },
   updateHarvest: async (req, res) => {
@@ -18,7 +19,7 @@ const harvestController = {
     const harvest = await HarvestModel.findById(id).exec();
 
     if (!harvest) {
-      return res.status(400).send({ msg: "This harvest doesn't exist" });
+      return res.status(400).send(onError("This harvest doesn't exist"));
     }
 
     HarvestModel.findOne({ _id: id }, async function (err, harvest) {
@@ -66,7 +67,7 @@ const harvestController = {
       const harvest = await HarvestModel.findById(id).exec();
 
       if (!harvest) {
-        return res.status(400).send({ msg: "This harvest doesn't exist" });
+        return res.status(400).send(onError("This harvest doesn't exist"));
       }
 
       const harvestChangeState = await HarvestModel.findById(id);
@@ -74,7 +75,7 @@ const harvestController = {
       harvestChangeState.save();
       res.status(200).send({ msg: "Delete harvest success" });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(err.message));
     }
   },
   getAllHarvests: async (req, res) => {
@@ -86,7 +87,7 @@ const harvestController = {
 
       res.status(200).send(harvest.reverse());
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(err.message));
     }
   },
   getHarvest: async (req, res) => {
@@ -99,12 +100,12 @@ const harvestController = {
         .exec();
 
       if (!harvest) {
-        return res.status(400).send({ msg: "This harvest doesn't exist" });
+        return res.status(400).send(onError("This harvest doesn't exist"));
       }
 
       res.status(200).send(harvest);
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(err.message));
     }
   },
 };

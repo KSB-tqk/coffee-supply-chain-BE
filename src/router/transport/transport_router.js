@@ -1,6 +1,6 @@
 import express from "express";
 import auth from "../../middleware/authentication.js";
-import shippingController from "../../controller/shipping/shipping_controller.js";
+import shippingController from "../../controller/transport/transport_controller.js";
 
 const shippingRouter = express.Router();
 

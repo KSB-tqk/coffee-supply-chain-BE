@@ -1,7 +1,7 @@
 import { checkValidObjectId, onError } from "../../helper/data_helper.js";
 import { onValidLandInfo } from "../../helper/farm/land_data_helper.js";
-import FarmModel from "../../model/Farm/farm.js";
-import LandModel from "../../model/Farm/land.js";
+import FarmModel from "../../model/farm/farm.js";
+import LandModel from "../../model/farm/land.js";
 
 // Land Controller //
 

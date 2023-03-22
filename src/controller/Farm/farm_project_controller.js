@@ -1,7 +1,7 @@
-import FarmModel from "../../model/Farm/farm.js";
-import FarmProjectModel from "../../model/Farm/farm_project.js";
-import LandModel from "../../model/Farm/land.js";
-import SeedModel from "../../model/Farm/seed.js";
+import FarmModel from "../../model/farm/farm.js";
+import FarmProjectModel from "../../model/farm/farm_project.js";
+import LandModel from "../../model/farm/land.js";
+import SeedModel from "../../model/farm/seed.js";
 import { checkValidObjectId, onError } from "../../helper/data_helper.js";
 import { onValidFarmProjectInfo } from "../../helper/farm/farm_data_helper.js";
 
@@ -135,6 +135,14 @@ const farmProjectController = {
       res.status(400).send(onError(400, err.message));
     }
   },
+  getAllNonFarmAssignFarmProject: async (req, res) => {
+    try {
+      const listFarmProject = await FarmProjectModel.find({ farmId: null });
+      res.send(listFarmProject);
+    } catch (e) {
+      res.status(400).send(onError(400, err.message));
+    }
+  },
   getFarmProject: async (req, res) => {
     try {
       const { id } = req.params;
@@ -150,7 +158,7 @@ const farmProjectController = {
 
       res.status(200).send(farmProject);
     } catch (err) {
-      res.status(400).send(onError(400, err.message));
+      res.status(400).send(onError(400, err.toString()));
     }
   },
 };

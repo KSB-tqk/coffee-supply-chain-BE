@@ -1,7 +1,7 @@
 import express from "express";
-import FarmServices from "../../controller/Farm/farm_controller.js";
-import SeedService from "../../controller/Farm/seed_controller.js";
-import LandService from "../../controller/Farm/land_controllers.js";
+import FarmServices from "../../controller/farm/farm_controller.js";
+import SeedService from "../../controller/farm/seed_controller.js";
+import LandService from "../../controller/farm/land_controllers.js";
 import auth from "../../middleware/authentication.js";
 
 const farmRouter = express.Router();

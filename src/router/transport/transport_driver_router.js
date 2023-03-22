@@ -1,6 +1,6 @@
 import express from "express";
 import auth from "../../middleware/authentication.js";
-import transportController from "../../controller/shipping/transport_controller.js";
+import transportController from "../../controller/transport/transport_driver_controller.js";
 
 const transportRouter = express.Router();
 

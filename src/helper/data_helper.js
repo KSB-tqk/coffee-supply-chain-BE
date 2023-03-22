@@ -69,7 +69,7 @@ export async function onValidUserRole(bearerHeader, role) {
   const user = await User.findOne({ _id: decoded._id });
   if (user != null) {
     for (let i = 0; i < role.length; i++) {
-      if (role[i] == user.role) return true;
+      if (role[i] == user.role) return user;
     }
   }
   return false;

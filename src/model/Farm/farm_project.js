@@ -7,7 +7,6 @@ const farmProjectSchema = mongoose.Schema({
   },
   farmId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     trim: true,
     default: null,
   },

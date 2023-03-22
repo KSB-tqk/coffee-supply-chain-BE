@@ -9,7 +9,7 @@ import { onValidProjectInfo } from "../../helper/project/project_data_helper.js"
 import harvestModel from "../../model/harvest/harvest.js";
 import ProduceSupervisionModel from "../../model/produce_supervision/produce_supervision.js";
 import ProjectModel from "../../model/project/project.js";
-import shippingModel from "../../model/shipping/shipping.js";
+import shippingModel from "../../model/transport/transport.js";
 import warehouseStorageModel from "../../model/warehouse_storage/warehouse_storage.js";
 const projectController = {
   addProject: async (req, res) => {
@@ -23,12 +23,15 @@ const projectController = {
           .status(400)
           .send(onError(400, "Permission denied" + ERROR_MESSAGE));
 
-      const isValidProjectInfo = await onValidProjectInfo(req.body);
+      console.log("Userid", isValidUser._id.toString());
 
-      if (!isValidProjectInfo)
-        return res
-          .status(400)
-          .send(onError(400, "Invalid Project Info" + ERROR_MESSAGE));
+      const isValidProjectInfo = await onValidProjectInfo(
+        req.body,
+        isValidUser.email
+      );
+
+      if (isValidProjectInfo != null)
+        return res.status(400).send(onError(400, isValidProjectInfo));
 
       const harvest = new harvestModel();
       const shipping = new shippingModel();
@@ -98,7 +101,7 @@ const projectController = {
           }
         }
 
-        if (project.state == 2) {
+        if (req.body.state == 2) {
           project.dateCompleted = Date.now();
           await harvestModel.findByIdAndUpdate(project.harvest, {
             dateCompleted: Date.now(),
