@@ -33,9 +33,9 @@ const projectSchema = mongoose.Schema({
     ref: "Harvest",
     trim: true,
   },
-  shipping: {
+  transport: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Shipping",
+    ref: "Transport",
     trim: true,
   },
   warehouseStorage: {
@@ -61,6 +61,9 @@ const projectSchema = mongoose.Schema({
     type: Number,
     default: 1,
     required: true,
+  },
+  backgroundUrl: {
+    type: String,
   },
 });
 

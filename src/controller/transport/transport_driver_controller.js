@@ -1,56 +1,65 @@
-import TransportModel from "../../model/transport/transport_driver.js";
-const transportController = {
+import { onError } from "../../helper/data_helper.js";
+import TransportDriverModel from "../../model/transport/transport_driver.js";
+const transportDriverController = {
   addTransport: async (req, res) => {
     try {
-      const transport = new TransportModel(req.body);
+      const transportDriverDriver = new TransportDriverModel(req.body);
 
-      await transport.save();
+      await transportDriverDriver.save();
 
-      res.status(200).send({ msg: "Create transport successfully", transport });
+      res.status(200).send({
+        msg: "Create Transport Driver successfully",
+        transportDriverDriver,
+      });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   updateTransport: async (req, res) => {
     const id = req.params.id;
 
-    const harvest = await TransportModel.findById(id).exec();
+    const harvest = await TransportDriverModel.findById(id).exec();
 
     if (!harvest) {
-      return res.status(400).send({ msg: "This transport doesn't exist" });
+      return res
+        .status(400)
+        .send({ msg: "This Transport Driver doesn't exist" });
     }
 
-    TransportModel.findOne({ _id: req.params.id }, function (err, transport) {
-      if (err) {
-        res.send(422, "Update transport failed");
-      } else {
-        //update fields
-        for (var field in TransportModel.schema.paths) {
-          if (field !== "_id" && field !== "__v") {
-            if (req.body[field] !== undefined) {
-              transport[field] = req.body[field];
+    TransportDriverModel.findOne(
+      { _id: req.params.id },
+      function (err, transportDriverDriver) {
+        if (err) {
+          res.send(422, "Update Transport Driver failed");
+        } else {
+          //update fields
+          for (var field in TransportDriverModel.schema.paths) {
+            if (field !== "_id" && field !== "__v") {
+              if (req.body[field] !== undefined) {
+                transportDriverDriver[field] = req.body[field];
+              }
             }
           }
+          transportDriverDriver.save();
+          res.status(200).send({ transportDriverDriver });
         }
-        transport.save();
-        res.status(200).send({ transport });
       }
-    });
+    );
   },
   deleteTransport: async (req, res) => {
     try {
       const id = req.params.id;
 
-      const harvest = await TransportModel.findById(id).exec();
+      const harvest = await TransportDriverModel.findById(id).exec();
 
       if (!harvest) {
-        return res.status(400).send({ msg: "This harvest doesn't exist" });
+        return res.status(400).send(onError(400, "This harvest doesn't exist"));
       }
 
-      await TransportModel.findByIdAndRemove(id);
-      res.status(200).send({ msg: "Delete transport success" });
+      await TransportDriverModel.findByIdAndRemove(id);
+      res.status(200).send({ msg: "Delete Transport Driver success" });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   getAllTransports: async (req, res) => {
@@ -59,27 +68,31 @@ const transportController = {
 
       console.log(id);
 
-      const lands = await TransportModel.find({ farmId: id }).exec();
+      const lands = await TransportDriverModel.find({ farmId: id }).exec();
       res.status(200).send(lands);
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   getTransport: async (req, res) => {
     try {
       const id = req.params.id;
 
-      const transport = await TransportModel.findById(id).exec();
+      const transportDriverDriver = await TransportDriverModel.findById(
+        id
+      ).exec();
 
-      if (!transport) {
-        return res.status(400).send({ msg: "This transport doesn't exist" });
+      if (!transportDriverDriver) {
+        return res
+          .status(400)
+          .send({ msg: "This Transport Driver doesn't exist" });
       }
 
-      res.status(200).send(transport);
+      res.status(200).send(transportDriverDriver);
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
 };
 
-export default transportController;
+export default transportDriverController;

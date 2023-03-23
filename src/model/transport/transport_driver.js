@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 const transportDriverSchema = mongoose.Schema({
   transportName: {
     type: String,
-    required: true,
   },
   phoneNumber: {
     type: String,

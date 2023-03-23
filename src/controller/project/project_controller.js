@@ -34,35 +34,36 @@ const projectController = {
         return res.status(400).send(onError(400, isValidProjectInfo));
 
       const harvest = new harvestModel();
-      const shipping = new transportModel();
+      const transport = new transportModel();
       const warehouseStorage = new warehouseStorageModel();
       const produce = new ProduceSupervisionModel();
 
       const project = new ProjectModel({
         harvest: harvest._id,
-        shipping: shipping._id,
+        transport: transport._id,
         warehouseStorage: warehouseStorage._id,
         produce: produce._id,
         projectName: req.body.projectName,
         projectCode: req.body.projectCode,
       });
 
+      project.manager = isValidUser._id;
       project.projectLogList = [];
 
       harvest.projectId =
-        shipping.projectId =
+        transport.projectId =
         warehouseStorage.projectId =
         produce.projectId =
           project._id;
 
       harvest.projectCode =
-        shipping.projectCode =
+        transport.projectCode =
         warehouseStorage.projectCode =
         produce.projectCode =
           req.body.projectCode;
 
       harvest.save();
-      shipping.save();
+      transport.save();
       warehouseStorage.save();
       produce.save();
 
@@ -71,119 +72,146 @@ const projectController = {
 
       res.status(200).send({ msg: "Create project successfully", project });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   updateProject: async (req, res) => {
-    const id = req.params.id;
+    try {
+      const id = req.params.id;
 
-    if (!checkValidObjectId(id)) {
-      return res.status(400).send({ error: "Invalid User Id" });
-    }
+      if (!checkValidObjectId(id)) {
+        return res.status(400).send(onError(400, "Invalid User Id"));
+      }
 
-    ProjectModel.findOne({ _id: req.params.id }, async function (err, project) {
-      if (err) {
-        res.send(422, "Update project failed");
-      } else {
-        //update fields
-        console.log(project);
-        console.log(req.params.id);
-        if (project.state == 2) {
-          return res.status(400).send({
-            error: "Project cannot be update because it has been completed",
-          });
-        }
-        for (var field in ProjectModel.schema.paths) {
-          if (field !== "_id" && field !== "__v") {
-            if (req.body[field] !== undefined) {
-              project[field] = req.body[field];
+      ProjectModel.findOne(
+        { _id: req.params.id },
+        async function (err, project) {
+          if (err) {
+            res.send(422, "Update project failed");
+          } else {
+            //update fields
+            console.log("Project", project);
+            console.log(req.params.id);
+
+            if (project != null) {
+              if (project.state == 2) {
+                return res
+                  .status(400)
+                  .send(
+                    onError(
+                      400,
+                      "Project cannot be update because it has been completed"
+                    )
+                  );
+              }
+              for (var field in ProjectModel.schema.paths) {
+                if (field !== "_id" && field !== "__v") {
+                  if (req.body[field] !== undefined) {
+                    project[field] = req.body[field];
+                  }
+                }
+              }
+
+              if (req.body.state == 2) {
+                project.dateCompleted = Date.now();
+                await harvestModel.findByIdAndUpdate(project.harvest, {
+                  dateCompleted: Date.now(),
+                });
+                await ProduceSupervisionModel.findByIdAndUpdate(
+                  project.produce,
+                  {
+                    dateCompleted: Date.now(),
+                  }
+                );
+                await transportModel.findByIdAndUpdate(project.transport, {
+                  dateCompleted: Date.now(),
+                });
+                await warehouseStorageModel.findByIdAndUpdate(
+                  project.warehouseStorage,
+                  {
+                    outputDate: Date.now(),
+                  }
+                );
+              }
+
+              if (project.manager != null) {
+                await harvestModel.findByIdAndUpdate(project.harvest, {
+                  inspector: "63bf8be64ca81bddf5802481",
+                });
+                await ProduceSupervisionModel.findByIdAndUpdate(
+                  project.produce,
+                  {
+                    inspector: "63bfe6b1ad67eab25201d789",
+                  }
+                );
+                await transportModel.findByIdAndUpdate(project.transport, {
+                  inspector: "63bf8c14bcb6426a8fae4591",
+                });
+                await warehouseStorageModel.findByIdAndUpdate(
+                  project.warehouseStorage,
+                  {
+                    inspector: "63bf8cb2ad67eab25201d77f",
+                  }
+                );
+              }
+
+              project.save();
+              const theProject = await ProjectModel.findById(project._id)
+                .populate("manager")
+                .populate({
+                  path: "harvest",
+                  populate: {
+                    path: "inspector",
+                  },
+                })
+                .populate({
+                  path: "transport",
+                  populate: {
+                    path: "inspector",
+                  },
+                })
+                .populate({
+                  path: "warehouseStorage",
+                  populate: {
+                    path: "inspector",
+                  },
+                })
+                .populate({
+                  path: "produce",
+                  populate: {
+                    path: "inspector",
+                  },
+                });
+
+              res.status(200).send({
+                project: theProject,
+                contractContent:
+                  Date.now().toString() +
+                  "|" +
+                  project.manager.toString() +
+                  "|Project|" +
+                  project.state,
+              });
+            } else {
+              return res
+                .status(400)
+                .send(onError(400, "Project does not exist" + ERROR_MESSAGE));
             }
           }
         }
-
-        if (req.body.state == 2) {
-          project.dateCompleted = Date.now();
-          await harvestModel.findByIdAndUpdate(project.harvest, {
-            dateCompleted: Date.now(),
-          });
-          await ProduceSupervisionModel.findByIdAndUpdate(project.produce, {
-            dateCompleted: Date.now(),
-          });
-          await transportModel.findByIdAndUpdate(project.shipping, {
-            dateCompleted: Date.now(),
-          });
-          await warehouseStorageModel.findByIdAndUpdate(
-            project.warehouseStorage,
-            {
-              outputDate: Date.now(),
-            }
-          );
-        }
-
-        if (project.manager != null) {
-          await harvestModel.findByIdAndUpdate(project.harvest, {
-            inspector: "63bf8be64ca81bddf5802481",
-          });
-          await ProduceSupervisionModel.findByIdAndUpdate(project.produce, {
-            inspector: "63bfe6b1ad67eab25201d789",
-          });
-          await transportModel.findByIdAndUpdate(project.shipping, {
-            inspector: "63bf8c14bcb6426a8fae4591",
-          });
-          await warehouseStorageModel.findByIdAndUpdate(
-            project.warehouseStorage,
-            {
-              inspector: "63bf8cb2ad67eab25201d77f",
-            }
-          );
-        }
-
-        project.save();
-        const theProject = await ProjectModel.findById(project._id)
-          .populate("manager")
-          .populate({
-            path: "harvest",
-            populate: {
-              path: "inspector",
-            },
-          })
-          .populate({
-            path: "shipping",
-            populate: {
-              path: "inspector",
-            },
-          })
-          .populate({
-            path: "warehouseStorage",
-            populate: {
-              path: "inspector",
-            },
-          })
-          .populate({
-            path: "produce",
-            populate: {
-              path: "inspector",
-            },
-          });
-
-        res.status(200).send({
-          project: theProject,
-          contractContent:
-            Date.now().toString() +
-            "|" +
-            project.manager.toString() +
-            "|Project|" +
-            project.state,
-        });
-      }
-    });
+      );
+    } catch (e) {
+      res.status(500).send(onError(500, e.toString()));
+    }
   },
   deleteProject: async (req, res) => {
     try {
       const id = req.params.id;
 
       if (!checkValidObjectId(id)) {
-        return res.status(400).send({ error: "Invalid User Id" });
+        return res
+          .status(400)
+          .send(onError(400, "Invalid User Id" + ERROR_MESSAGE));
       }
 
       const project = await ProjectModel.findById(id);
@@ -191,7 +219,7 @@ const projectController = {
       project.save();
       res.status(200).send({ msg: "Delete project success" });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   getAllProjects: async (req, res) => {
@@ -199,13 +227,13 @@ const projectController = {
       const projects = await ProjectModel.find({})
         .populate("manager")
         .populate("harvest")
-        .populate("shipping")
+        .populate("transport")
         .populate("warehouseStorage")
         .populate("produce")
         .exec();
       res.status(200).send(projects.reverse());
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   getProject: async (req, res) => {
@@ -221,7 +249,7 @@ const projectController = {
           },
         })
         .populate({
-          path: "shipping",
+          path: "transport",
           populate: {
             path: "inspector",
           },
@@ -241,12 +269,14 @@ const projectController = {
         .exec();
 
       if (!project) {
-        return res.status(400).send({ msg: "This project doesn't exist" });
+        return res
+          .status(400)
+          .send(onError(400, "This project doesn't exist" + ERROR_MESSAGE));
       }
 
       res.status(200).send(project);
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
 };

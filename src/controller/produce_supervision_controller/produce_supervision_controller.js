@@ -1,3 +1,4 @@
+import { onError } from "../../helper/data_helper.js";
 import ProduceSupervisionModel from "../../model/produce_supervision/produce_supervision.js";
 
 const produceSupervisionController = {
@@ -12,7 +13,7 @@ const produceSupervisionController = {
         produceSupervision,
       });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(500).send(onError(500, err.message));
     }
   },
   updateProduceSupervision: async (req, res) => {
@@ -25,7 +26,7 @@ const produceSupervisionController = {
     if (!produceSupervision) {
       return res
         .status(400)
-        .send({ msg: "This produceSupervision doesn't exist" });
+        .send(onError(400, "This produceSupervision doesn't exist"));
     }
 
     ProduceSupervisionModel.findOne(
@@ -87,7 +88,7 @@ const produceSupervisionController = {
       produceChangeState.state = 3;
       res.status(200).send({ msg: "Delete produceSupervision success" });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(500).send(onError(500, err.message));
     }
   },
   getAllProduceSupervisions: async (req, res) => {
@@ -98,7 +99,7 @@ const produceSupervisionController = {
         .exec();
       res.status(200).send(produceSupervision.reverse());
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(500).send(onError(500, err.message));
     }
   },
   getProduceSupervision: async (req, res) => {
@@ -118,7 +119,7 @@ const produceSupervisionController = {
 
       res.status(200).send(produceSupervision);
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(500).send(onError(500, err.message));
     }
   },
 };

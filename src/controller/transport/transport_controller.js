@@ -1,110 +1,121 @@
-import ShippingModel from "../../model/transport/transport.js";
+import { onError } from "../../helper/data_helper.js";
+import TransportModel from "../../model/transport/transport.js";
 
-const shippingController = {
-  addShipping: async (req, res) => {
+const transportController = {
+  addTransport: async (req, res) => {
     try {
-      const shipping = new ShippingModel(req.body);
+      const transport = new TransportModel(req.body);
 
-      shipping.shippingId = shipping._id;
-      await shipping.save();
+      transport.transportId = transport._id;
+      await transport.save();
 
-      res.status(200).send({ msg: "Create shipping successfully", shipping });
+      res.status(200).send({ msg: "Create transport successfully", transport });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(500).send(onError(500, err.message));
     }
   },
-  updateShipping: async (req, res) => {
-    const id = req.params.id;
+  updateTransport: async (req, res) => {
+    try {
+      const id = req.params.id;
 
-    const shipping = await ShippingModel.findById(id).exec();
+      const transport = await TransportModel.findById(id).exec();
 
-    if (!shipping) {
-      return res.status(400).send({ msg: "This shipping doesn't exist" });
-    }
+      if (!transport) {
+        return res
+          .status(400)
+          .send(onError(400, "This transport doesn't exist"));
+      }
 
-    ShippingModel.findOne({ _id: id }, async function (err, shipping) {
-      if (err) {
-        res.send(422, "Update transport failed");
-      } else {
-        //update fields
-        if (shipping.state == 2)
-          return res.status(400).send({
-            error:
-              "Shipping infomation cannot be update because it has been completed",
-          });
-        for (var field in ShippingModel.schema.paths) {
-          if (field !== "_id" && field !== "__v") {
-            if (req.body[field] !== undefined) {
-              shipping[field] = req.body[field];
+      TransportModel.findOne({ _id: id }, async function (err, transport) {
+        if (err) {
+          res.send(422, "Update transport failed");
+        } else {
+          //update fields
+          if (transport.state == 2)
+            return res.status(400).send({
+              error:
+                "Transport infomation cannot be update because it has been completed",
+            });
+          for (var field in TransportModel.schema.paths) {
+            if (field !== "_id" && field !== "__v") {
+              if (req.body[field] !== undefined) {
+                transport[field] = req.body[field];
+              }
             }
           }
+          if (transport.state == 2) {
+            transport.dateCompleted = Date.now();
+          }
+          transport.save();
+          const transportPop = await TransportModel.findById(transport._id)
+            .populate("projectId")
+            .populate("inspector");
+          res.status(200).send({
+            transport: transportPop,
+            contractContent:
+              Date.now().toString() +
+              "|" +
+              transport.inspector.toString() +
+              "|Transport|" +
+              transport.state,
+          });
         }
-        if (shipping.state == 2) {
-          shipping.dateCompleted = Date.now();
-        }
-        shipping.save();
-        const shippingPop = await ShippingModel.findById(shipping._id)
-          .populate("projectId")
-          .populate("inspector");
-        res.status(200).send({
-          shipping: shippingPop,
-          contractContent:
-            Date.now().toString() +
-            "|" +
-            shipping.inspector.toString() +
-            "|Shipping|" +
-            shipping.state,
-        });
-      }
-    });
+      });
+    } catch (e) {
+      res.status(500).send(onError(500, e.toString()));
+    }
   },
-  deleteShipping: async (req, res) => {
+  deleteTransport: async (req, res) => {
     try {
       const id = req.params.id;
 
-      const shipping = await ShippingModel.findById(id).exec();
+      const transport = await TransportModel.findById(id).exec();
 
-      if (!shipping) {
-        return res.status(400).send({ msg: "This shipping doesn't exist" });
+      if (!transport) {
+        return res
+          .status(400)
+          .send(onError(400, "This transport doesn't exist"));
       }
 
-      const shippingChangeState = await ShippingModel.findById(id);
-      shippingChangeState.state = 3;
-      shippingChangeState.save();
-      res.status(200).send({ msg: "Delete shipping success" });
+      const transportChangeState = await TransportModel.findById(id);
+      transportChangeState.state = 3;
+      transportChangeState.save();
+      res.status(200).send({ msg: "Delete transport success" });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(500).send(onError(500, err.message));
     }
   },
-  getAllShipping: async (req, res) => {
+  getAllTransport: async (req, res) => {
     try {
-      const shipping = await ShippingModel.find()
+      const transport = await TransportModel.find()
         .populate("projectId")
         .populate("inspector")
         .exec();
-      res.status(200).send(shipping.reverse());
+      res.status(200).send(transport.reverse());
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(500).send(onError(500, err.message));
     }
   },
-  getShipping: async (req, res) => {
+  getTransport: async (req, res) => {
     try {
       const id = req.params.id;
 
-      const shipping = await ShippingModel.findById(id)
+      const transport = await TransportModel.findById(id)
         .populate("projectId")
         .populate("inspector")
         .exec();
 
-      if (!shipping) {
-        return res.status(400).send({ msg: "This shipping doesn't exist" });
+      if (!transport) {
+        return res
+          .status(400)
+          .send(onError(400, "This transport doesn't exist"));
       }
 
-      res.status(200).send(shipping);
+      res.status(200).send(transport);
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(500).send(onError(500, err.message));
     }
   },
 };
 
-export default shippingController;
+export default transportController;
