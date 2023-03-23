@@ -67,6 +67,13 @@ const projectSchema = mongoose.Schema({
   },
 });
 
+//Hash the plain text pwd before saving
+projectSchema.pre("save", async function (next) {
+  console.log("Project Modified Path", this.modifiedPaths());
+
+  next();
+});
+
 const ProjectModel = mongoose.model("Project", projectSchema);
 
 export default ProjectModel;
