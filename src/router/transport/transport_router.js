@@ -6,14 +6,14 @@ const transportRouter = express.Router();
 
 transportRouter.use(auth);
 
-transportRouter.post("/", transportController.addShipping);
+transportRouter.post("/", transportController.addTransport);
 
-transportRouter.get("/:id", transportController.getShipping);
+transportRouter.get("/:id", transportController.getTransport);
 
-transportRouter.get("/", transportController.getAllShipping);
+transportRouter.get("/", transportController.getAllTransport);
 
-transportRouter.patch("/:id", transportController.updateShipping);
+transportRouter.patch("/:id", transportController.updateTransport);
 
-transportRouter.delete("/:id", transportController.deleteShipping);
+transportRouter.delete("/:id", transportController.deleteTransport);
 
 export default transportRouter;

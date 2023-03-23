@@ -6,7 +6,11 @@ const transportSchema = mongoose.Schema({
     ref: "Project",
     default: null,
   },
-  shippingId: {
+  projectCode: {
+    type: String,
+    default: "",
+  },
+  transportId: {
     type: String,
     trim: true,
     default: "",
@@ -25,7 +29,7 @@ const transportSchema = mongoose.Schema({
     ref: "User",
     default: null,
   },
-  vehicleType: {
+  vehicle: {
     type: String,
     default: "",
   },
@@ -45,14 +49,7 @@ const transportSchema = mongoose.Schema({
     type: Number,
     default: 1,
   },
-  note: {
-    type: String,
-    default: "",
-  },
-  projectCode: {
-    type: String,
-    default: "",
-  },
+  note: [String],
 });
 
 const transportModel = mongoose.model("Transport", transportSchema);
