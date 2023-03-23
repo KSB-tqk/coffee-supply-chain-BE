@@ -83,13 +83,13 @@ const farmController = {
   },
   addFarmerIntoFarm: async (req, res) => {
     try {
-      const { emailNewFarmer } = req.body;
+      const { email } = req.body;
 
-      console.log("email", emailNewFarmer);
+      console.log("email", email);
 
       const farmModel = await FarmModel.findById(req.params.id);
 
-      const userModel = await User.findOne({ email: emailNewFarmer });
+      const userModel = await User.findOne({ email: email });
 
       if (userModel == null) {
         return res
