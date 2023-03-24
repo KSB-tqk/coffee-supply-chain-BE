@@ -4,7 +4,7 @@ import {
   checkValidObjectId,
   checkValidAdminAccess,
   checkFarmer,
-  onError,
+  onResponse,
   onValidUserRole,
   checkValidUserInfo,
   compareUserIdWithToken,
@@ -31,16 +31,16 @@ const farmController = {
       console.log(checkFarmOwnerExist._id.toString());
 
       if (checkFarmCodeExist) {
-        res.status(400).send(onError(400, "Farm Code already exists"));
+        res.status(400).send(onResponse(400, "Farm Code already exists"));
       } else if (!checkFarmOwnerExist) {
-        res.status(400).send(onError(400, "User doesn't exist"));
+        res.status(400).send(onResponse(400, "User doesn't exist"));
       } else if (checkFarmOwnerExist.role !== 3) {
-        res.status(400).send(onError(400, "User isn't a Farmer"));
+        res.status(400).send(onResponse(400, "User isn't a Farmer"));
       } else if (checkFarmOwnerExist.farmList.length > 0) {
         res
           .status(400)
           .send(
-            onError(
+            onResponse(
               400,
               "User had already been set to be Owner of another farm" +
                 ERROR_MESSAGE
@@ -78,7 +78,7 @@ const farmController = {
         });
       }
     } catch (err) {
-      res.status(400).send(onError(400, err.message));
+      res.status(400).send(onResponse(400, err.message));
     }
   },
   addFarmerIntoFarm: async (req, res) => {
@@ -95,7 +95,7 @@ const farmController = {
         return res
           .status(400)
           .send(
-            onError(
+            onResponse(
               400,
               "This email doesn't link to any account yet, please try again."
             )
@@ -109,12 +109,12 @@ const farmController = {
         })) || userModel.farmList.length > 0;
 
       if (farmModel == null) {
-        return res.status(400).send(onError(400, "This farm doesn't exist"));
+        return res.status(400).send(onResponse(400, "This farm doesn't exist"));
       } else if (checkUserWasAdded) {
         return res
           .status(400)
           .send(
-            onError(
+            onResponse(
               400,
               "This user was already been added to the farm, please try again."
             )
@@ -145,12 +145,14 @@ const farmController = {
       } else {
         return res
           .status(400)
-          .send(onError(400, "Permission denied, please check and try again."));
+          .send(
+            onResponse(400, "Permission denied, please check and try again.")
+          );
       }
 
       return res.status(200).send(farmModel);
     } catch (err) {
-      res.status(400).send(onError(400, err.message));
+      res.status(400).send(onResponse(400, err.message));
     }
   },
   updateFarm: async (req, res) => {
@@ -162,9 +164,11 @@ const farmController = {
       const farm = await FarmModel.findById(req.params.id);
 
       if (!farm)
-        return res.status(400).send(onError(400, "This farm doesn't exist"));
+        return res.status(400).send(onResponse(400, "This farm doesn't exist"));
       else if (!farm.farmName || !farm.farmAddress || !farm.farmPhoneNumber) {
-        return res.status(400).send(onError(400, "Farm info can't be blank!"));
+        return res
+          .status(400)
+          .send(onResponse(400, "Farm info can't be blank!"));
       }
 
       try {
@@ -175,16 +179,18 @@ const farmController = {
         if (!result) {
           return res
             .status(400)
-            .send(onError(400, "Unauthorized Farm Owner, please try again."));
+            .send(
+              onResponse(400, "Unauthorized Farm Owner, please try again.")
+            );
         } else {
           allowedUpdates.push("farmOwner");
         }
       } catch (err) {
-        return res.status(400).send(onError(400, err.toString()));
+        return res.status(400).send(onResponse(400, err.toString()));
       }
 
       if (!checkValidObjectId(req.params.id)) {
-        return res.status(400).send(onError(400, "Invalid Farm Id"));
+        return res.status(400).send(onResponse(400, "Invalid Farm Id"));
       }
 
       const isValidOperation = updates.every((update) =>
@@ -192,7 +198,7 @@ const farmController = {
       );
 
       if (!isValidOperation) {
-        return res.status(400).send(onError(400, "Invalid updates"));
+        return res.status(400).send(onResponse(400, "Invalid updates"));
       }
 
       updates.forEach((update) => {
@@ -201,12 +207,12 @@ const farmController = {
 
       await farm.save();
       if (!farm) {
-        return res.status(400).send(onError(400, e.toString()));
+        return res.status(400).send(onResponse(400, e.toString()));
       } else {
         return res.status(200).send({ msg: `Update farm success`, farm: farm });
       }
     } catch (err) {
-      res.status(400).send(onError(400, err.toString()));
+      res.status(400).send(onResponse(400, err.toString()));
     }
   },
   getFarm: async (req, res) => {
@@ -214,7 +220,7 @@ const farmController = {
       const { id } = req.params;
 
       if (!checkValidObjectId(id)) {
-        return res.status(400).send(onError(400, "Invalid Farm Id"));
+        return res.status(400).send(onResponse(400, "Invalid Farm Id"));
       }
 
       const farm = await FarmModel.findById(id)
@@ -226,11 +232,11 @@ const farmController = {
           },
         })
         .exec();
-      if (!farm) return res.status(400).send(onError(400, "No exist farm"));
+      if (!farm) return res.status(400).send(onResponse(400, "No exist farm"));
 
       res.status(200).send(farm);
     } catch (err) {
-      res.status(400).send(onError(400, err.msg));
+      res.status(400).send(onResponse(400, err.msg));
     }
   },
   getAllFarms: async (req, res) => {
@@ -246,10 +252,12 @@ const farmController = {
       } else {
         return res
           .status(400)
-          .send(onError(400, "Permission denied, please check and try again."));
+          .send(
+            onResponse(400, "Permission denied, please check and try again.")
+          );
       }
     } catch (err) {
-      res.status(400).send(onError(400, err.message));
+      res.status(400).send(onResponse(400, err.message));
     }
   },
   deleteFarms: async (req, res) => {
@@ -257,18 +265,18 @@ const farmController = {
       const { id } = req.params;
 
       if (!checkValidObjectId(id)) {
-        return res.status(400).send(onError(400, "Invalid Farm Id"));
+        return res.status(400).send(onResponse(400, "Invalid Farm Id"));
       }
 
       const farm = await FarmModel.findById(id);
 
       if (!farm)
-        return res.status(400).send(onError(400, "This farm doesn't exist"));
+        return res.status(400).send(onResponse(400, "This farm doesn't exist"));
 
       await FarmModel.findByIdAndRemove(id);
       res.status(200).send({ msg: "Delete farm success", farmId: farm._id });
     } catch (err) {
-      res.status(400).send(onError(400, err.message));
+      res.status(400).send(onResponse(400, err.message));
     }
   },
   removeFarmerFromFarm: async (req, res) => {
@@ -280,7 +288,7 @@ const farmController = {
         return res
           .status(400)
           .send(
-            onError(
+            onResponse(
               400,
               "This email doesn't link to any account yet, please try again."
             )
@@ -327,20 +335,20 @@ const farmController = {
         } else {
           return res
             .status(400)
-            .send(onError(400, "Permission denied, please try again."));
+            .send(onResponse(400, "Permission denied, please try again."));
         }
       } else {
         return res
           .status(400)
           .send(
-            onError(
+            onResponse(
               400,
               "Farmer does not join this farm, please check anh try again."
             )
           );
       }
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onResponse(500, e.toString()));
     }
   },
 
@@ -353,14 +361,14 @@ const farmController = {
       if (farm == null)
         return res
           .status(400)
-          .send(onError(400, "Farm Not Found" + ERROR_MESSAGE));
+          .send(onResponse(400, "Farm Not Found" + ERROR_MESSAGE));
       if (farm.seedList == null) farm.seedList = [];
 
       // check if seedId Exist
       if (!(await SeedModel.findById(req.body.seedId)))
         return res
           .status(400)
-          .send(onError(400, "Seed Not Found" + ERROR_MESSAGE));
+          .send(onResponse(400, "Seed Not Found" + ERROR_MESSAGE));
 
       // check if seedId already been added to farm
       if (
@@ -372,7 +380,10 @@ const farmController = {
         return res
           .status(400)
           .send(
-            onError(400, "Seed had already been added to farm" + ERROR_MESSAGE)
+            onResponse(
+              400,
+              "Seed had already been added to farm" + ERROR_MESSAGE
+            )
           );
 
       farm.seedList = farm.seedList.concat({ seed: req.body.seedId });
@@ -380,7 +391,7 @@ const farmController = {
 
       res.send(farm);
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onResponse(500, e.toString()));
     }
   },
   removeSeedFromFarm: async (req, res) => {
@@ -392,20 +403,20 @@ const farmController = {
       if (farm == null)
         return res
           .status(400)
-          .send(onError(400, "Seed does not exist in Farm" + ERROR_MESSAGE));
+          .send(onResponse(400, "Seed does not exist in Farm" + ERROR_MESSAGE));
 
       // check if seedId Exist
       if (!(await SeedModel.findById(req.body.seedId)))
         return res
           .status(400)
-          .send(onError(400, "Seed Not Found" + ERROR_MESSAGE));
+          .send(onResponse(400, "Seed Not Found" + ERROR_MESSAGE));
 
       farm.seedList.pull({ seed: req.body.seedId });
       await farm.save();
 
       res.send(await FarmModel.findById(req.params.id));
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onResponse(500, e.toString()));
     }
   },
 
@@ -418,14 +429,14 @@ const farmController = {
       if (farm == null)
         return res
           .status(400)
-          .send(onError(400, "Farm Not Found" + ERROR_MESSAGE));
+          .send(onResponse(400, "Farm Not Found" + ERROR_MESSAGE));
       if (farm.landList == null) farm.landList = [];
 
       // check if landId Exist
       if (!(await LandModel.findById(req.body.landId)))
         return res
           .status(400)
-          .send(onError(400, "Land Not Found" + ERROR_MESSAGE));
+          .send(onResponse(400, "Land Not Found" + ERROR_MESSAGE));
 
       // check if landId already been added to farm
       if (
@@ -437,7 +448,10 @@ const farmController = {
         return res
           .status(400)
           .send(
-            onError(400, "Land had already been added to farm" + ERROR_MESSAGE)
+            onResponse(
+              400,
+              "Land had already been added to farm" + ERROR_MESSAGE
+            )
           );
 
       farm.landList = farm.landList.concat({ land: req.body.landId });
@@ -445,7 +459,7 @@ const farmController = {
 
       res.send(farm);
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onResponse(500, e.toString()));
     }
   },
 
@@ -458,20 +472,20 @@ const farmController = {
       if (farm == null)
         return res
           .status(400)
-          .send(onError(400, "Land does not exist in Farm" + ERROR_MESSAGE));
+          .send(onResponse(400, "Land does not exist in Farm" + ERROR_MESSAGE));
 
       // check if landId Exist
       if (!(await LandModel.findById(req.body.landId)))
         return res
           .status(400)
-          .send(onError(400, "Land Not Found" + ERROR_MESSAGE));
+          .send(onResponse(400, "Land Not Found" + ERROR_MESSAGE));
 
       farm.landList.pull({ land: req.body.landId });
       await farm.save();
 
       res.send(await FarmModel.findById(req.params.id));
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onResponse(500, e.toString()));
     }
   },
 
@@ -484,7 +498,7 @@ const farmController = {
       if (farm == null)
         return res
           .status(400)
-          .send(onError(400, "Farm Not Found" + ERROR_MESSAGE));
+          .send(onResponse(400, "Farm Not Found" + ERROR_MESSAGE));
       if (farm.farmProjectList == null) farm.farmProjectList = [];
 
       // check if seedId Exist
@@ -494,7 +508,7 @@ const farmController = {
       if (!farmProject)
         return res
           .status(400)
-          .send(onError(400, "FarmProject Not Found" + ERROR_MESSAGE));
+          .send(onResponse(400, "FarmProject Not Found" + ERROR_MESSAGE));
 
       // check if seedId already been added to farm
       if (
@@ -506,7 +520,7 @@ const farmController = {
         return res
           .status(400)
           .send(
-            onError(
+            onResponse(
               400,
               "Farm Project had already been added to farm" + ERROR_MESSAGE
             )
@@ -521,7 +535,7 @@ const farmController = {
 
       res.send(farm);
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onResponse(500, e.toString()));
     }
   },
 
@@ -535,7 +549,10 @@ const farmController = {
         return res
           .status(400)
           .send(
-            onError(400, "FarmProject does not exist in Farm" + ERROR_MESSAGE)
+            onResponse(
+              400,
+              "FarmProject does not exist in Farm" + ERROR_MESSAGE
+            )
           );
 
       // check if farmProjectId Exist
@@ -545,7 +562,7 @@ const farmController = {
       if (!farmProject)
         return res
           .status(400)
-          .send(onError(400, "FarmProject Not Found" + ERROR_MESSAGE));
+          .send(onResponse(400, "FarmProject Not Found" + ERROR_MESSAGE));
 
       farm.farmProjectList.pull({ farmProject: req.body.farmProjectId });
       farmProject.farmId = null;
@@ -554,7 +571,7 @@ const farmController = {
 
       res.send(await FarmModel.findById(req.params.id));
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onResponse(500, e.toString()));
     }
   },
 };

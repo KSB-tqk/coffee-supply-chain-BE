@@ -104,6 +104,16 @@ export async function onValidUserEmail(userEmail) {
 }
 // ----- End User data validator -----
 
+// On Response
+export function onResponse(didError, errorMessage, model) {
+  if (typeof model === "undefined") model = null;
+  if (typeof didError === "undefined") didError = null;
+  if (typeof errorMessage === "undefined") errorMessage = null;
+  return JSON.parse(
+    `{"didError": "${didError}", "errorMessage": "${errorMessage}", "model": "${model}" }`
+  );
+}
+
 // On Request Error
 export function onError(errorCode, errorMessage) {
   return JSON.parse(

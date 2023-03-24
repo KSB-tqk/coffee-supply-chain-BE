@@ -7,6 +7,7 @@ import {
   checkValidObjectId,
   onError,
   onLogoutCurrentUser,
+  onResponse,
   onValidUserRole,
 } from "../../helper/data_helper.js";
 import PermissionModel from "../../model/permission/permission.js";
@@ -73,9 +74,9 @@ const userController = {
         req.body.password
       );
       const token = await user.generateAuthToken();
-      res.send({ user, token });
+      res.send({ model: user, token });
     } catch (e) {
-      res.status(400).send(onError(400, e.message));
+      res.status(400).send(onError(400, e.toString()));
     }
   },
   getAllUserInfo: async (req, res) => {
