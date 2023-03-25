@@ -437,7 +437,7 @@ const userController = {
 
   getUserByEmail: async (req, res) => {
     try {
-      const user = await User.findOne({ email: req.body.email }).populate({
+      const user = await User.findOne({ email: req.query.email }).populate({
         path: "listProject",
         populate: {
           path: "access",
