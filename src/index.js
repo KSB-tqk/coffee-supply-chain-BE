@@ -5,7 +5,9 @@ import cors from "cors";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "../src/swagger_v2.json" assert { type: "json" };
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const swaggerDocument = require("../src/swagger_v2.json");
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

@@ -74,7 +74,7 @@ const userController = {
         req.body.password
       );
       const token = await user.generateAuthToken();
-      res.send({ model: user, token });
+      res.send(user);
     } catch (e) {
       res.status(400).send(onError(400, e.toString()));
     }
