@@ -27,11 +27,11 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
         id: extract_branch
       - name: Extract commit hash
         shell: bash
-        run: echo "##[set-output name=commit_hash;]$(echo "$GITHUB_SHA")"
+        run: echo "git_hash=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_HASH
         id: extract_hash          
       
       - name: Use Node.js
@@ -66,4 +66,4 @@ jobs:
         role-to-assume: ${{ secrets.IAMROLE_GITHUB }}
         aws-region: ${{ env.AWS_REGION }}
     - run: |
-        aws deploy create-deployment --application-name node-app --deployment-group-name ec2-app --s3-location bucket=coffee-supply-chain-2,key=code-deploy-3/project.zip,bundleType=zip
+        aws deploy create-deployment --application-name node-app --deployment-group-name ec2-app --s3-location bucket=coffee-supply0-2,key=code-deploy-3/project.zip,bundleType=zip
