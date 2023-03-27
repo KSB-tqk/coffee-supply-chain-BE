@@ -126,3 +126,10 @@ async function getTokenFromBearerTokenHeader(header) {
   const result = header.replace("Bearer ", "");
   return result;
 }
+
+// Export User Id By Token
+export async function getUserIdByHeader(header) {
+  const token = await getTokenFromBearerTokenHeader(header);
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  return decoded._id;
+}

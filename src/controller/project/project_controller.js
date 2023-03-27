@@ -1,7 +1,13 @@
-import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import { ObjectId } from "mongodb";
+import {
+  ERROR_MESSAGE,
+  getStepLogId,
+  setStepLogId,
+} from "../../enum/app_const.js";
 import UserRole from "../../enum/user_role.js";
 import {
   checkValidObjectId,
+  getUserIdByHeader,
   onError,
   onValidUserRole,
 } from "../../helper/data_helper.js";
@@ -9,6 +15,7 @@ import { onValidProjectInfo } from "../../helper/project/project_data_helper.js"
 import harvestModel from "../../model/harvest/harvest.js";
 import ProduceSupervisionModel from "../../model/produce_supervision/produce_supervision.js";
 import ProjectModel from "../../model/project/project.js";
+import StepLogModel from "../../model/step_log/step_log.js";
 import transportModel from "../../model/transport/transport.js";
 import warehouseStorageModel from "../../model/warehouse_storage/warehouse_storage.js";
 const projectController = {
@@ -87,7 +94,7 @@ const projectController = {
         { _id: req.params.id },
         async function (err, project) {
           if (err) {
-            res.send(422, "Update project failed");
+            res.send(onError(422, "Update project failed"));
           } else {
             //update fields
             console.log("Project", project);
@@ -155,6 +162,17 @@ const projectController = {
                 );
               }
 
+              if (project.projectLogList == null) project.projectLogList = [];
+
+              const stepLog = StepLogModel(
+                ObjectId(await getUserIdByHeader(req.header("Authorization"))),
+                project._id
+              );
+              await stepLog.save();
+              setStepLogId(stepLog._id);
+              project.projectLogList = project.projectLogList.concat({
+                projectLog: stepLog._id,
+              });
               project.save();
               const theProject = await ProjectModel.findById(project._id)
                 .populate("manager")
