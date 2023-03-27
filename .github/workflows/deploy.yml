@@ -40,7 +40,7 @@ jobs:
         with:
           node-version: '16.x'
       - run: npm i
-      - run: npm run build
+      - run: npm run dev
 
       # Copy build directory to S3
       - name:  Copy build to S3
