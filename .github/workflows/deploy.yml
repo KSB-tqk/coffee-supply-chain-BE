@@ -44,7 +44,6 @@ jobs:
         run: |
           echo "${{ secrets.ENV_FILE }}" > ./dev.env
       - run: npm i
-      - run: npm run dev
 
       # Copy build directory to S3
       - name:  Copy build to S3
@@ -71,4 +70,4 @@ jobs:
         role-to-assume: ${{ secrets.IAMROLE_GITHUB }}
         aws-region: ${{ env.AWS_REGION }}
     - run: |
-        aws deploy create-deployment --application-name node-app --deployment-group-name ec2-app --s3-location bucket=coffee-supply0-2,key=code-deploy-3/project.zip,bundleType=zip
+        aws deploy create-deployment --application-name node-app --deployment-group-name ec2-app --s3-location bucket=coffee-supply-chain-2,key=code-deploy-3/project.zip,bundleType=zip
