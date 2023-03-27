@@ -23,6 +23,7 @@ import warehouseRouter from "./router/warehouse/warehouse_router.js";
 import produceSupervisionRouter from "./router/produce_supervision_router/produce_supervision_router.js";
 import morgan from "morgan";
 import projectRouter from "./router/project/project_router.js";
+import { onError } from "./helper/data_helper.js";
 
 const app = express();
 
@@ -47,7 +48,10 @@ app.use("/warehouse-storage", warehouseStorageRouter);
 app.use("/warehouse", warehouseRouter);
 app.use("/produce", produceSupervisionRouter);
 app.use("/project", projectRouter);
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.get("/:universalURL", (req, res) => {
+  res.status(404).send(onError(404, "URL Not Found"));
+});
 
 const publicDir = path.join(__dirname, "../public");
 
@@ -56,3 +60,43 @@ app.use(express.static(publicDir));
 app.listen(port || 3000, () => {
   console.log("Server is up on port " + port);
 });
+
+/**
+#!/bin/bash
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console)2>&1
+curl -fsSL https://deb.nodesource.com/setup_16.x | bash
+apt-get install -y nodejs
+
+apt update
+apt install ruby-full-y
+apt install wet -y 
+wet https://aws-codedeploy-ap-south-1.s3.ap-south-1.amazonaws.com/latest/install
+chmod+x./install
+•/install auto > /tmp/logfile
+service codedeploy-agent restart
+
+echo "Create Code directory"
+mkdir-p/home/ubuntu/Code/coffee-supply-chain
+
+touch /etc/systemd/system/cf.service
+bash -c 'cat <<EOT > /etc/systemd/system/cf.service
+[Unit]
+Description=CoffeeSupplyChain
+
+[Service]
+ExecStart=/usr/bin/node /home/ec2-user/coffee-supply-chain-BE/src/index.js
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=Coffee-Supply-Chain-BE
+User=ec2-user
+EnvironmentFile=/home/ec2-user/coffee-supply-chain-BE/config/dev.env
+
+[Install]
+WantedBy=multi-user.target
+EOT'
+
+systemctl enable cf.service
+systemctl start cf.service
+*/

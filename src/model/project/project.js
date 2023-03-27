@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { getStepLogId } from "../../enum/app_const.js";
+import StepLogModel from "../step_log/step_log.js";
 
 const projectSchema = mongoose.Schema({
   projectId: {
@@ -69,8 +71,10 @@ const projectSchema = mongoose.Schema({
 
 //Hash the plain text pwd before saving
 projectSchema.pre("save", async function (next) {
-  console.log("Project Modified Path", this.modifiedPaths());
-
+  const modifiedPaths = this.modifiedPaths().toString();
+  const stepLog = await StepLogModel.findById(getStepLogId());
+  stepLog.action = "Modified field: " + modifiedPaths;
+  stepLog.save();
   next();
 });
 
