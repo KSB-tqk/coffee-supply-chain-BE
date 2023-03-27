@@ -76,7 +76,7 @@ const userController = {
       const token = await user.generateAuthToken();
       res.send(user);
     } catch (e) {
-      res.status(400).send(onError(400, e.toString()));
+      res.status(400).send(onError(400, e.message));
     }
   },
   getAllUserInfo: async (req, res) => {
