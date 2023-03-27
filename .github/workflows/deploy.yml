@@ -39,6 +39,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x'
+      
+      - name: 'Create .env file'
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > ./dev.env
       - run: npm i
       - run: npm run dev
 
