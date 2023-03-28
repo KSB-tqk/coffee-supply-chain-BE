@@ -5,11 +5,16 @@ files:
     destination: /home/ubuntu/Code/coffee-supply-chain
 file_exists_behavior: RETAIN
 hooks:
+  BeforeInstall:
+    - location: Scripts/UnzipResourceBundle.sh
+    - location: Scripts/UnzipDataBundle.sh
+  AfterInstall:
+    - location: Scripts/RunResourceTests.sh
+      timeout: 180
   ApplicationStart:
-    - location: scripts/start_server.sh
-      timeout: 300
-      runas: root
-  ApplicationStop:
-    - location: scripts/stop_server.sh
-      timeout: 300
-      runas: root
+    - location: Scripts/RunFunctionalTests.sh
+      timeout: 3600
+  ValidateService:
+    - location: Scripts/MonitorService.sh
+      timeout: 3600
+      runas: codedeployuser
