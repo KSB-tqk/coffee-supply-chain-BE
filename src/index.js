@@ -68,9 +68,9 @@ curl -fsSL https://deb.nodesource.com/setup_16.x | bash
 apt-get install -y nodejs
 
 apt update
-apt install ruby-full-y
+apt install ruby-full
 apt install wet -y 
-wet https://aws-codedeploy-ap-south-1.s3.ap-south-1.amazonaws.com/latest/install
+wet https://aws-codedeploy-ap-south-1.s3.ap-northeast-1.amazonaws.com/latest/install
 chmod+x./install
 •/install auto > /tmp/logfile
 service codedeploy-agent restart
@@ -99,4 +99,13 @@ EOT'
 
 systemctl enable cf.service
 systemctl start cf.service
+
+https://coffee-supply-chain-2.s3.ap-northeast-1.amazonaws.com/latest/install
+wget https://aws-codedeploy-ap-northeast-1.s3.ap-northeast-1.amazonaws.com/latest/install
+wget https://aws-codedeploy-ap-northeast-1.s3.amazonaws.com/releases/codedeploy-agent_1.0-1.1597_all.deb
+
+aws ssm send-command \ 
+    --document-name "AWS-ConfigureAWSPackage" \
+    --instance-ids "i-0f99e0d3e30de7018" \
+    --parameters '{"action":["Install"],"installationType":["Uninstall and reinstall"],"name":["AWS-ConfigureAWSPackage"]}'
 */

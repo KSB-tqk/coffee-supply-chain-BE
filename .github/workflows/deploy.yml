@@ -36,11 +36,14 @@ jobs:
         id: extract_hash          
       
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v1
         with:
           node-version: '16.x'
-      - run: npm ci
-      - run: npm run build
+      
+      - name: 'Create .env file'
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > ./dev.env
+      - run: npm i
 
       # Copy build directory to S3
       - name:  Copy build to S3
@@ -67,4 +70,4 @@ jobs:
         role-to-assume: ${{ secrets.IAMROLE_GITHUB }}
         aws-region: ${{ env.AWS_REGION }}
     - run: |
-        aws deploy create-deployment --application-name node-app --deployment-group-name ec2-app --s3-location bucket=coffee-supply0-2,key=code-deploy-3/project.zip,bundleType=zip
+        aws deploy create-deployment --application-name node-app --deployment-group-name ec2-app --ignore-application-stop-failures --s3-location bucket=coffee-supply-chain-2,key=code-deploy-3/project.zip,bundleType=zip
