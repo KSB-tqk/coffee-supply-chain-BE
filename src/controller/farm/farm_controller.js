@@ -231,6 +231,19 @@ const farmController = {
             path: "farmer",
           },
         })
+        .populate("farmProjectList")
+        .populate({
+          path: "landList",
+          populate: {
+            path: "land",
+          },
+        })
+        .populate({
+          path: "seedList",
+          populate: {
+            path: "seed",
+          },
+        })
         .exec();
       if (!farm) return res.status(400).send(onResponse(400, "No exist farm"));
 
