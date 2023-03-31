@@ -24,7 +24,7 @@ FarmProjectRouter.delete(
   FarmProjectServices.farmProjectController.deleteFarmProject
 );
 
-// get all farm project by FarmId
+// get all farm project
 FarmProjectRouter.get(
   "/all",
   FarmProjectServices.farmProjectController.getAllFarmProjects
@@ -41,5 +41,8 @@ FarmProjectRouter.get(
   "/:id",
   FarmProjectServices.farmProjectController.getFarmProject
 );
+
+// get all farm project by farm id
+FarmProjectRouter.get("/all/:farmId", FarmProjectServices.farmProjectController.getAllFarmProjectsInFarm);
 
 export default FarmProjectRouter;

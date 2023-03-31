@@ -120,6 +120,23 @@ const landController = {
       res.status(400).send(onError(400, err.message));
     }
   },
+  getAllLandsInFarm: async (req, res) => {
+    try {
+      const { farmId } = req.params;
+
+      const validFarm = await FarmModel.findOne({farmId: farmId});
+      
+      if(!validFarm) {
+        res.status(400).send(onError(400), "This farm doesn't exist");
+      }
+
+      const lands = await LandModel.find({farmId: farmId});
+
+      return res.status(200).send(lands);
+    } catch (err) {
+      res.status(400).send(onError(400, err.message));
+    }
+  },
 };
 
 const LandService = { landController };

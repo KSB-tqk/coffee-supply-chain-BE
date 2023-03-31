@@ -120,6 +120,24 @@ const seedController = {
       res.status(400).send(onError(400, err.message));
     }
   },
+  getAllSeedsInFarm: async (req, res) => {
+    try {
+      const {farmId} = req.params;
+
+      const validFarm = await FarmModel.findOne({farmId: farmId});
+      
+      if(!validFarm) {
+        res.status(400).send(onError(400), "This farm doesn't exist");
+      }
+
+      const seeds = await SeedModel.find({farmId: farmId});
+
+      return res.status(200).send(seeds);
+      
+    } catch (err) {
+      res.status(400).send(onError(400, err.message));
+    }
+  },
 };
 
 const SeedService = { seedController };
