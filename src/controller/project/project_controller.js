@@ -164,16 +164,19 @@ const projectController = {
 
               if (project.projectLogList == null) project.projectLogList = [];
 
-              const stepLog = StepLogModel(
-                ObjectId(await getUserIdByHeader(req.header("Authorization"))),
-                project._id
+              const stepLog = StepLogModel();
+              stepLog.projectId = project._id;
+              stepLog.actor = ObjectId(
+                await getUserIdByHeader(req.header("Authorization"))
               );
+              console.log("steplog before save", stepLog);
               await stepLog.save();
+
               setStepLogId(stepLog._id);
               project.projectLogList = project.projectLogList.concat({
                 projectLog: stepLog._id,
               });
-              project.save();
+              await project.save();
               const theProject = await ProjectModel.findById(project._id)
                 .populate("manager")
                 .populate({
@@ -282,6 +285,12 @@ const projectController = {
           path: "produce",
           populate: {
             path: "inspector",
+          },
+        })
+        .populate({
+          path: "projectLogList",
+          populate: {
+            path: "projectLog",
           },
         })
         .exec();

@@ -51,6 +51,9 @@ app.use("/warehouse", warehouseRouter);
 app.use("/produce", produceSupervisionRouter);
 app.use("/project", projectRouter);
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.get("/cronjob", (req, res) => {
+  res.status(200).send(onError(200, "Cron Job Success"));
+});
 app.get("/:universalURL", (req, res) => {
   res.status(404).send(onError(404, "URL Not Found"));
 });

@@ -73,8 +73,9 @@ const projectSchema = mongoose.Schema({
 projectSchema.pre("save", async function (next) {
   const modifiedPaths = this.modifiedPaths().toString();
   const stepLog = await StepLogModel.findById(getStepLogId());
+  console.log("steplog after save", stepLog);
   stepLog.action = "Modified field: " + modifiedPaths;
-  stepLog.save();
+  await stepLog.save();
   next();
 });
 
