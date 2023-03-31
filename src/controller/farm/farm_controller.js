@@ -8,6 +8,7 @@ import {
   onValidUserRole,
   checkValidUserInfo,
   compareUserIdWithToken,
+  onError,
 } from "../../helper/data_helper.js";
 import UserRole from "../../enum/user_role.js";
 import { ERROR_MESSAGE } from "../../enum/app_const.js";
@@ -23,20 +24,26 @@ const farmController = {
       const { farmCode, farmName, farmAddress, farmPhoneNumber, farmOwner } =
         req.body;
 
-      const checkFarmCodeExist = await FarmModel.findOne({
+      const isValidFarmCode = await FarmModel.findOne({
         farmCode: farmCode,
       });
-      const checkFarmOwnerExist = await User.findOne({ email: farmOwner });
 
-      console.log(checkFarmOwnerExist._id.toString());
+      console.log("Email", farmOwner);
 
-      if (checkFarmCodeExist) {
+      const isValidFarmOwner = await User.findOne({ email: farmOwner });
+
+      if (isValidFarmOwner == null)
+        return res
+          .status(400)
+          .send(onError(400, "Farm owner not found" + ERROR_MESSAGE));
+
+      if (isValidFarmCode) {
         res.status(400).send(onResponse(400, "Farm Code already exists"));
-      } else if (!checkFarmOwnerExist) {
+      } else if (!isValidFarmOwner) {
         res.status(400).send(onResponse(400, "User doesn't exist"));
-      } else if (checkFarmOwnerExist.role !== 3) {
+      } else if (isValidFarmOwner.role !== 3) {
         res.status(400).send(onResponse(400, "User isn't a Farmer"));
-      } else if (checkFarmOwnerExist.farmList.length > 0) {
+      } else if (isValidFarmOwner.farmId != null) {
         res
           .status(400)
           .send(
@@ -52,19 +59,17 @@ const farmController = {
           farmName: farmName,
           farmAddress: farmAddress,
           farmPhoneNumber: farmPhoneNumber,
-          farmOwner: checkFarmOwnerExist._id.toString(),
+          farmOwner: isValidFarmOwner._id.toString(),
         });
 
         newFarm.farmerList = [];
         newFarm.farmerList = newFarm.farmerList.concat({
-          farmer: checkFarmOwnerExist._id,
+          farmer: isValidFarmOwner._id,
         });
-        if (checkFarmOwnerExist == null) checkFarmOwnerExist.farmList = [];
 
-        checkFarmOwnerExist.farmList = checkFarmOwnerExist.farmList.concat({
-          farm: newFarm._id,
-        });
-        checkFarmOwnerExist.save();
+        isValidFarmOwner.farmId = newFarm._id;
+        isValidFarmOwner.isOwner = true;
+        isValidFarmOwner.save();
         newFarm.farmId = newFarm._id;
 
         await newFarm.save();
@@ -106,7 +111,7 @@ const farmController = {
         (await FarmModel.findOne({
           farmId: farmModel._id,
           "farmerList.farmer": userModel._id,
-        })) || userModel.farmList.length > 0;
+        })) || userModel.farmId != null;
 
       if (farmModel == null) {
         return res.status(400).send(onResponse(400, "This farm doesn't exist"));
@@ -131,11 +136,7 @@ const farmController = {
           farmModel.farmOwner
         )
       ) {
-        if (userModel.farmList == null) userModel.farmList = [];
-
-        userModel.farmList = userModel.farmList.concat({
-          farm: farmModel._id,
-        });
+        userModel.farmId = farmModel._id;
         userModel.save();
         farmModel.farmerList = farmModel.farmerList.concat({
           farmer: userModel._id,
@@ -340,7 +341,8 @@ const farmController = {
           //only farmOwner can delete theirself
           (await compareUserIdWithToken(bearerHeader, farmModel.farmOwner))
         ) {
-          userModel.farmList.pull({ farm: farmModel._id });
+          userModel.farmId = null;
+          userModel.isOwner = false;
           await userModel.save();
           farmModel.farmerList.pull({ farmer: id });
           await farmModel.save();
