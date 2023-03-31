@@ -8,6 +8,8 @@ import swaggerUi from "swagger-ui-express";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const swaggerDocument = require("../src/swagger_v2.json");
+const cron = require("node-cron");
+var exec = require("child_process").exec;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -56,6 +58,12 @@ app.get("/:universalURL", (req, res) => {
 const publicDir = path.join(__dirname, "../public");
 
 app.use(express.static(publicDir));
+
+cron.schedule("*/10 * * * *", () => {
+  exec("ping -c 3 localhost", function (err, stdout, stderr) {
+    console.log(stdout);
+  });
+});
 
 app.listen(port || 3000, () => {
   console.log("Server is up on port " + port);
