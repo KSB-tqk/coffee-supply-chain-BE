@@ -7,9 +7,15 @@ const Farmer = User.discriminator(
   "Farmer",
   new mongoose.Schema(
     {
-      farmList: [
-        { farm: { type: mongoose.Schema.Types.ObjectId, ref: "Farm" } },
-      ],
+      farmId: {
+        type: String,
+        trim: true,
+        default: null,
+      },
+      isOwner: {
+        type: Boolean,
+        default: false,
+      },
     },
     options
   )
