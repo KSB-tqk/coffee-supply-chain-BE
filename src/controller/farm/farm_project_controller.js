@@ -169,6 +169,25 @@ const farmProjectController = {
       res.status(400).send(onResponse(true, err.toString()));
     }
   },
+  getAllFarmProjectsInFarm: async (req, res) => {
+    try {
+      const { farmId } = req.params;
+
+      const validFarm = await FarmModel.findOne({farmId: farmId});
+      
+      if(!validFarm) {
+        res.status(400).send(onError(400), "This farm doesn't exist");
+      }
+      
+      const farmProjects = await FarmProjectModel.find({farmId: farmId})
+          .populate(["land", "seed"])
+          .exec();
+      res.status(200).send(farmProjects);
+
+    } catch (err) {
+      res.status(400).send(onErrpr(400, err.toString()));
+    }
+  }
 };
 
 const FarmProjectServices = { farmProjectController };
