@@ -63,6 +63,7 @@ export async function checkValidUserInfo(user) {
   return null;
 }
 
+// Check valid user role from bearer token
 export async function onValidUserRole(bearerHeader, role) {
   const token = await getTokenFromBearerTokenHeader(bearerHeader);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -75,12 +76,14 @@ export async function onValidUserRole(bearerHeader, role) {
   return false;
 }
 
+// Compare userid with token
 export async function compareUserIdWithToken(bearerHeader, userId) {
   const token = await getTokenFromBearerTokenHeader(bearerHeader);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   return decoded._id == userId;
 }
 
+// Logout current user
 export async function onLogoutCurrentUser(bearerHeader) {
   const token = await getTokenFromBearerTokenHeader(bearerHeader);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -93,10 +96,12 @@ export async function onLogoutCurrentUser(bearerHeader) {
   return result;
 }
 
+// Check User Exist from Id
 export async function onValidUserId(userId) {
   return await User.findById(userId);
 }
 
+// Check User Exist from Email
 export async function onValidUserEmail(userEmail) {
   return await User.findOne({
     email: userEmail,

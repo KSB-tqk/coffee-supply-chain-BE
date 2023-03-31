@@ -41,7 +41,12 @@ const farmController = {
         res.status(400).send(onResponse(400, "Farm Code already exists"));
       } else if (!isValidFarmOwner) {
         res.status(400).send(onResponse(400, "User doesn't exist"));
-      } else if (isValidFarmOwner.role !== 3) {
+      } else if (
+        await onValidUserRole(req.header("Authorization"), [
+          UserRole.TechAdmin,
+          UserRole.Farmer,
+        ])
+      ) {
         res.status(400).send(onResponse(400, "User isn't a Farmer"));
       } else if (isValidFarmOwner.farmId != null) {
         res
