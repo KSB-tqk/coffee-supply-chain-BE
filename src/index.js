@@ -24,6 +24,8 @@ import produceSupervisionRouter from "./router/produce_supervision_router/produc
 import morgan from "morgan";
 import projectRouter from "./router/project/project_router.js";
 import { onError } from "./helper/data_helper.js";
+import stepLogController from "./controller/step_log/step_log_controller.js";
+import stepLogRouter from "./router/step_log/step_log_router.js";
 
 const app = express();
 
@@ -47,6 +49,7 @@ app.use("/transport", transportRouter);
 app.use("/warehouse-storage", warehouseStorageRouter);
 app.use("/warehouse", warehouseRouter);
 app.use("/produce", produceSupervisionRouter);
+app.use("/steplog", stepLogRouter);
 app.use("/project", projectRouter);
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get("/cronjob", (req, res) => {

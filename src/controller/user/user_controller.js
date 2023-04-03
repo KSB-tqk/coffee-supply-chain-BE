@@ -60,7 +60,7 @@ const userController = {
         res.status(400).send(onError(400, isValidUserInfo));
       }
     } catch (e) {
-      res.status(400).send(onError(400, e.toString()));
+      res.status(400).send(onError(400, e.message));
     }
   },
   loginUser: async (req, res) => {
@@ -88,7 +88,7 @@ const userController = {
       });
       res.send(users);
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onError(500, e.message));
     }
   },
   getCurrentUserInfo: async (req, res) => {
@@ -101,7 +101,7 @@ const userController = {
       });
       res.status(200).send(user);
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onError(500, e.message));
     }
   },
   getUserById: async (req, res) => {
@@ -123,7 +123,7 @@ const userController = {
         res.send(user);
       }
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onError(500, e.message));
     }
   },
   updateCurrentUserInfo: async (req, res) => {
@@ -164,11 +164,11 @@ const userController = {
       await req.user.save();
 
       if (!req.user) {
-        return res.status(404).send(onError(404, e.toString()));
+        return res.status(404).send(onError(404, e.message));
       }
       res.send(req.user);
     } catch (e) {
-      res.status(400).send(onError(400, e.toString()));
+      res.status(400).send(onError(400, e.message));
     }
   },
   updateUserInfoById: async (req, res) => {
@@ -225,7 +225,7 @@ const userController = {
 
       res.send(user);
     } catch (e) {
-      res.status(400).send(onError(400, e.toString()));
+      res.status(400).send(onError(400, e.message));
     }
   },
   logoutCurrentUser: async (req, res) => {
@@ -234,7 +234,7 @@ const userController = {
       const result = await onLogoutCurrentUser(req.header("Authorization"));
       res.status(200).send(result);
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onError(500, e.message));
     }
   },
   logoutAllUser: async (req, res) => {
@@ -244,7 +244,7 @@ const userController = {
 
       res.send();
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onError(500, e.message));
     }
   },
   deleteCurrentUser: async (req, res) => {
@@ -252,7 +252,7 @@ const userController = {
       await req.user.remove();
       res.send(req.user);
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onError(500, e.message));
     }
   },
   deleteUserById: async (req, res) => {
@@ -260,7 +260,7 @@ const userController = {
       const user = await User.findByIdAndDelete(req.params.id);
       res.send(user);
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onError(500, e.message));
     }
   },
   getUserByDepartmentId: async (req, res) => {
@@ -279,7 +279,7 @@ const userController = {
 
       res.send(users);
     } catch (e) {
-      res.status(401).send(onError(401, e.toString()));
+      res.status(401).send(onError(401, e.message));
     }
   },
   getUserByRoleTypeId: async (req, res) => {
@@ -297,7 +297,7 @@ const userController = {
         .exec();
       res.send(users);
     } catch (e) {
-      res.status(401).send(onError(401, e.toString()));
+      res.status(401).send(onError(401, e.message));
     }
   },
   getListUserPaginate: async (req, res) => {
@@ -319,7 +319,7 @@ const userController = {
         .exec();
       res.send(users);
     } catch (e) {
-      res.status(401).send(onError(401, e.toString()));
+      res.status(401).send(onError(401, e.message));
     }
   },
   getAllUserByFilter: async (req, res) => {
@@ -338,7 +338,7 @@ const userController = {
         res.status(404).send(onError(400, "User Not Found"));
       }
     } catch (e) {
-      res.status(401).send(onError(401, e.toString()));
+      res.status(401).send(onError(401, e.message));
     }
   },
   updateUserPermission: async (req, res) => {
@@ -401,7 +401,7 @@ const userController = {
         return res.status(400).send(onError(400, "User Not Found"));
       }
     } catch (e) {
-      res.status(400).send(onError(400, e.toString()));
+      res.status(400).send(onError(400, e.message));
     }
   },
 
@@ -450,7 +450,7 @@ const userController = {
 
       res.send(user);
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onError(500, e.message));
     }
   },
 };

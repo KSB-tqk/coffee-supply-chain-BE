@@ -368,7 +368,7 @@ const farmController = {
           );
       }
     } catch (e) {
-      res.status(500).send(onResponse(500, e.toString()));
+      res.status(500).send(onResponse(500, e.message));
     }
   },
 
@@ -411,7 +411,7 @@ const farmController = {
 
       res.send(farm);
     } catch (e) {
-      res.status(500).send(onResponse(500, e.toString()));
+      res.status(500).send(onResponse(500, e.message));
     }
   },
   removeSeedFromFarm: async (req, res) => {
@@ -436,7 +436,7 @@ const farmController = {
 
       res.send(await FarmModel.findById(req.params.id));
     } catch (e) {
-      res.status(500).send(onResponse(500, e.toString()));
+      res.status(500).send(onResponse(500, e.message));
     }
   },
 
@@ -479,7 +479,7 @@ const farmController = {
 
       res.send(farm);
     } catch (e) {
-      res.status(500).send(onResponse(500, e.toString()));
+      res.status(500).send(onResponse(500, e.message));
     }
   },
 
@@ -505,7 +505,7 @@ const farmController = {
 
       res.send(await FarmModel.findById(req.params.id));
     } catch (e) {
-      res.status(500).send(onResponse(500, e.toString()));
+      res.status(500).send(onResponse(500, e.message));
     }
   },
 
@@ -555,7 +555,7 @@ const farmController = {
 
       res.send(farm);
     } catch (e) {
-      res.status(500).send(onResponse(500, e.toString()));
+      res.status(500).send(onResponse(500, e.message));
     }
   },
 
@@ -591,7 +591,7 @@ const farmController = {
 
       res.send(await FarmModel.findById(req.params.id));
     } catch (e) {
-      res.status(500).send(onResponse(500, e.toString()));
+      res.status(500).send(onResponse(500, e.message));
     }
   },
 };
