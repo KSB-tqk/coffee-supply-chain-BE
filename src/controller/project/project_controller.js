@@ -69,6 +69,11 @@ const projectController = {
         produce.projectCode =
           req.body.projectCode;
 
+      harvest.harvestId = harvest._id;
+      transport.transportId = transport._id;
+      warehouseStorage.warehouseStorageId = warehouseStorage._id;
+      produce.produceSupervisionId = produce._id;
+
       harvest.save();
       transport.save();
       warehouseStorage.save();
@@ -97,8 +102,6 @@ const projectController = {
             res.send(onError(422, "Update project failed"));
           } else {
             //update fields
-            console.log("Project", project);
-            console.log(req.params.id);
 
             if (project != null) {
               if (project.state == 2) {
@@ -117,49 +120,6 @@ const projectController = {
                     project[field] = req.body[field];
                   }
                 }
-              }
-
-              if (req.body.state == 2) {
-                project.dateCompleted = Date.now();
-                await harvestModel.findByIdAndUpdate(project.harvest, {
-                  dateCompleted: Date.now(),
-                });
-                await ProduceSupervisionModel.findByIdAndUpdate(
-                  project.produce,
-                  {
-                    dateCompleted: Date.now(),
-                  }
-                );
-                await transportModel.findByIdAndUpdate(project.transport, {
-                  dateCompleted: Date.now(),
-                });
-                await warehouseStorageModel.findByIdAndUpdate(
-                  project.warehouseStorage,
-                  {
-                    outputDate: Date.now(),
-                  }
-                );
-              }
-
-              if (project.manager != null) {
-                await harvestModel.findByIdAndUpdate(project.harvest, {
-                  inspector: "63bf8be64ca81bddf5802481",
-                });
-                await ProduceSupervisionModel.findByIdAndUpdate(
-                  project.produce,
-                  {
-                    inspector: "63bfe6b1ad67eab25201d789",
-                  }
-                );
-                await transportModel.findByIdAndUpdate(project.transport, {
-                  inspector: "63bf8c14bcb6426a8fae4591",
-                });
-                await warehouseStorageModel.findByIdAndUpdate(
-                  project.warehouseStorage,
-                  {
-                    inspector: "63bf8cb2ad67eab25201d77f",
-                  }
-                );
               }
 
               if (project.projectLogList == null) project.projectLogList = [];

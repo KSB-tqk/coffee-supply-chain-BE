@@ -192,7 +192,7 @@ const farmController = {
           allowedUpdates.push("farmOwner");
         }
       } catch (err) {
-        return res.status(400).send(onResponse(400, err.toString()));
+        return res.status(400).send(onResponse(400, err.message));
       }
 
       if (!checkValidObjectId(req.params.id)) {
@@ -213,12 +213,12 @@ const farmController = {
 
       await farm.save();
       if (!farm) {
-        return res.status(400).send(onResponse(400, e.toString()));
+        return res.status(400).send(onResponse(400, e.message));
       } else {
         return res.status(200).send({ msg: `Update farm success`, farm: farm });
       }
     } catch (err) {
-      res.status(400).send(onResponse(400, err.toString()));
+      res.status(400).send(onResponse(400, err.message));
     }
   },
   getFarm: async (req, res) => {
@@ -255,7 +255,7 @@ const farmController = {
 
       res.status(200).send(farm);
     } catch (err) {
-      res.status(400).send(onResponse(400, err.msg));
+      res.status(400).send(onResponse(400, err.message));
     }
   },
   getAllFarms: async (req, res) => {

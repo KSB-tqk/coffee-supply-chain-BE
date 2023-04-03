@@ -166,28 +166,27 @@ const farmProjectController = {
 
       res.status(200).send(farmProject);
     } catch (err) {
-      res.status(400).send(onResponse(true, err.toString()));
+      res.status(400).send(onResponse(true, err.message));
     }
   },
   getAllFarmProjectsInFarm: async (req, res) => {
     try {
       const { farmId } = req.params;
 
-      const validFarm = await FarmModel.findOne({farmId: farmId});
-      
-      if(!validFarm) {
+      const validFarm = await FarmModel.findOne({ farmId: farmId });
+
+      if (!validFarm) {
         res.status(400).send(onError(400), "This farm doesn't exist");
       }
-      
-      const farmProjects = await FarmProjectModel.find({farmId: farmId})
-          .populate(["land", "seed"])
-          .exec();
-      res.status(200).send(farmProjects);
 
+      const farmProjects = await FarmProjectModel.find({ farmId: farmId })
+        .populate(["land", "seed"])
+        .exec();
+      res.status(200).send(farmProjects);
     } catch (err) {
-      res.status(400).send(onErrpr(400, err.toString()));
+      res.status(400).send(onErrpr(400, err.message));
     }
-  }
+  },
 };
 
 const FarmProjectServices = { farmProjectController };

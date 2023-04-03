@@ -18,3 +18,10 @@ export async function onValidProjectInfo(project, userEmail) {
 
   return null;
 }
+
+export async function onUpdateProject(project) {
+  try {
+  } catch (err) {
+    throw Error(err);
+  }
+}

@@ -107,6 +107,16 @@ export async function onValidUserEmail(userEmail) {
     email: userEmail,
   });
 }
+
+// Check User Valid Department
+export async function onValidUserDepartment(user, department) {
+  if (user != null) {
+    for (let i = 0; i < department.length; i++) {
+      if (department[i] == user.department) return user;
+    }
+  }
+  return false;
+}
 // ----- End User data validator -----
 
 // On Response

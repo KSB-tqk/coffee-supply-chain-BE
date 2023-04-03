@@ -11,6 +11,16 @@ warehouseStorageRouter.post(
   warehouseStorageController.addWarehouseStorage
 );
 
+warehouseStorageRouter.patch(
+  "/add-warehouse-supervision",
+  warehouseStorageController.addWarehouseStorageSupervision
+);
+
+warehouseStorageRouter.patch(
+  "/remove-warehouse-supervision",
+  warehouseStorageController.removeWarehouseStorageSupervision
+);
+
 warehouseStorageRouter.get(
   "/:id",
   warehouseStorageController.getWarehouseStorage

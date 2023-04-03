@@ -22,6 +22,14 @@ produceSupervisionRouter.get(
 );
 
 produceSupervisionRouter.patch(
+  "/add-produce-supervision",
+  produceSupervisionController.addProduceSupervisionInspector
+);
+produceSupervisionRouter.patch(
+  "/remove-produce-supervision",
+  produceSupervisionController.removeProduceSupervision
+);
+produceSupervisionRouter.patch(
   "/:id",
   produceSupervisionController.updateProduceSupervision
 );
