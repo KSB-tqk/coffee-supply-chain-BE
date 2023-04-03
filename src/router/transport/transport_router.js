@@ -12,6 +12,16 @@ transportRouter.get("/:id", transportController.getTransport);
 
 transportRouter.get("/", transportController.getAllTransport);
 
+transportRouter.patch(
+  "/add-transport-supervision",
+  transportController.addTransportSupervision
+);
+
+transportRouter.patch(
+  "/remove-transport-supervision",
+  transportController.removeTransportSupervision
+);
+
 transportRouter.patch("/:id", transportController.updateTransport);
 
 transportRouter.delete("/:id", transportController.deleteTransport);

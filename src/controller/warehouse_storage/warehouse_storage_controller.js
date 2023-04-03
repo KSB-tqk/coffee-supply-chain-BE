@@ -1,3 +1,12 @@
+import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import UserDepartment from "../../enum/user_department.js";
+import UserRole from "../../enum/user_role.js";
+import {
+  onError,
+  onValidUserDepartment,
+  onValidUserRole,
+} from "../../helper/data_helper.js";
+import User from "../../model/user/user.js";
 import WarehouseStorageModel from "../../model/warehouse_storage/warehouse_storage.js";
 
 const warehouseStorageController = {
@@ -12,7 +21,7 @@ const warehouseStorageController = {
         warehouseStorage,
       });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   updateWarehouseStorage: async (req, res) => {
@@ -84,7 +93,7 @@ const warehouseStorageController = {
       warehouseStorageChangeState.state = 3;
       res.status(200).send({ msg: "Delete warehouseStorage success" });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   getAllWarehouseStorages: async (req, res) => {
@@ -95,7 +104,7 @@ const warehouseStorageController = {
         .exec();
       res.status(200).send(warehouseStorage.reverse());
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   getWarehouseStorage: async (req, res) => {
@@ -115,7 +124,109 @@ const warehouseStorageController = {
 
       res.status(200).send(warehouseStorage);
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
+    }
+  },
+
+  addWarehouseStorageSupervision: async (req, res) => {
+    try {
+      const user = await User.findOne({ email: req.query.email });
+      const warehouseStorage = await WarehouseStorageModel.findById(
+        req.query.warehouseStorageId
+      );
+
+      if (warehouseStorage == null)
+        return res
+          .status(404)
+          .send(onError(404, "Warehouse Storage Not Found" + ERROR_MESSAGE));
+
+      if (warehouseStorage.inspector != null) {
+        return res
+          .status(404)
+          .send(
+            onError(
+              404,
+              "Warehouse Storage already has an inspector" + ERROR_MESSAGE
+            )
+          );
+      }
+
+      if (user == null)
+        return res
+          .status(404)
+          .send(
+            onError(404, "Email does not link to any account" + ERROR_MESSAGE)
+          );
+
+      if (
+        !(await onValidUserDepartment(user, [
+          UserDepartment.WarehouseSupervision,
+        ]))
+      )
+        return res
+          .status(400)
+          .send(
+            onError(
+              400,
+              "User is not participate in this department" + ERROR_MESSAGE
+            )
+          );
+
+      if (
+        (await onValidUserRole(req.header("Authorization"), [
+          UserRole.SystemAdmin,
+        ])) == false
+      )
+        return res
+          .status(400)
+          .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
+
+      warehouseStorage.inspector = user._id;
+      warehouseStorage.save();
+
+      res.status(200).send(warehouseStorage);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  removeWarehouseStorageSupervision: async (req, res) => {
+    try {
+      const warehouseStorage = await WarehouseStorageModel.findById(
+        req.query.warehouseStorageId
+      );
+
+      if (warehouseStorage == null)
+        return res
+          .status(404)
+          .send(onError(404, "Warehouse Storage Not Found" + ERROR_MESSAGE));
+
+      if (warehouseStorage.inspector == null) {
+        return res
+          .status(404)
+          .send(
+            onError(
+              404,
+              "Warehouse Storage does not has an inspector yet" + ERROR_MESSAGE
+            )
+          );
+      }
+
+      if (
+        (await onValidUserRole(req.header("Authorization"), [
+          UserRole.SystemAdmin,
+        ])) == false
+      )
+        return res
+          .status(400)
+          .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
+
+      warehouseStorage.inspector = null;
+      warehouseStorage.save();
+
+      res.status(200).send(warehouseStorage);
+    } catch (err) {
+      return res.status(500).send(onError(500, err.message));
     }
   },
 };

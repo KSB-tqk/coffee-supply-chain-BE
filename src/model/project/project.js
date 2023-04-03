@@ -72,10 +72,16 @@ const projectSchema = mongoose.Schema({
 //Hash the plain text pwd before saving
 projectSchema.pre("save", async function (next) {
   const modifiedPaths = this.modifiedPaths().toString();
-  const stepLog = await StepLogModel.findById(getStepLogId());
-  console.log("steplog after save", stepLog);
-  stepLog.action = "Modified field: " + modifiedPaths;
-  await stepLog.save();
+
+  const stepLogId = getStepLogId();
+
+  if (stepLogId != null) {
+    const stepLog = await StepLogModel.findById(stepLogId);
+    console.log("steplog after save", stepLog);
+    stepLog.action = "Modified field: " + modifiedPaths;
+    await stepLog.save();
+  }
+
   next();
 });
 

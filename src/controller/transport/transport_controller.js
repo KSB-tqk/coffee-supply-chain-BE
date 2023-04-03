@@ -1,5 +1,13 @@
-import { onError } from "../../helper/data_helper.js";
+import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import UserDepartment from "../../enum/user_department.js";
+import UserRole from "../../enum/user_role.js";
+import {
+  onError,
+  onValidUserDepartment,
+  onValidUserRole,
+} from "../../helper/data_helper.js";
 import TransportModel from "../../model/transport/transport.js";
+import User from "../../model/user/user.js";
 
 const transportController = {
   addTransport: async (req, res) => {
@@ -114,6 +122,101 @@ const transportController = {
       res.status(200).send(transport);
     } catch (err) {
       res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  addTransportSupervision: async (req, res) => {
+    try {
+      const user = await User.findOne({ email: req.query.email });
+      const transport = await TransportModel.findById(req.query.transportId);
+
+      if (transport == null)
+        return res
+          .status(404)
+          .send(onError(404, "Transport Not Found" + ERROR_MESSAGE));
+
+      if (transport.inspector != null) {
+        return res
+          .status(404)
+          .send(
+            onError(404, "Transport already has an inspector" + ERROR_MESSAGE)
+          );
+      }
+
+      if (user == null)
+        return res
+          .status(404)
+          .send(
+            onError(404, "Email does not link to any account" + ERROR_MESSAGE)
+          );
+
+      if (
+        !(await onValidUserDepartment(user, [
+          UserDepartment.TransportSupervision,
+        ]))
+      )
+        return res
+          .status(400)
+          .send(
+            onError(
+              400,
+              "User is not participate in this department" + ERROR_MESSAGE
+            )
+          );
+
+      if (
+        (await onValidUserRole(req.header("Authorization"), [
+          UserRole.SystemAdmin,
+        ])) == false
+      )
+        return res
+          .status(400)
+          .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
+
+      transport.inspector = user._id;
+      transport.save();
+
+      res.status(200).send(transport);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  removeTransportSupervision: async (req, res) => {
+    try {
+      const transport = await TransportModel.findById(req.query.transportId);
+
+      if (transport == null)
+        return res
+          .status(404)
+          .send(onError(404, "Transport Not Found" + ERROR_MESSAGE));
+
+      if (transport.inspector == null) {
+        return res
+          .status(404)
+          .send(
+            onError(
+              404,
+              "Transport does not has an inspector yet" + ERROR_MESSAGE
+            )
+          );
+      }
+
+      if (
+        (await onValidUserRole(req.header("Authorization"), [
+          UserRole.SystemAdmin,
+        ])) == false
+      )
+        return res
+          .status(400)
+          .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
+
+      transport.inspector = null;
+      transport.save();
+
+      res.status(200).send(transport);
+    } catch (err) {
+      return res.status(500).send(onError(500, err.message));
     }
   },
 };

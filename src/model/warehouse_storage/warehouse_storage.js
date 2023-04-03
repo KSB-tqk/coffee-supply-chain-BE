@@ -10,6 +10,10 @@ const warehouseStorageSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  warehouseStorageId: {
+    type: String,
+    default: null,
+  },
   warehouse: {
     type: String,
     ref: "Warehouse",

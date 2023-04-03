@@ -8,6 +8,10 @@ harvestRouter.use(auth);
 
 harvestRouter.post("/", harvestController.addHarvest);
 
+harvestRouter.patch("/add-harvestor", harvestController.addHarvestor);
+
+harvestRouter.patch("/remove-harvestor", harvestController.removeHarvestor);
+
 harvestRouter.get("/:id", harvestController.getHarvest);
 
 harvestRouter.get("/", harvestController.getAllHarvests);

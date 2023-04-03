@@ -16,6 +16,14 @@ const stepLogSchema = mongoose.Schema(
       type: String,
       default: "",
     },
+    modelBeforeChanged: {
+      type: String,
+      default: null,
+    },
+    modelAfterChanged: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,

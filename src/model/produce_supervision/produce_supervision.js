@@ -6,6 +6,10 @@ const produceSupervisionSchema = mongoose.Schema({
     ref: "Project",
     default: null,
   },
+  produceSupervisionId: {
+    type: String,
+    default: null,
+  },
   totalInput: {
     type: Number,
     default: 0,
