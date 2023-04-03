@@ -11,7 +11,10 @@ import {
   onError,
   onValidUserRole,
 } from "../../helper/data_helper.js";
-import { onValidProjectInfo } from "../../helper/project/project_data_helper.js";
+import {
+  onUpdateProjectState,
+  onValidProjectInfo,
+} from "../../helper/project/project_data_helper.js";
 import harvestModel from "../../model/harvest/harvest.js";
 import ProduceSupervisionModel from "../../model/produce_supervision/produce_supervision.js";
 import ProjectModel from "../../model/project/project.js";
@@ -57,28 +60,33 @@ const projectController = {
       project.manager = isValidUser._id;
       project.projectLogList = [];
 
+      // add projectId
       harvest.projectId =
         transport.projectId =
         warehouseStorage.projectId =
         produce.projectId =
           project._id;
 
+      // add projectCode
       harvest.projectCode =
         transport.projectCode =
         warehouseStorage.projectCode =
         produce.projectCode =
           req.body.projectCode;
 
+      // add shadowId
       harvest.harvestId = harvest._id;
       transport.transportId = transport._id;
       warehouseStorage.warehouseStorageId = warehouseStorage._id;
       produce.produceSupervisionId = produce._id;
 
+      // save all step
       harvest.save();
       transport.save();
       warehouseStorage.save();
       produce.save();
 
+      // save project
       project.projectId = project._id;
       await project.save();
 
@@ -104,6 +112,17 @@ const projectController = {
             //update fields
 
             if (project != null) {
+              // save model before change
+              let stepLog = StepLogModel();
+              stepLog.projectId = project._id;
+              stepLog.actor = ObjectId(
+                await getUserIdByHeader(req.header("Authorization"))
+              );
+              stepLog.modelBeforeChanged = JSON.stringify(project);
+              console.log("steplog before save", stepLog);
+              await stepLog.save();
+
+              // check if project is completed
               if (project.state == 2) {
                 return res
                   .status(400)
@@ -114,6 +133,8 @@ const projectController = {
                     )
                   );
               }
+
+              // update project by req.body
               for (var field in ProjectModel.schema.paths) {
                 if (field !== "_id" && field !== "__v") {
                   if (req.body[field] !== undefined) {
@@ -122,20 +143,35 @@ const projectController = {
                 }
               }
 
-              if (project.projectLogList == null) project.projectLogList = [];
+              // check and update step's state in project
+              let tempProject = ProjectModel();
 
-              const stepLog = StepLogModel();
-              stepLog.projectId = project._id;
-              stepLog.actor = ObjectId(
-                await getUserIdByHeader(req.header("Authorization"))
-              );
-              console.log("steplog before save", stepLog);
-              await stepLog.save();
+              if (req.body.state != null) {
+                console.log("OnUpdate State");
+                try {
+                  tempProject = await onUpdateProjectState(
+                    project,
+                    req.body.state
+                  );
+                } catch (err) {
+                  console.log(err);
+                  return res.status(400).send(onError(400, err.message));
+                }
+              }
+
+              // update project after update the step inside
+              project.dateCompleted = tempProject.dateCompleted;
+              project.state = tempProject.state;
+
+              // update project log list
+              if (project.projectLogList == null) project.projectLogList = [];
 
               setStepLogId(stepLog._id);
               project.projectLogList = project.projectLogList.concat({
                 projectLog: stepLog._id,
               });
+
+              // save, populate and resend project model
               await project.save();
               const theProject = await ProjectModel.findById(project._id)
                 .populate("manager")
@@ -164,6 +200,15 @@ const projectController = {
                   },
                 });
 
+              // save the model after changed
+              stepLog = await StepLogModel.findById(getStepLogId());
+              stepLog.modelAfterChanged = JSON.stringify(
+                await ProjectModel.findById(project._id)
+              );
+              console.log("Step Log Final", stepLog);
+              stepLog.save();
+
+              // resend model after finish request
               res.status(200).send({
                 project: theProject,
                 contractContent:
@@ -182,7 +227,7 @@ const projectController = {
         }
       );
     } catch (e) {
-      res.status(500).send(onError(500, e.toString()));
+      res.status(500).send(onError(500, e.message));
     }
   },
   deleteProject: async (req, res) => {

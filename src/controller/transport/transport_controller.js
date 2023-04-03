@@ -6,6 +6,7 @@ import {
   onValidUserDepartment,
   onValidUserRole,
 } from "../../helper/data_helper.js";
+import { isValidTransportStateUpdate } from "../../helper/transport/transport_data_helper.js";
 import TransportModel from "../../model/transport/transport.js";
 import User from "../../model/user/user.js";
 
@@ -38,12 +39,18 @@ const transportController = {
         if (err) {
           res.send(422, "Update transport failed");
         } else {
+          const oldState = transport.state;
+
           //update fields
           if (transport.state == 2)
-            return res.status(400).send({
-              error:
-                "Transport infomation cannot be update because it has been completed",
-            });
+            return res
+              .status(400)
+              .send(
+                onError(
+                  400,
+                  "Transport infomation cannot be update because it has been completed"
+                )
+              );
           for (var field in TransportModel.schema.paths) {
             if (field !== "_id" && field !== "__v") {
               if (req.body[field] !== undefined) {
@@ -51,6 +58,27 @@ const transportController = {
               }
             }
           }
+
+          // check whether the body of the updated model has any invalid field
+          // [state] must be State.Pending
+          // [projectId] and [inspector] must not be null
+          // [projectCode] must not be empty
+          if (req.body.state != null)
+            try {
+              if (
+                !(await isValidTransportStateUpdate(
+                  transport,
+                  req.body.state,
+                  oldState
+                ))
+              )
+                return res
+                  .status(400)
+                  .send(onError(400, "Invalid Update" + ERROR_MESSAGE));
+            } catch (err) {
+              return res.status(400).send(onError(400, err.message));
+            }
+
           if (transport.state == 2) {
             transport.dateCompleted = Date.now();
           }
@@ -58,15 +86,7 @@ const transportController = {
           const transportPop = await TransportModel.findById(transport._id)
             .populate("projectId")
             .populate("inspector");
-          res.status(200).send({
-            transport: transportPop,
-            contractContent:
-              Date.now().toString() +
-              "|" +
-              transport.inspector.toString() +
-              "|Transport|" +
-              transport.state,
-          });
+          res.status(200).send(transportPop);
         }
       });
     } catch (e) {
