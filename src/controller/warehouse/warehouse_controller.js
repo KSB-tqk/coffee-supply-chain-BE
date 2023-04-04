@@ -1,3 +1,6 @@
+import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import { onError } from "../../helper/data_helper.js";
+import { isValidWarehouseStateUpdate } from "../../helper/warehouse_storage/warehouse_storage_data_helper.js";
 import WarehouseModel from "../../model/warehouse/warehouse.js";
 
 const warehouseController = {
@@ -9,7 +12,7 @@ const warehouseController = {
 
       res.status(200).send({ msg: "Create warehouse successfully", warehouse });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   updateWarehouse: async (req, res) => {
@@ -18,13 +21,15 @@ const warehouseController = {
     const warehouse = await WarehouseModel.findById(id).exec();
 
     if (!warehouse) {
-      return res.status(400).send({ msg: "This warehouse doesn't exist" });
+      return res.status(400).send(onError(400, "This warehouse doesn't exist"));
     }
 
-    WarehouseModel.findOne({ _id: id }, function (err, warehouse) {
+    WarehouseModel.findOne({ _id: id }, async function (err, warehouse) {
       if (err) {
-        res.send(422, "Update transport failed");
+        res.status(422).send(onError(422, "Update Warehouse failed"));
       } else {
+        const oldState = warehouse.state;
+
         //update fields
         for (var field in WarehouseModel.schema.paths) {
           if (field !== "_id" && field !== "__v") {
@@ -33,7 +38,8 @@ const warehouseController = {
             }
           }
         }
-        warehouse.save();
+
+        await warehouse.save();
         res.status(200).send({ warehouse });
       }
     });
@@ -45,13 +51,15 @@ const warehouseController = {
       const warehouse = await WarehouseModel.findById(id).exec();
 
       if (!warehouse) {
-        return res.status(400).send({ msg: "This warehouse doesn't exist" });
+        return res
+          .status(400)
+          .send(onError(400, "This warehouse doesn't exist"));
       }
 
       await WarehouseModel.findByIdAndRemove(id);
       res.status(200).send({ msg: "Delete warehouse success" });
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   getAllWarehouses: async (req, res) => {
@@ -59,7 +67,7 @@ const warehouseController = {
       const warehouse = await WarehouseModel.find();
       res.status(200).send(warehouse);
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
   getWarehouse: async (req, res) => {
@@ -69,12 +77,14 @@ const warehouseController = {
       const warehouse = await WarehouseModel.findById(id).exec();
 
       if (!warehouse) {
-        return res.status(400).send({ msg: "This warehouse doesn't exist" });
+        return res
+          .status(400)
+          .send(onError(400, "This warehouse doesn't exist"));
       }
 
       res.status(200).send(warehouse);
     } catch (err) {
-      res.status(400).send({ msg: err.message });
+      res.status(400).send(onError(400, err.message));
     }
   },
 };

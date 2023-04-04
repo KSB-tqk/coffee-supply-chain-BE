@@ -6,6 +6,7 @@ import {
   onValidUserDepartment,
   onValidUserRole,
 } from "../../helper/data_helper.js";
+import { isValidProduceStateUpdate } from "../../helper/produce/produce_data_helper.js";
 import ProduceSupervisionModel from "../../model/produce_supervision/produce_supervision.js";
 import User from "../../model/user/user.js";
 
@@ -43,12 +44,19 @@ const produceSupervisionController = {
         if (err) {
           res.send(422, "Update transport failed");
         } else {
+          const oldState = produceSupervision.state;
+
           //update fields
           if (produceSupervision.state == 2)
-            return res.status(400).send({
-              error:
-                "Produce Supervision infomation cannot be update because it has been completed",
-            });
+            return res
+              .status(400)
+              .send(
+                onError(
+                  400,
+                  "Produce Supervision infomation cannot be update because it has been completed"
+                )
+              );
+
           for (var field in ProduceSupervisionModel.schema.paths) {
             if (field !== "_id" && field !== "__v") {
               if (req.body[field] !== undefined) {
@@ -56,6 +64,25 @@ const produceSupervisionController = {
               }
             }
           }
+
+          if (req.body.state != null) {
+            try {
+              if (
+                !(await isValidProduceStateUpdate(
+                  produceSupervision,
+                  req.body.state,
+                  oldState
+                ))
+              ) {
+                return res
+                  .status(400)
+                  .send(onError(400, "Invalid State Update" + ERROR_MESSAGE));
+              }
+            } catch (err) {
+              return res.status(400).send(onError(400, err.message));
+            }
+          }
+
           if (produceSupervision.state == 2) {
             produceSupervision.dateCompleted = Date.now();
           }
@@ -89,7 +116,7 @@ const produceSupervisionController = {
       if (!produceSupervision) {
         return res
           .status(400)
-          .send({ msg: "This produceSupervision doesn't exist" });
+          .send(onError(400, "This produceSupervision doesn't exist"));
       }
 
       const produceChangeState = await ProduceSupervisionModel.findById(id);
@@ -122,7 +149,7 @@ const produceSupervisionController = {
       if (!produceSupervision) {
         return res
           .status(400)
-          .send({ msg: "This produceSupervision doesn't exist" });
+          .send(onError(400, "This produceSupervision doesn't exist"));
       }
 
       res.status(200).send(produceSupervision);
