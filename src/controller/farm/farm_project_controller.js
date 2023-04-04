@@ -2,8 +2,15 @@ import FarmModel from "../../model/farm/farm.js";
 import FarmProjectModel from "../../model/farm/farm_project.js";
 import LandModel from "../../model/farm/land.js";
 import SeedModel from "../../model/farm/seed.js";
-import { checkValidObjectId, onResponse } from "../../helper/data_helper.js";
+import {
+  checkValidObjectId,
+  onError,
+  onResponse,
+} from "../../helper/data_helper.js";
 import { onValidFarmProjectInfo } from "../../helper/farm/farm_data_helper.js";
+import User from "../../model/user/user.js";
+import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import UserRole from "../../enum/user_role.js";
 
 const farmProjectController = {
   addFarmProject: async (req, res) => {
@@ -55,6 +62,7 @@ const farmProjectController = {
         dateCompleted,
         totalHarvest,
         state,
+        farmer,
       } = req.body;
 
       const farmProject = await FarmProjectModel.findById(id).exec();
@@ -101,6 +109,21 @@ const farmProjectController = {
             state: state,
           },
         });
+
+        // check to add farmer to farmPJ
+        if (req.body.farmer != null) {
+          const farmer = await User.findById(req.body.farmer);
+          if (farmer == null)
+            return res
+              .status(400)
+              .send(onError(400, "Farmer Not Found" + ERROR_MESSAGE));
+          if (farmer.role != UserRole.Farmer)
+            return res
+              .status(400)
+              .send(onError(400, "User is not a farmer" + ERROR_MESSAGE));
+          farmProject.farmer = farmer._id;
+          await farmProject.save();
+        }
 
         return res.status(200).send(farmProject);
       }
