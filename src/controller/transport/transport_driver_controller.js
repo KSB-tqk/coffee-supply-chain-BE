@@ -23,7 +23,7 @@ const transportDriverController = {
     if (!harvest) {
       return res
         .status(400)
-        .send({ msg: "This Transport Driver doesn't exist" });
+        .send(onError(400, "This Transport Driver doesn't exist"));
     }
 
     TransportDriverModel.findOne(
@@ -85,7 +85,7 @@ const transportDriverController = {
       if (!transportDriverDriver) {
         return res
           .status(400)
-          .send({ msg: "This Transport Driver doesn't exist" });
+          .send(onError(400, "This Transport Driver doesn't exist"));
       }
 
       res.status(200).send(transportDriverDriver);

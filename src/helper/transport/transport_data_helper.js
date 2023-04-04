@@ -5,8 +5,15 @@ import ProjectModel from "../../model/project/project.js";
 
 export async function isValidTransportStateUpdate(transport, state, oldState) {
   try {
+    if (transport.projectId == null)
+      throw Error("Transport Project Id can not be null");
+
     const project = await ProjectModel.findById(transport.projectId);
+    if (project == null)
+      throw Error("Project of transport model does not exist");
     const harvest = await harvestModel.findById(project.harvest);
+    if (harvest == null) throw Error("Harvest in the project does not exist");
+
     if (harvest.state == State.Completed) {
       if (state == State.Completed) {
         if (transport.projectId == null)
@@ -24,8 +31,6 @@ export async function isValidTransportStateUpdate(transport, state, oldState) {
       }
       return true;
     } else throw Error("Harvest State is not completed");
-
-    return false;
   } catch (err) {
     throw Error(err.message + ERROR_MESSAGE);
   }

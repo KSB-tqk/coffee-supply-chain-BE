@@ -34,10 +34,14 @@ const stepLogController = {
       } else {
         //update fields
         if (stepLog.state == 2)
-          return res.status(400).send({
-            error:
-              "StepLog infomation cannot be update because it has been completed",
-          });
+          return res
+            .status(400)
+            .send(
+              onError(
+                400,
+                "StepLog infomation cannot be update because it has been completed"
+              )
+            );
         for (var field in StepLogModel.schema.paths) {
           if (field !== "_id" && field !== "__v") {
             if (req.body[field] !== undefined) {

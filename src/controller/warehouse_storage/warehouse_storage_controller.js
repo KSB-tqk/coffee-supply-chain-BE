@@ -6,6 +6,7 @@ import {
   onValidUserDepartment,
   onValidUserRole,
 } from "../../helper/data_helper.js";
+import { isValidWarehouseStateUpdate } from "../../helper/warehouse_storage/warehouse_storage_data_helper.js";
 import User from "../../model/user/user.js";
 import WarehouseStorageModel from "../../model/warehouse_storage/warehouse_storage.js";
 
@@ -32,26 +33,50 @@ const warehouseStorageController = {
     if (!warehouseStorage) {
       return res
         .status(400)
-        .send({ msg: "This warehouseStorage doesn't exist" });
+        .send(onError(400, "This warehouseStorage doesn't exist"));
     }
 
     WarehouseStorageModel.findOne(
       { _id: id },
       async function (err, warehouseStorage) {
         if (err) {
-          res.send(422, "Update transport failed");
+          res.status(422).send(onError(422, "Update transport failed"));
         } else {
+          const oldState = warehouseStorage.state;
+
           //update fields
           if (warehouseStorage.state == 2)
-            return res.status(400).send({
-              error:
-                "Warehouse Storage infomation cannot be update because it has been completed",
-            });
+            return res
+              .status(400)
+              .send(
+                onError(
+                  400,
+                  "Warehouse Storage infomation cannot be update because it has been completed"
+                )
+              );
+
           for (var field in WarehouseStorageModel.schema.paths) {
             if (field !== "_id" && field !== "__v") {
               if (req.body[field] !== undefined) {
                 warehouseStorage[field] = req.body[field];
               }
+            }
+          }
+
+          if (req.body.state != null) {
+            try {
+              if (
+                !(await isValidWarehouseStateUpdate(
+                  warehouseStorage,
+                  req.body.state,
+                  oldState
+                ))
+              )
+                return res
+                  .status(400)
+                  .send(onError(400, "Invalid State Update" + ERROR_MESSAGE));
+            } catch (err) {
+              return res.status(400).send(onError(400, err.message));
             }
           }
           if (warehouseStorage.state == 2) {
@@ -85,7 +110,7 @@ const warehouseStorageController = {
       if (!warehouseStorage) {
         return res
           .status(400)
-          .send({ msg: "This warehouseStorage doesn't exist" });
+          .send(onError(400, "This warehouseStorage doesn't exist"));
       }
 
       const warehouseStorageChangeState =
@@ -119,7 +144,7 @@ const warehouseStorageController = {
       if (!warehouseStorage) {
         return res
           .status(400)
-          .send({ msg: "This warehouseStorage doesn't exist" });
+          .send(onError(400, "This warehouseStorage doesn't exist"));
       }
 
       res.status(200).send(warehouseStorage);
