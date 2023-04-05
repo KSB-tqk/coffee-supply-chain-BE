@@ -63,6 +63,16 @@ const farmProjectSchema = mongoose.Schema({
     required: false,
     default: "",
   },
+  projectId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Project",
+    default: null,
+  },
+  farmer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null,
+  },
 });
 
 const FarmProjectModel = mongoose.model("FarmProject", farmProjectSchema);
