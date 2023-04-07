@@ -203,7 +203,7 @@ const farmProjectController = {
       }
 
       const farmProjects = await FarmProjectModel.find({ farmId: farmId })
-        .populate(["land", "seed"])
+        .populate(["land", "seed", "farmer", "projectId"])
         .exec();
       res.status(200).send(farmProjects);
     } catch (err) {
