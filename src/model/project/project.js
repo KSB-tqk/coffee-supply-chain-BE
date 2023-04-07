@@ -59,6 +59,11 @@ const projectSchema = mongoose.Schema({
       },
     },
   ],
+  farmProject: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "FarmProject",
+    default: null,
+  },
   state: {
     type: Number,
     default: 1,

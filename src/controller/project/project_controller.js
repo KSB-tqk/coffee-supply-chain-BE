@@ -15,6 +15,7 @@ import {
   onUpdateProjectState,
   onValidProjectInfo,
 } from "../../helper/project/project_data_helper.js";
+import FarmProjectModel from "../../model/farm/farm_project.js";
 import harvestModel from "../../model/harvest/harvest.js";
 import ProduceSupervisionModel from "../../model/produce_supervision/produce_supervision.js";
 import ProjectModel from "../../model/project/project.js";
@@ -121,6 +122,25 @@ const projectController = {
               stepLog.modelBeforeChanged = JSON.stringify(project);
               console.log("steplog before save", stepLog);
               await stepLog.save();
+
+              // check if update farmPJ
+              if (req.body.farmProject != null) {
+                const farmProject = await FarmProjectModel.findById(
+                  req.body.farmProject
+                );
+                if (farmProject == null)
+                  return res
+                    .status(400)
+                    .send(
+                      onError(
+                        400,
+                        "Farm Project does not exist" + ERROR_MESSAGE
+                      )
+                    );
+                farmProject.projectId = project._id;
+                farmProject.save();
+                project.farmProject = farmProject._id;
+              }
 
               // check if project is completed
               if (project.state == 2) {
