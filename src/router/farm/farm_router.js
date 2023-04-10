@@ -29,7 +29,10 @@ farmRouter.get("/seed/all/", SeedService.seedController.getAllSeeds);
 farmRouter.get("/seed/:id", SeedService.seedController.getSeed);
 
 // get all seeds by Farm ID
-farmRouter.get("/seed/all/:farmId", SeedService.seedController.getAllSeedsInFarm);
+farmRouter.get(
+  "/seed/all/:farmId",
+  SeedService.seedController.getAllSeedsInFarm
+);
 
 //
 //
@@ -52,7 +55,10 @@ farmRouter.get("/land/all/", LandService.landController.getAllLands);
 farmRouter.get("/land/:id", LandService.landController.getLand);
 
 // get all lands by farm ID
-farmRouter.get("/land/all/:farmId", LandService.landController.getAllLandsInFarm);
+farmRouter.get(
+  "/land/all/:farmId",
+  LandService.landController.getAllLandsInFarm
+);
 
 //
 //
@@ -82,37 +88,28 @@ farmRouter.post(
 
 //-----------------------
 //--------FarmSeed-------
-// add seed into farm
-farmRouter.post("/add-seed/:id", FarmServices.farmController.addSeedIntoFarm);
 
 // remove seed from farm
 farmRouter.delete(
-  "/remove-seed/:id",
+  "/:id/remove-seed/",
   FarmServices.farmController.removeSeedFromFarm
 );
 
 //-----------------------
 //--------FarmLand-------
-// add land into farm
-farmRouter.post("/add-land/:id", FarmServices.farmController.addLandIntoFarm);
 
 // remove land from farm
 farmRouter.delete(
-  "/remove-land/:id",
+  "/:id/remove-land/",
   FarmServices.farmController.removeLandFromFarm
 );
 
 //-----------------------
 //-------FarmProject-----
-// add farm project into farm
-farmRouter.post(
-  "/add-farmproject/:id",
-  FarmServices.farmController.addFarmProjectIntoFarm
-);
 
 // remove farm project from farm
 farmRouter.delete(
-  "/remove-farmproject/:id",
+  "/:id/remove-farmproject/",
   FarmServices.farmController.removeFarmProjectFromFarm
 );
 
@@ -120,5 +117,11 @@ farmRouter.delete(
 farmRouter.post(
   "/remove-farmer/:id",
   FarmServices.farmController.removeFarmerFromFarm
+);
+
+// get all lands by farm ID
+farmRouter.get(
+  "/farmProject/all/:farmId",
+  FarmServices.farmController.getAllFarmProjectInFarm
 );
 export default farmRouter;

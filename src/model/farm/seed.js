@@ -8,25 +8,21 @@ const seedSchema = mongoose.Schema({
   },
   farmId: {
     type: String,
-    required: true,
     trim: true,
     default: null,
   },
   seedName: {
     type: String,
-    required: true,
     trim: true,
     default: "",
   },
   seedFamily: {
     type: String,
-    required: true,
     trim: true,
     default: "",
   },
   supplier: {
     type: String,
-    required: true,
     trim: true,
     default: "",
   },

@@ -29,11 +29,9 @@ const landController = {
       newLand.landId = newLand._id;
       await newLand.save();
 
-      await FarmModel.findByIdAndUpdate(farmId, {
-        $push: {
-          lands: newLand._id,
-        },
-      });
+      if (farm.landList == null) farm.landList = [];
+      farm.landList = farm.landList.concat({ land: newLand._id });
+      await farm.save();
 
       res.status(200).send(newLand);
     } catch (err) {
@@ -124,13 +122,13 @@ const landController = {
     try {
       const { farmId } = req.params;
 
-      const validFarm = await FarmModel.findOne({farmId: farmId});
-      
-      if(!validFarm) {
+      const validFarm = await FarmModel.findOne({ farmId: farmId });
+
+      if (!validFarm) {
         res.status(400).send(onError(400), "This farm doesn't exist");
       }
 
-      const lands = await LandModel.find({farmId: farmId});
+      const lands = await LandModel.find({ farmId: farmId });
 
       return res.status(200).send(lands);
     } catch (err) {
