@@ -25,11 +25,9 @@ const seedController = {
       newSeed.seedId = newSeed._id;
       await newSeed.save();
 
-      await FarmModel.findByIdAndUpdate(farmId, {
-        $push: {
-          seeds: newSeed._id,
-        },
-      });
+      if (farm.seedList == null) farm.seedList = [];
+      farm.seedList = farm.seedList.concat({ seed: newSeed._id });
+      farm.save();
 
       res.status(200).send(newSeed);
     } catch (err) {

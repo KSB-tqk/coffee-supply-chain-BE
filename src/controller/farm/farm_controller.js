@@ -237,7 +237,12 @@ const farmController = {
             path: "farmer",
           },
         })
-        .populate("farmProjectList")
+        .populate({
+          path: "farmProjectList",
+          populate: {
+            path: "farmProject",
+          },
+        })
         .populate({
           path: "landList",
           populate: {
@@ -375,64 +380,29 @@ const farmController = {
   //
   // Send List Controller
   //
-  addSeedIntoFarm: async (req, res) => {
+  removeSeedFromFarm: async (req, res) => {
     try {
-      const farm = await FarmModel.findById(req.params.id);
-      if (farm == null)
-        return res
-          .status(400)
-          .send(onResponse(400, "Farm Not Found" + ERROR_MESSAGE));
-      if (farm.seedList == null) farm.seedList = [];
-
       // check if seedId Exist
-      if (!(await SeedModel.findById(req.body.seedId)))
+      const seed = await SeedModel.findById(req.query.seedId);
+      if (seed == null)
         return res
           .status(400)
           .send(onResponse(400, "Seed Not Found" + ERROR_MESSAGE));
 
-      // check if seedId already been added to farm
-      if (
-        await FarmModel.findOne({
-          _id: req.params.id,
-          "seedList.seed": req.body.seedId,
-        })
-      )
-        return res
-          .status(400)
-          .send(
-            onResponse(
-              400,
-              "Seed had already been added to farm" + ERROR_MESSAGE
-            )
-          );
-
-      farm.seedList = farm.seedList.concat({ seed: req.body.seedId });
-      farm.save();
-
-      res.send(farm);
-    } catch (e) {
-      res.status(500).send(onResponse(500, e.message));
-    }
-  },
-  removeSeedFromFarm: async (req, res) => {
-    try {
       const farm = await FarmModel.findOne({
         _id: req.params.id,
-        "seedList.seed": req.body.seedId,
+        "seedList.seed": req.query.seedId,
       });
       if (farm == null)
         return res
           .status(400)
           .send(onResponse(400, "Seed does not exist in Farm" + ERROR_MESSAGE));
 
-      // check if seedId Exist
-      if (!(await SeedModel.findById(req.body.seedId)))
-        return res
-          .status(400)
-          .send(onResponse(400, "Seed Not Found" + ERROR_MESSAGE));
-
-      farm.seedList.pull({ seed: req.body.seedId });
+      farm.seedList.pull({ seed: req.query.seedId });
       await farm.save();
+
+      seed.farmId = null;
+      seed.save();
 
       res.send(await FarmModel.findById(req.params.id));
     } catch (e) {
@@ -443,65 +413,29 @@ const farmController = {
   //
   // Land List Controller
   //
-  addLandIntoFarm: async (req, res) => {
+  removeLandFromFarm: async (req, res) => {
     try {
-      const farm = await FarmModel.findById(req.params.id);
-      if (farm == null)
-        return res
-          .status(400)
-          .send(onResponse(400, "Farm Not Found" + ERROR_MESSAGE));
-      if (farm.landList == null) farm.landList = [];
-
       // check if landId Exist
-      if (!(await LandModel.findById(req.body.landId)))
+      const land = await LandModel.findById(req.query.landId);
+      if (land == null)
         return res
           .status(400)
           .send(onResponse(400, "Land Not Found" + ERROR_MESSAGE));
-
-      // check if landId already been added to farm
-      if (
-        await FarmModel.findOne({
-          _id: req.params.id,
-          "landList.land": req.body.landId,
-        })
-      )
-        return res
-          .status(400)
-          .send(
-            onResponse(
-              400,
-              "Land had already been added to farm" + ERROR_MESSAGE
-            )
-          );
-
-      farm.landList = farm.landList.concat({ land: req.body.landId });
-      farm.save();
-
-      res.send(farm);
-    } catch (e) {
-      res.status(500).send(onResponse(500, e.message));
-    }
-  },
-
-  removeLandFromFarm: async (req, res) => {
-    try {
       const farm = await FarmModel.findOne({
         _id: req.params.id,
-        "landList.land": req.body.landId,
+        "landList.land": req.query.landId,
       });
+
       if (farm == null)
         return res
           .status(400)
           .send(onResponse(400, "Land does not exist in Farm" + ERROR_MESSAGE));
 
-      // check if landId Exist
-      if (!(await LandModel.findById(req.body.landId)))
-        return res
-          .status(400)
-          .send(onResponse(400, "Land Not Found" + ERROR_MESSAGE));
-
-      farm.landList.pull({ land: req.body.landId });
+      farm.landList.pull({ land: req.query.landId });
       await farm.save();
+
+      land.farmId = null;
+      land.save();
 
       res.send(await FarmModel.findById(req.params.id));
     } catch (e) {
@@ -561,9 +495,18 @@ const farmController = {
 
   removeFarmProjectFromFarm: async (req, res) => {
     try {
+      // check if farmProjectId Exist
+      const farmProject = await FarmProjectModel.findById(
+        req.query.farmProjectId
+      );
+      if (!farmProject)
+        return res
+          .status(400)
+          .send(onResponse(400, "FarmProject Not Found" + ERROR_MESSAGE));
+
       const farm = await FarmModel.findOne({
         _id: req.params.id,
-        "farmProjectList.farmProject": req.body.farmProjectId,
+        "farmProjectList.farmProject": req.query.farmProjectId,
       });
       if (farm == null)
         return res
@@ -575,16 +518,7 @@ const farmController = {
             )
           );
 
-      // check if farmProjectId Exist
-      const farmProject = await FarmProjectModel.findById(
-        req.body.farmProjectId
-      );
-      if (!farmProject)
-        return res
-          .status(400)
-          .send(onResponse(400, "FarmProject Not Found" + ERROR_MESSAGE));
-
-      farm.farmProjectList.pull({ farmProject: req.body.farmProjectId });
+      farm.farmProjectList.pull({ farmProject: req.query.farmProjectId });
       farmProject.farmId = null;
       farmProject.save();
       await farm.save();
@@ -592,6 +526,25 @@ const farmController = {
       res.send(await FarmModel.findById(req.params.id));
     } catch (e) {
       res.status(500).send(onResponse(500, e.message));
+    }
+  },
+  getAllFarmProjectInFarm: async (req, res) => {
+    try {
+      const { farmId } = req.params;
+
+      const validFarm = await FarmModel.findOne({ farmId: farmId });
+
+      if (!validFarm) {
+        return res
+          .status(400)
+          .send(onError(400), "This farm doesn't exist" + ERROR_MESSAGE);
+      }
+
+      const farmProject = await FarmProjectModel.find({ farmId: farmId });
+
+      return res.status(200).send(farmProject);
+    } catch (err) {
+      res.status(400).send(onError(400, err.message));
     }
   },
 };

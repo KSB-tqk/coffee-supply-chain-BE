@@ -8,19 +8,16 @@ const landSchema = mongoose.Schema({
   },
   farmId: {
     type: String,
-    required: true,
     trim: true,
     default: null,
   },
   landName: {
     type: String,
-    required: true,
     trim: true,
     default: "",
   },
   landArea: {
     type: Number,
-    required: true,
     trim: true,
     default: 0,
   },

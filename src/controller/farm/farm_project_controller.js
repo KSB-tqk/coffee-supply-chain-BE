@@ -33,11 +33,11 @@ const farmProjectController = {
       newFarmProject.farmProjectId = newFarmProject._id;
       await newFarmProject.save();
 
-      await FarmModel.findByIdAndUpdate(farmId, {
-        $push: {
-          farmProjects: newFarmProject._id,
-        },
+      if (farm.farmProjectList == null) farm.farmProjectList = [];
+      farm.farmProjectList = farm.farmProjectList.concat({
+        farmProject: newFarmProject._id,
       });
+      farm.save();
 
       res.status(200).send(newFarmProject);
     } catch (err) {

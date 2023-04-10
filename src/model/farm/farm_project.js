@@ -23,19 +23,16 @@ const farmProjectSchema = mongoose.Schema({
   },
   land: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: "Land",
     default: null,
   },
   seed: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: "Seed",
     default: null,
   },
   dateCreated: {
     type: Date,
-    required: true,
     default: Date.now,
   },
   dateHarvested: {
@@ -46,22 +43,21 @@ const farmProjectSchema = mongoose.Schema({
   fertilizerUsed: {
     type: String,
     required: false,
-    default: "",
+    default: null,
   },
   totalHarvest: {
     type: Number,
-    required: true,
-    default: 0,
+    required: false,
+    default: null,
   },
   state: {
     type: Number,
-    required: true,
     default: 4,
   },
   note: {
     type: String,
     required: false,
-    default: "",
+    default: null,
   },
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
