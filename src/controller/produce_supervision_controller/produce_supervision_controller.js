@@ -171,6 +171,17 @@ const produceSupervisionController = {
           .send(onError(404, "Produce Supervision Not Found" + ERROR_MESSAGE));
 
       if (produceSupervision.inspector != null) {
+        const inspector = await User.findById(produceSupervision.inspector);
+        if (inspector == null)
+          return res
+            .status(404)
+            .send(
+              onError(
+                404,
+                "Produce already has an inspector which does not exist in the database" +
+                  ERROR_MESSAGE
+              )
+            );
         return res
           .status(404)
           .send(
@@ -205,6 +216,7 @@ const produceSupervisionController = {
       if (
         (await onValidUserRole(req.header("Authorization"), [
           UserRole.SystemAdmin,
+          UserRole.TechAdmin,
         ])) == false
       )
         return res
@@ -246,6 +258,7 @@ const produceSupervisionController = {
       if (
         (await onValidUserRole(req.header("Authorization"), [
           UserRole.SystemAdmin,
+          UserRole.TechAdmin,
         ])) == false
       )
         return res

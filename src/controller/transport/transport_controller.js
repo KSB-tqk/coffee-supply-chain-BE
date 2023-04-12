@@ -156,6 +156,17 @@ const transportController = {
           .send(onError(404, "Transport Not Found" + ERROR_MESSAGE));
 
       if (transport.inspector != null) {
+        const inspector = await User.findById(transport.inspector);
+        if (inspector == null)
+          return res
+            .status(404)
+            .send(
+              onError(
+                404,
+                "Transport already has an inspector which does not exist in the database" +
+                  ERROR_MESSAGE
+              )
+            );
         return res
           .status(404)
           .send(
@@ -187,6 +198,7 @@ const transportController = {
       if (
         (await onValidUserRole(req.header("Authorization"), [
           UserRole.SystemAdmin,
+          UserRole.TechAdmin,
         ])) == false
       )
         return res
@@ -225,6 +237,7 @@ const transportController = {
       if (
         (await onValidUserRole(req.header("Authorization"), [
           UserRole.SystemAdmin,
+          UserRole.TechAdmin,
         ])) == false
       )
         return res

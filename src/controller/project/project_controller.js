@@ -27,6 +27,7 @@ const projectController = {
     try {
       const isValidUser = await onValidUserRole(req.header("Authorization"), [
         UserRole.SystemAdmin,
+        UserRole.TechAdmin,
       ]);
 
       if (!isValidUser)

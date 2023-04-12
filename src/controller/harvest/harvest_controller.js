@@ -151,6 +151,17 @@ const harvestController = {
           .send(onError(404, "Harvest Not Found" + ERROR_MESSAGE));
 
       if (harvest.inspector != null) {
+        const inspector = await User.findById(harvest.inspector);
+        if (inspector == null)
+          return res
+            .status(404)
+            .send(
+              onError(
+                404,
+                "Harvest already has an inspector which does not exist in the database" +
+                  ERROR_MESSAGE
+              )
+            );
         return res
           .status(404)
           .send(
@@ -180,6 +191,7 @@ const harvestController = {
       if (
         (await onValidUserRole(req.header("Authorization"), [
           UserRole.SystemAdmin,
+          UserRole.TechAdmin,
         ])) == false
       )
         return res
@@ -218,6 +230,7 @@ const harvestController = {
       if (
         (await onValidUserRole(req.header("Authorization"), [
           UserRole.SystemAdmin,
+          UserRole.TechAdmin,
         ])) == false
       )
         return res
