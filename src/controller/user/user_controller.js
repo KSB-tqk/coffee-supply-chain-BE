@@ -47,6 +47,7 @@ const userController = {
           user.role == UserRole.Staff &&
           !(await onValidUserRole(req.header("Authorization"), [
             UserRole.SystemAdmin,
+            UserRole.TechAdmin,
           ]))
         )
           return res
@@ -141,7 +142,10 @@ const userController = {
     }
 
     if (
-      await onValidUserRole(req.header("Authorization"), [UserRole.SystemAdmin])
+      await onValidUserRole(req.header("Authorization"), [
+        UserRole.SystemAdmin,
+        UserRole.TechAdmin,
+      ])
     ) {
       allowedUpdates.push("department");
     }
@@ -186,7 +190,10 @@ const userController = {
     }
 
     if (
-      await onValidUserRole(req.header("Authorization"), [UserRole.SystemAdmin])
+      await onValidUserRole(req.header("Authorization"), [
+        UserRole.SystemAdmin,
+        UserRole.TechAdmin,
+      ])
     ) {
       allowedUpdates.push("department");
     }

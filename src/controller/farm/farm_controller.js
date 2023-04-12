@@ -28,53 +28,56 @@ const farmController = {
         farmCode: farmCode,
       });
 
-      console.log("Email", farmOwner);
+      const isValidFarmOwner = null;
+      if (req.body.farmOwner != null) {
+        isValidFarmOwner = await User.findOne({ email: farmOwner });
 
-      const isValidFarmOwner = await User.findOne({ email: farmOwner });
-
-      if (isValidFarmOwner == null)
-        return res
-          .status(400)
-          .send(onError(400, "Farm owner not found" + ERROR_MESSAGE));
+        if (isValidFarmOwner == null)
+          return res
+            .status(400)
+            .send(onError(400, "Farm owner not found" + ERROR_MESSAGE));
+        else if (isValidFarmOwner.farmId != null) {
+          res
+            .status(400)
+            .send(
+              onResponse(
+                400,
+                "User had already been set to be Owner of another farm" +
+                  ERROR_MESSAGE
+              )
+            );
+        }
+      }
 
       if (isValidFarmCode) {
         res.status(400).send(onResponse(400, "Farm Code already exists"));
-      } else if (!isValidFarmOwner) {
-        res.status(400).send(onResponse(400, "User doesn't exist"));
       } else if (
-        await onValidUserRole(req.header("Authorization"), [
+        !(await onValidUserRole(req.header("Authorization"), [
           UserRole.TechAdmin,
           UserRole.Farmer,
-        ])
+        ]))
       ) {
-        res.status(400).send(onResponse(400, "User isn't a Farmer"));
-      } else if (isValidFarmOwner.farmId != null) {
-        res
-          .status(400)
-          .send(
-            onResponse(
-              400,
-              "User had already been set to be Owner of another farm" +
-                ERROR_MESSAGE
-            )
-          );
+        return res.status(400).send(onResponse(400, "User isn't a Farmer"));
       } else {
         const newFarm = new FarmModel({
           farmCode: farmCode,
           farmName: farmName,
           farmAddress: farmAddress,
           farmPhoneNumber: farmPhoneNumber,
-          farmOwner: isValidFarmOwner._id.toString(),
         });
 
-        newFarm.farmerList = [];
-        newFarm.farmerList = newFarm.farmerList.concat({
-          farmer: isValidFarmOwner._id,
-        });
+        if (isValidFarmOwner != null) {
+          newFarm.farmOwner = isValidFarmOwner._id.toString();
+          newFarm.farmerList = [];
+          newFarm.farmerList = newFarm.farmerList.concat({
+            farmer: isValidFarmOwner._id,
+          });
 
-        isValidFarmOwner.farmId = newFarm._id;
-        isValidFarmOwner.isOwner = true;
-        isValidFarmOwner.save();
+          isValidFarmOwner.farmId = newFarm._id;
+          isValidFarmOwner.isOwner = true;
+          await isValidFarmOwner.save();
+        }
+
         newFarm.farmId = newFarm._id;
 
         await newFarm.save();
@@ -136,17 +139,28 @@ const farmController = {
       if (
         // Only farmOwner can add farmer into farm
         // check if the request author is farmOwner or not
-        await compareUserIdWithToken(
+        // and TechAdmin can also do it
+        (await compareUserIdWithToken(
           req.header("Authorization"),
           farmModel.farmOwner
-        )
+        )) ||
+        (await onValidUserRole(req.header("Authorization"), [
+          UserRole.TechAdmin,
+        ]))
       ) {
-        userModel.farmId = farmModel._id;
-        userModel.save();
+        if (farmModel.farmOwner == null) {
+          userModel.farmId = farmModel._id;
+          userModel.isOwner = true;
+          farmModel.farmOwner = userModel._id;
+        } else {
+          userModel.farmId = farmModel._id;
+        }
+        if (farmModel.farmerList == null) farmModel.farmerList = [];
         farmModel.farmerList = farmModel.farmerList.concat({
           farmer: userModel._id,
         });
 
+        userModel.save();
         farmModel.save();
       } else {
         return res
@@ -327,15 +341,6 @@ const farmController = {
 
       if (farmModel != null) {
         const bearerHeader = req.header("Authorization");
-        console.log("id == farmModel.farmOwner", id == farmModel.farmOwner);
-        console.log(
-          "compare delete user with token",
-          await compareUserIdWithToken(bearerHeader, id)
-        );
-        console.log(
-          "compare user with farmer",
-          await compareUserIdWithToken(bearerHeader, farmModel.farmOwner)
-        );
         if (
           // check if the request author is farmOwner or not
           (id == farmModel.farmOwner &&
@@ -349,12 +354,20 @@ const farmController = {
           //check if the request author is the farmOwner
           //farmOwner can delete all
           //only farmOwner can delete theirself
-          (await compareUserIdWithToken(bearerHeader, farmModel.farmOwner))
+          (await compareUserIdWithToken(bearerHeader, farmModel.farmOwner)) ||
+          // check if the request author is techadmin
+          (await onValidUserRole(req.header("Authorization"), [
+            UserRole.TechAdmin,
+          ]))
         ) {
           userModel.farmId = null;
           userModel.isOwner = false;
           await userModel.save();
-          farmModel.farmerList.pull({ farmer: id });
+          if (farmModel.farmerList != null)
+            farmModel.farmerList.pull({ farmer: id });
+          if (farmModel.farmOwner.equals(id)) farmModel.farmOwner = null;
+          console.log("farmModel.farmOwner", farmModel.farmOwner);
+          console.log("id", id);
           await farmModel.save();
           return res.status(200).send(await FarmModel.findById(farmModel._id));
         } else {

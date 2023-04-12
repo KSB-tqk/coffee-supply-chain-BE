@@ -37,7 +37,6 @@ const farmSchema = mongoose.Schema({
   },
   farmOwner: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: "User",
     default: null,
   },
