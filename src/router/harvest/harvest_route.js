@@ -12,6 +12,8 @@ harvestRouter.patch("/add-harvestor", harvestController.addHarvestor);
 
 harvestRouter.patch("/remove-harvestor", harvestController.removeHarvestor);
 
+harvestRouter.get("/all-by-user", harvestController.getAllHarvestByUserId);
+
 harvestRouter.get("/:id", harvestController.getHarvest);
 
 harvestRouter.get("/", harvestController.getAllHarvests);

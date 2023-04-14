@@ -252,6 +252,34 @@ const transportController = {
       return res.status(500).send(onError(500, err.message));
     }
   },
+
+  getAllTransportByUserId: async (req, res) => {
+    try {
+      const user = await User.findById(req.query.userId);
+      if (!user)
+        return res
+          .status(400)
+          .send(onError(400, "User Not Found" + ERROR_MESSAGE));
+
+      const transportList = await TransportModel.find({ inspector: user._id })
+        .populate("projectId")
+        .populate("inspector");
+
+      if (!transportList)
+        return res
+          .status(404)
+          .send(
+            onError(
+              404,
+              "No transport was found contain this inspector" + ERROR_MESSAGE
+            )
+          );
+
+      res.status(200).send(transportList);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
 };
 
 export default transportController;

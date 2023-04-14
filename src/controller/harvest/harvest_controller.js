@@ -245,6 +245,34 @@ const harvestController = {
       return res.status(500).send(onError(500, err.message));
     }
   },
+
+  getAllHarvestByUserId: async (req, res) => {
+    try {
+      const user = await User.findById(req.query.userId);
+      if (!user)
+        return res
+          .status(400)
+          .send(onError(400, "User Not Found" + ERROR_MESSAGE));
+
+      const harvestList = await HarvestModel.find({ inspector: user._id })
+        .populate("projectId")
+        .populate("inspector");
+
+      if (!harvestList)
+        return res
+          .status(404)
+          .send(
+            onError(
+              404,
+              "No harvest was found contain this inspector" + ERROR_MESSAGE
+            )
+          );
+
+      res.status(200).send(harvestList);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
 };
 
 export default harvestController;

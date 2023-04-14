@@ -12,6 +12,11 @@ produceSupervisionRouter.post(
 );
 
 produceSupervisionRouter.get(
+  "/all-by-user",
+  produceSupervisionController.getAllProduceByUserId
+);
+
+produceSupervisionRouter.get(
   "/:id",
   produceSupervisionController.getProduceSupervision
 );
