@@ -72,13 +72,17 @@ const projectSchema = mongoose.Schema({
   backgroundUrl: {
     type: String,
   },
+  logId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "StepLog",
+  },
 });
 
 //Hash the plain text pwd before saving
 projectSchema.pre("save", async function (next) {
   const modifiedPaths = this.modifiedPaths().toString();
 
-  const stepLogId = getStepLogId();
+  const stepLogId = this.logId;
 
   if (stepLogId != null) {
     const stepLog = await StepLogModel.findById(stepLogId);

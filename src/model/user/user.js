@@ -85,11 +85,11 @@ userSchema.methods.generateAuthToken = async function () {
   const isTokenExist = await PermissionModel.exists({ owner: user._id });
   if (isTokenExist) {
     const tokenModel = await PermissionModel.findOne({ owner: user._id });
-    tokenModel.listToken = [];
+    if (tokenModel.listToken == null) tokenModel.listToken = [];
+    if (tokenModel.listToken.length > 5) tokenModel.listToken.shift();
+
     tokenModel.listToken = tokenModel.listToken.concat({ token });
     await tokenModel.save();
-    if (tokenModel.listToken == null) tokenModel.listToken = [];
-    tokenModel.listToken = tokenModel.listToken.concat({ token });
   } else {
     const tokenModel = new PermissionModel({ owner: user._id });
     tokenModel.listToken = tokenModel.listToken.concat({ token });
