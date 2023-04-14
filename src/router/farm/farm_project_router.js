@@ -12,6 +12,12 @@ FarmProjectRouter.post(
   FarmProjectServices.farmProjectController.addFarmProject
 );
 
+// get all farm project by user id
+FarmProjectRouter.get(
+  "/all-by-user/",
+  FarmProjectServices.farmProjectController.getAllFarnProjectByUserId
+);
+
 // update farm project
 FarmProjectRouter.patch(
   "/:id",
@@ -43,6 +49,9 @@ FarmProjectRouter.get(
 );
 
 // get all farm project by farm id
-FarmProjectRouter.get("/all/:farmId", FarmProjectServices.farmProjectController.getAllFarmProjectsInFarm);
+FarmProjectRouter.get(
+  "/all/:farmId",
+  FarmProjectServices.farmProjectController.getAllFarmProjectsInFarm
+);
 
 export default FarmProjectRouter;

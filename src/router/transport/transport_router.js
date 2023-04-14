@@ -8,9 +8,14 @@ transportRouter.use(auth);
 
 transportRouter.post("/", transportController.addTransport);
 
-transportRouter.get("/:id", transportController.getTransport);
-
 transportRouter.get("/", transportController.getAllTransport);
+
+transportRouter.get(
+  "/all-by-user",
+  transportController.getAllTransportByUserId
+);
+
+transportRouter.get("/:id", transportController.getTransport);
 
 transportRouter.patch(
   "/add-transport-supervision",

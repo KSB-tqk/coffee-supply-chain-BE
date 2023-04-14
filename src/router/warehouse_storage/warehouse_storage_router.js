@@ -22,6 +22,11 @@ warehouseStorageRouter.patch(
 );
 
 warehouseStorageRouter.get(
+  "/all-by-user",
+  warehouseStorageController.getAllWarehouseStorageByUserId
+);
+
+warehouseStorageRouter.get(
   "/:id",
   warehouseStorageController.getWarehouseStorage
 );

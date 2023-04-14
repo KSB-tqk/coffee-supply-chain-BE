@@ -207,7 +207,33 @@ const farmProjectController = {
         .exec();
       res.status(200).send(farmProjects);
     } catch (err) {
-      res.status(400).send(onErrpr(400, err.message));
+      res.status(400).send(onError(400, err.message));
+    }
+  },
+  getAllFarnProjectByUserId: async (req, res) => {
+    try {
+      const user = await User.findById(req.query.userId);
+      if (!user)
+        return res
+          .status(404)
+          .send(onError(404, "User Not Found" + ERROR_MESSAGE));
+
+      const farmProjectList = await FarmProjectModel.find({
+        farmer: user._id,
+      }).populate(["land", "seed"]);
+      if (farmProjectList == null)
+        return res
+          .status(404)
+          .send(
+            onError(
+              404,
+              "No farm project was found contain this farmer" + ERROR_MESSAGE
+            )
+          );
+
+      res.status(200).send(farmProjectList);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
     }
   },
 };

@@ -201,7 +201,7 @@ const produceSupervisionController = {
 
       if (
         !(await onValidUserDepartment(user, [
-          UserDepartment.ProduceSupervisionInspector,
+          UserDepartment.SupervisingProduce,
         ]))
       )
         return res
@@ -271,6 +271,37 @@ const produceSupervisionController = {
       res.status(200).send(produceSupervision);
     } catch (err) {
       return res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  getAllProduceByUserId: async (req, res) => {
+    try {
+      const user = await User.findById(req.query.userId);
+      if (!user)
+        return res
+          .status(400)
+          .send(onError(400, "User Not Found" + ERROR_MESSAGE));
+
+      const produceList = await ProduceSupervisionModel.find({
+        inspector: user._id,
+      })
+        .populate("projectId")
+        .populate("inspector");
+
+      if (!produceList)
+        return res
+          .status(404)
+          .send(
+            onError(
+              404,
+              "No produce storage was found contain this inspector" +
+                ERROR_MESSAGE
+            )
+          );
+
+      res.status(200).send(produceList);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
     }
   },
 };
