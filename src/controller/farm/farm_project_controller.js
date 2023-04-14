@@ -12,6 +12,7 @@ import User from "../../model/user/user.js";
 import { ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserRole from "../../enum/user_role.js";
 import StepLogModel from "../../model/step_log/step_log.js";
+import ProjectModel from "../../model/project/project.js";
 
 const farmProjectController = {
   addFarmProject: async (req, res) => {
@@ -111,6 +112,35 @@ const farmProjectController = {
             state: state,
           },
         });
+
+        // save log for farmProject in project log list
+        if (farmProject.projectId != null) {
+          let stepLog = StepLogModel();
+          stepLog.projectId = farmProject.projectId;
+          stepLog.actor = ObjectId(
+            await getUserIdByHeader(req.header("Authorization"))
+          );
+          stepLog.modelBeforeChanged = JSON.stringify(farmProject);
+          await stepLog.save();
+
+          // save log to project log list
+          const project = await ProjectModel.findById(farmProject.projectId);
+          if (!project)
+            return res
+              .status(404)
+              .send(
+                onError(
+                  404,
+                  "Project of this farm project was not found" + ERROR_MESSAGE
+                )
+              );
+
+          project.projectLogList = project.projectLogList.concat({
+            projectLog: stepLog._id,
+          });
+
+          project.save();
+        }
 
         // check to add farmer to farmPJ
         if (req.body.farmer != null) {
