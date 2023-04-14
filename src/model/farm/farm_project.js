@@ -69,6 +69,19 @@ const farmProjectSchema = mongoose.Schema({
     ref: "User",
     default: null,
   },
+  logId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "StepLog",
+  },
+});
+
+//Hash the plain text pwd before saving
+farmProjectSchema.pre("save", async function (next) {
+  const modifiedPaths = this.modifiedPaths().toString();
+
+  console.log("LogId", this.logId);
+
+  next();
 });
 
 const FarmProjectModel = mongoose.model("FarmProject", farmProjectSchema);

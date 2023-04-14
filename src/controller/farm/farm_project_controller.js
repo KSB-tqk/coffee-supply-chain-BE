@@ -11,6 +11,7 @@ import { onValidFarmProjectInfo } from "../../helper/farm/farm_data_helper.js";
 import User from "../../model/user/user.js";
 import { ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserRole from "../../enum/user_role.js";
+import StepLogModel from "../../model/step_log/step_log.js";
 
 const farmProjectController = {
   addFarmProject: async (req, res) => {
@@ -31,6 +32,7 @@ const farmProjectController = {
 
       const newFarmProject = new FarmProjectModel(req.body);
       newFarmProject.farmProjectId = newFarmProject._id;
+      newFarmProject.logId = StepLogModel()._id;
       await newFarmProject.save();
 
       if (farm.farmProjectList == null) farm.farmProjectList = [];

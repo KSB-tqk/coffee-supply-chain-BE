@@ -187,7 +187,7 @@ const projectController = {
               // update project log list
               if (project.projectLogList == null) project.projectLogList = [];
 
-              setStepLogId(stepLog._id);
+              project.logId = stepLog._id;
               project.projectLogList = project.projectLogList.concat({
                 projectLog: stepLog._id,
               });
@@ -222,7 +222,7 @@ const projectController = {
                 });
 
               // save the model after changed
-              stepLog = await StepLogModel.findById(getStepLogId());
+              stepLog = await StepLogModel.findById(project.logId);
               stepLog.modelAfterChanged = JSON.stringify(
                 await ProjectModel.findById(project._id)
               );
