@@ -67,7 +67,7 @@ const userController = {
   loginUser: async (req, res) => {
     try {
       if (!validator.isEmail(req.body.email)) {
-        return res.status(401).send(onError(401, "Invalid Email Format"));
+        return res.status(400).send(onError(400, "Invalid Email Format"));
       }
       const user = await User.findByCredentials(
         req.body.email,

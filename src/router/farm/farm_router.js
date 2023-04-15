@@ -124,4 +124,11 @@ farmRouter.get(
   "/farmProject/all/:farmId",
   FarmServices.farmController.getAllFarmProjectInFarm
 );
+
+// get all farmer in a farm
+farmRouter.get(
+  "/farmer/all/:farmId",
+  FarmServices.farmController.getAllFarmerInFarm
+);
+
 export default farmRouter;
