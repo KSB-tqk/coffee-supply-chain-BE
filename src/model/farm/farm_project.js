@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import StepLogModel from "../step_log/step_log.js";
 
 const farmProjectSchema = mongoose.Schema({
   farmProjectId: {
@@ -79,7 +80,14 @@ const farmProjectSchema = mongoose.Schema({
 farmProjectSchema.pre("save", async function (next) {
   const modifiedPaths = this.modifiedPaths().toString();
 
-  console.log("LogId", this.logId);
+  const stepLogId = this.logId;
+
+  if (stepLogId != null) {
+    const stepLog = await StepLogModel.findById(stepLogId);
+    console.log("steplog after save", stepLog);
+    stepLog.action = "Modified field: " + modifiedPaths;
+    await stepLog.save();
+  }
 
   next();
 });

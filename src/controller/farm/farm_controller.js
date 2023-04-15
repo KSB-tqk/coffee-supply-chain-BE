@@ -560,6 +560,28 @@ const farmController = {
       res.status(400).send(onError(400, err.message));
     }
   },
+  getAllFarmerInFarm: async (req, res) => {
+    try {
+      const { farmId } = req.params;
+
+      const validFarm = await FarmModel.findById(farmId).populate({
+        path: "farmerList",
+        populate: {
+          path: "farmer",
+        },
+      });
+
+      if (!validFarm) {
+        return res
+          .status(400)
+          .send(onError(400), "This farm doesn't exist" + ERROR_MESSAGE);
+      }
+
+      return res.status(200).send(validFarm.farmerList);
+    } catch (err) {
+      res.status(400).send(onError(400, err.message));
+    }
+  },
 };
 
 const FarmServices = { farmController };
