@@ -16,7 +16,6 @@ import userRouter from "./router/user/user_route.js";
 import farmRouter from "./router/farm/farm_router.js";
 import FarmProjectRouter from "./router/farm/farm_project_router.js";
 import harvestRouter from "./router/harvest/harvest_route.js";
-import transportDriverRouter from "./router/transport/transport_driver_router.js";
 import transportRouter from "./router/transport/transport_router.js";
 import warehouseStorageRouter from "./router/warehouse_storage/warehouse_storage_router.js";
 import warehouseRouter from "./router/warehouse/warehouse_router.js";
@@ -26,6 +25,8 @@ import projectRouter from "./router/project/project_router.js";
 import { onError } from "./helper/data_helper.js";
 import stepLogRouter from "./router/step_log/step_log_router.js";
 import dashBoardRouter from "./router/dash_board/dash_board_router.js";
+import transportCompanyRouter from "./router/transport/transport_company_router.js";
+import factoryRouter from "./router/produce_supervision_router/factory_router.js";
 
 const app = express();
 
@@ -44,10 +45,11 @@ app.use("/users", userRouter);
 app.use("/farm", farmRouter);
 app.use("/farm-project", FarmProjectRouter);
 app.use("/harvest", harvestRouter);
-app.use("/transport-driver", transportDriverRouter);
+app.use("/transport-company", transportCompanyRouter);
 app.use("/transport", transportRouter);
 app.use("/warehouse-storage", warehouseStorageRouter);
 app.use("/warehouse", warehouseRouter);
+app.use("/factory", factoryRouter);
 app.use("/produce", produceSupervisionRouter);
 app.use("/steplog", stepLogRouter);
 app.use("/project", projectRouter);
@@ -67,6 +69,24 @@ app.use(express.static(publicDir));
 app.listen(port || 3000, () => {
   console.log("Server is up on port " + port);
 });
+
+import sgMail from "@sendgrid/mail";
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const msg = {
+  to: "19521686@gm.uit.edu.vn", // Change to your recipient
+  from: "linh05602@gmail.com", // Change to your verified sender
+  subject: "Sending with SendGrid is Fun",
+  text: "and easy to do anywhere, even with Node.js",
+  html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+};
+sgMail
+  .send(msg)
+  .then(() => {
+    console.log("Email sent");
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 
 /**
 #!/bin/bash

@@ -20,8 +20,8 @@ const transportSchema = mongoose.Schema({
     default: 0,
   },
   transport: {
-    type: String,
-    ref: "Transport",
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "TransportDriver",
     default: "",
   },
   inspector: {
