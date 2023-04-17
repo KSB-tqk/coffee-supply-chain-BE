@@ -26,6 +26,7 @@ import { onError } from "./helper/data_helper.js";
 import stepLogRouter from "./router/step_log/step_log_router.js";
 import dashBoardRouter from "./router/dash_board/dash_board_router.js";
 import transportCompanyRouter from "./router/transport/transport_company_router.js";
+import factoryRouter from "./router/produce_supervision_router/factory_router.js";
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use("/transport-company", transportCompanyRouter);
 app.use("/transport", transportRouter);
 app.use("/warehouse-storage", warehouseStorageRouter);
 app.use("/warehouse", warehouseRouter);
+app.use("/factory", factoryRouter);
 app.use("/produce", produceSupervisionRouter);
 app.use("/steplog", stepLogRouter);
 app.use("/project", projectRouter);

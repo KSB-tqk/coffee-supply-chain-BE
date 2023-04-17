@@ -5,6 +5,8 @@ const transportCompanyController = {
     try {
       const transportCompany = new TransportCompanyModel(req.body);
 
+      transportCompany.transportCompanyId = transportCompany._id;
+
       await transportCompany.save();
 
       res.status(200).send({
@@ -18,9 +20,9 @@ const transportCompanyController = {
   updateTransportCompany: async (req, res) => {
     const id = req.params.id;
 
-    const harvest = await TransportCompanyModel.findById(id).exec();
+    const transportCompany = await TransportCompanyModel.findById(id).exec();
 
-    if (!harvest) {
+    if (!transportCompany) {
       return res
         .status(400)
         .send(onError(400, "This Transport Company doesn't exist"));
@@ -50,10 +52,12 @@ const transportCompanyController = {
     try {
       const id = req.params.id;
 
-      const harvest = await TransportCompanyModel.findById(id).exec();
+      const transportCompany = await TransportCompanyModel.findById(id).exec();
 
-      if (!harvest) {
-        return res.status(400).send(onError(400, "This harvest doesn't exist"));
+      if (!transportCompany) {
+        return res
+          .status(400)
+          .send(onError(400, "This transport company doesn't exist"));
       }
 
       await TransportCompanyModel.findByIdAndRemove(id);
