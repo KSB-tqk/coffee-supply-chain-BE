@@ -70,6 +70,24 @@ app.listen(port || 3000, () => {
   console.log("Server is up on port " + port);
 });
 
+import sgMail from "@sendgrid/mail";
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const msg = {
+  to: "19521686@gm.uit.edu.vn", // Change to your recipient
+  from: "linh05602@gmail.com", // Change to your verified sender
+  subject: "Sending with SendGrid is Fun",
+  text: "and easy to do anywhere, even with Node.js",
+  html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+};
+sgMail
+  .send(msg)
+  .then(() => {
+    console.log("Email sent");
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+
 /**
 #!/bin/bash
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console)2>&1
