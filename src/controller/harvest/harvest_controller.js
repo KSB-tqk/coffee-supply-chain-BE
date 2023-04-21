@@ -1,7 +1,8 @@
-import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import { BASE_TRANSACTION_URL, ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserDepartment from "../../enum/user_department.js";
 import UserRole from "../../enum/user_role.js";
 import {
+  findDuplicates,
   onError,
   onValidUserDepartment,
   onValidUserRole,
@@ -34,7 +35,9 @@ const harvestController = {
 
     HarvestModel.findOne({ _id: id }, async function (err, harvest) {
       if (err) {
-        res.send(422, "Update transport failed");
+        res
+          .status(422)
+          .send(onError(422, "Update transport failed" + ERROR_MESSAGE));
       } else {
         const oldState = harvest.state;
 
@@ -55,6 +58,23 @@ const harvestController = {
               console.log("harvest update field: ", harvest[field]);
             }
           }
+        }
+
+        if (req.body.transactionList != null) {
+          if (!findDuplicates(harvest.transactionList))
+            for (let i = 0; i < harvest.transactionList.length; i++) {
+              if (harvest.transactionList[i].transactionUrl == null) {
+                harvest.transactionList[i].transactionUrl =
+                  BASE_TRANSACTION_URL +
+                  harvest.transactionList[i].transactionId;
+              }
+            }
+          else
+            return res
+              .status(400)
+              .send(
+                onError(400, "Some transaction are duplicated" + ERROR_MESSAGE)
+              );
         }
 
         // check whether the body of the updated model has any invalid field

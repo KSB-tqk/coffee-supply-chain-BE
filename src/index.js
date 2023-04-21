@@ -79,14 +79,21 @@ const msg = {
   text: "and easy to do anywhere, even with Node.js",
   html: "<strong>and easy to do anywhere, even with Node.js</strong>",
 };
-sgMail
-  .send(msg)
-  .then(() => {
-    console.log("Email sent");
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+
+// import { sendData } from "./helper/blockchain_helper.js";
+// await sendData();
+//
+//
+// enable the below to test the sending email function
+//--------------------
+// sgMail
+//   .send(msg)
+//   .then(() => {
+//     console.log("Email sent");
+//   })
+//   .catch((error) => {
+//     console.error(error);
+//   });
 
 /**
 #!/bin/bash

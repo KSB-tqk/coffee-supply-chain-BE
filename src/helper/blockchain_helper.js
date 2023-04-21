@@ -1,7 +1,6 @@
 import Web3 from "web3";
 import Provider from "@truffle/hdwallet-provider";
 import fs from "fs";
-import { MetaMaskInpageProvider } from "@metamask/providers";
 
 const contractJson = fs.readFileSync(
   "blockchain/contracts/TrackingModelAbi.json"
@@ -13,7 +12,7 @@ var address = "0x4Fb3A0f1Bc360E6CFE5E400f7F68220b5ef5C8c8";
 var privatekey =
   "18556d29e398bb540c5ab4a27af51b94d0a22f853b098910bf13d198ff2d48a4";
 var rpcurl =
-  "https://polygon-mumbai.g.alchemy.com/v2/dansTXmThZA3jPgRwOuk0DIHn9obm666";
+  "https://polygon-mumbai.g.alchemy.com/v2/T-IiG1fGDQ0aOjasn-vtpMYpOqb_9AYr";
 
 export async function sendData() {
   console.log("in function");
@@ -24,9 +23,11 @@ export async function sendData() {
     SmartContractAddress
   );
 
-  await myContract.methods
+  const result = await myContract.methods
     .addTrackingBlock("testProductId", "UpdateContentNe", address)
     .send({ from: address });
+
+  console.log("Result: ", result);
 
   var newvalue = await myContract.methods
     .getTrackingBlock("testProductId")

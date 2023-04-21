@@ -48,6 +48,22 @@ const warehouseStorageSchema = mongoose.Schema({
     type: String,
     defautl: "",
   },
+  transactionList: [
+    {
+      transactionId: {
+        type: String,
+        default: null,
+      },
+      transactionAddress: {
+        type: String,
+        default: null,
+      },
+      transactionUrl: {
+        type: String,
+        default: null,
+      },
+    },
+  ],
 });
 
 const warehouseStorageModel = mongoose.model(

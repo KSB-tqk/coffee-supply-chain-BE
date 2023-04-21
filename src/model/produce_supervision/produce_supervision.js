@@ -56,6 +56,22 @@ const produceSupervisionSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  transactionList: [
+    {
+      transactionId: {
+        type: String,
+        default: null,
+      },
+      transactionAddress: {
+        type: String,
+        default: null,
+      },
+      transactionUrl: {
+        type: String,
+        default: null,
+      },
+    },
+  ],
 });
 
 const ProduceSupervisionModel = mongoose.model(

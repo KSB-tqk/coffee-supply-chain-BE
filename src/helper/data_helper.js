@@ -148,3 +148,12 @@ export async function getUserIdByHeader(header) {
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   return decoded._id;
 }
+
+export function findDuplicates(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr.length; j++) {
+      if (arr[i].transactionId == arr[j].transactionId && i != j) return true;
+    }
+  }
+  return false;
+}

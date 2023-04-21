@@ -1,7 +1,8 @@
-import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import { BASE_TRANSACTION_URL, ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserDepartment from "../../enum/user_department.js";
 import UserRole from "../../enum/user_role.js";
 import {
+  findDuplicates,
   onError,
   onValidUserDepartment,
   onValidUserRole,
@@ -14,6 +15,8 @@ const warehouseStorageController = {
   addWarehouseStorage: async (req, res) => {
     try {
       const warehouseStorage = new WarehouseStorageModel(req.body);
+
+      warehouseStorage.warehouseStorageId = warehouseStorage._id;
 
       await warehouseStorage.save();
 
@@ -63,6 +66,32 @@ const warehouseStorageController = {
             }
           }
 
+          if (req.body.transactionList != null) {
+            if (!findDuplicates(warehouseStorage.transactionList))
+              for (
+                let i = 0;
+                i < warehouseStorage.transactionList.length;
+                i++
+              ) {
+                if (
+                  warehouseStorage.transactionList[i].transactionUrl == null
+                ) {
+                  warehouseStorage.transactionList[i].transactionUrl =
+                    BASE_TRANSACTION_URL +
+                    warehouseStorage.transactionList[i].transactionId;
+                }
+              }
+            else
+              return res
+                .status(400)
+                .send(
+                  onError(
+                    400,
+                    "Some transaction are duplicated" + ERROR_MESSAGE
+                  )
+                );
+          }
+
           if (req.body.state != null) {
             try {
               if (
@@ -82,7 +111,7 @@ const warehouseStorageController = {
           if (warehouseStorage.state == 2) {
             warehouseStorage.outputDate = Date.now();
           }
-          warehouseStorage.save();
+          await warehouseStorage.save();
           const warehousePop = await WarehouseStorageModel.findById(
             warehouseStorage._id
           )
@@ -90,12 +119,6 @@ const warehouseStorageController = {
             .populate("inspector");
           res.status(200).send({
             warehouse: warehousePop,
-            contractContent:
-              Date.now().toString() +
-              "|" +
-              warehouseStorage.inspector.toString() +
-              "|Warehouse|" +
-              warehouseStorage.state,
           });
         }
       }

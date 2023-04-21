@@ -19,10 +19,10 @@ const transportSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  transport: {
+  transportCompany: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "TransportDriver",
-    default: "",
+    ref: "TransportCompany",
+    default: null,
   },
   inspector: {
     type: mongoose.Schema.Types.ObjectId,
@@ -50,6 +50,22 @@ const transportSchema = mongoose.Schema({
     default: 1,
   },
   note: [String],
+  transactionList: [
+    {
+      transactionId: {
+        type: String,
+        default: null,
+      },
+      transactionAddress: {
+        type: String,
+        default: null,
+      },
+      transactionUrl: {
+        type: String,
+        default: null,
+      },
+    },
+  ],
 });
 
 const transportModel = mongoose.model("Transport", transportSchema);

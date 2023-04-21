@@ -1,7 +1,8 @@
-import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import { BASE_TRANSACTION_URL, ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserDepartment from "../../enum/user_department.js";
 import UserRole from "../../enum/user_role.js";
 import {
+  findDuplicates,
   onError,
   onValidUserDepartment,
   onValidUserRole,
@@ -14,6 +15,8 @@ const produceSupervisionController = {
   addProduceSupervision: async (req, res) => {
     try {
       const produceSupervision = new ProduceSupervisionModel(req.body);
+
+      produceSupervision.produceSupervisionId = produceSupervision._id;
 
       await produceSupervision.save();
 
@@ -65,6 +68,32 @@ const produceSupervisionController = {
             }
           }
 
+          if (req.body.transactionList != null) {
+            if (!findDuplicates(produceSupervision.transactionList))
+              for (
+                let i = 0;
+                i < produceSupervision.transactionList.length;
+                i++
+              ) {
+                if (
+                  produceSupervision.transactionList[i].transactionUrl == null
+                ) {
+                  produceSupervision.transactionList[i].transactionUrl =
+                    BASE_TRANSACTION_URL +
+                    produceSupervision.transactionList[i].transactionId;
+                }
+              }
+            else
+              return res
+                .status(400)
+                .send(
+                  onError(
+                    400,
+                    "Some transaction are duplicated" + ERROR_MESSAGE
+                  )
+                );
+          }
+
           if (req.body.state != null) {
             try {
               if (
@@ -86,7 +115,7 @@ const produceSupervisionController = {
           if (produceSupervision.state == 2) {
             produceSupervision.dateCompleted = Date.now();
           }
-          produceSupervision.save();
+          await produceSupervision.save();
           const producePop = await ProduceSupervisionModel.findById(
             produceSupervision._id
           )
@@ -94,12 +123,6 @@ const produceSupervisionController = {
             .populate("inspector");
           res.status(200).send({
             produce: producePop,
-            contractContent:
-              Date.now().toString() +
-              "|" +
-              produceSupervision.inspector.toString() +
-              "|Produce|" +
-              produceSupervision.state,
           });
         }
       }

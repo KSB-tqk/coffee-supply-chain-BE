@@ -12,6 +12,7 @@ export async function isValidWarehouseStateUpdate(
   try {
     if (warehouseStorage.projectId == null)
       throw Error("Warehouse Storage Project Id can not be null");
+    console.log("ProjectId", warehouseStorage.projectId);
     const project = await ProjectModel.findById(warehouseStorage.projectId);
     if (project == null) throw Error("Project does not exist");
     const transport = await transportModel.findById(project.transport);

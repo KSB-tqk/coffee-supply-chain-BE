@@ -1,7 +1,8 @@
-import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import { BASE_TRANSACTION_URL, ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserDepartment from "../../enum/user_department.js";
 import UserRole from "../../enum/user_role.js";
 import {
+  findDuplicates,
   onError,
   onValidUserDepartment,
   onValidUserRole,
@@ -59,6 +60,26 @@ const transportController = {
             }
           }
 
+          if (req.body.transactionList != null) {
+            if (!findDuplicates(transport.transactionList))
+              for (let i = 0; i < transport.transactionList.length; i++) {
+                if (transport.transactionList[i].transactionUrl == null) {
+                  transport.transactionList[i].transactionUrl =
+                    BASE_TRANSACTION_URL +
+                    transport.transactionList[i].transactionId;
+                }
+              }
+            else
+              return res
+                .status(400)
+                .send(
+                  onError(
+                    400,
+                    "Some transaction are duplicated" + ERROR_MESSAGE
+                  )
+                );
+          }
+
           // check whether the body of the updated model has any invalid field
           // [state] must be State.Pending
           // [projectId] and [inspector] must not be null
@@ -82,7 +103,7 @@ const transportController = {
           if (transport.state == 2) {
             transport.dateCompleted = Date.now();
           }
-          transport.save();
+          await transport.save();
           const transportPop = await TransportModel.findById(transport._id)
             .populate("projectId")
             .populate("inspector");

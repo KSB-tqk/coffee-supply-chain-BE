@@ -17,6 +17,7 @@ import validator from "validator";
 import { ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserRole from "../../enum/user_role.js";
 import Staff from "../../model/user/staff.js";
+import { sendData } from "../../helper/blockchain_helper.js";
 
 const userController = {
   addUser: async (req, res) => {
