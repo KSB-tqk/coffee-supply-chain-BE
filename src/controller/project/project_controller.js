@@ -232,12 +232,6 @@ const projectController = {
               // resend model after finish request
               res.status(200).send({
                 project: theProject,
-                contractContent:
-                  Date.now().toString() +
-                  "|" +
-                  project.manager.toString() +
-                  "|Project|" +
-                  project.state,
               });
             } else {
               return res

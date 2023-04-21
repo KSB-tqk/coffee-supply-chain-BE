@@ -45,6 +45,22 @@ const harvestSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  transactionList: [
+    {
+      transactionId: {
+        type: String,
+        default: null,
+      },
+      transactionAddress: {
+        type: String,
+        default: null,
+      },
+      transactionUrl: {
+        type: String,
+        default: null,
+      },
+    },
+  ],
 });
 
 const harvestModel = mongoose.model("Harvest", harvestSchema);
