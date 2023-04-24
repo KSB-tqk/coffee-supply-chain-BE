@@ -14,7 +14,7 @@ var privatekey =
 var rpcurl =
   "https://polygon-mumbai.g.alchemy.com/v2/T-IiG1fGDQ0aOjasn-vtpMYpOqb_9AYr";
 
-export async function sendData() {
+export async function sendData(logId) {
   console.log("in function");
   var provider = new Provider(privatekey, rpcurl);
   var web3 = new Web3(provider);
@@ -24,7 +24,7 @@ export async function sendData() {
   );
 
   const result = await myContract.methods
-    .addTrackingBlock("testProductId", "UpdateContentNe", address)
+    .addTrackingBlock(logId.toString(), "UpdateContentNe", address)
     .send({ from: address });
 
   console.log("Result: ", result);

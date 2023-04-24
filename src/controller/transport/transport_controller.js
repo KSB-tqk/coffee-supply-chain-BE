@@ -1,13 +1,17 @@
+import { ObjectId } from "mongodb";
 import { BASE_TRANSACTION_URL, ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserDepartment from "../../enum/user_department.js";
 import UserRole from "../../enum/user_role.js";
+import { sendData } from "../../helper/blockchain_helper.js";
 import {
   findDuplicates,
+  getUserIdByHeader,
   onError,
   onValidUserDepartment,
   onValidUserRole,
 } from "../../helper/data_helper.js";
 import { isValidTransportStateUpdate } from "../../helper/transport/transport_data_helper.js";
+import StepLogModel from "../../model/step_log/step_log.js";
 import TransportModel from "../../model/transport/transport.js";
 import User from "../../model/user/user.js";
 
@@ -17,6 +21,7 @@ const transportController = {
       const transport = new TransportModel(req.body);
 
       transport.transportId = transport._id;
+
       await transport.save();
 
       res.status(200).send({ msg: "Create transport successfully", transport });
@@ -40,6 +45,21 @@ const transportController = {
         if (err) {
           res.send(422, "Update transport failed");
         } else {
+          // save model before change
+          let stepLog = StepLogModel();
+          stepLog.projectId = transport.projectId;
+          stepLog.actor = ObjectId(
+            await getUserIdByHeader(req.header("Authorization"))
+          );
+          stepLog.modelBeforeChanged = JSON.stringify(transport);
+          console.log("steplog before save", stepLog);
+          await stepLog.save();
+
+          // push current stepLog into logList in transport model
+          if (transport.logList == null) transport.logList = [];
+          transport.logList = transport.logList.concat({ log: stepLog._id });
+          transport.logId = stepLog._id;
+
           const oldState = transport.state;
 
           //update fields
@@ -60,25 +80,26 @@ const transportController = {
             }
           }
 
-          if (req.body.transactionList != null) {
-            if (!findDuplicates(transport.transactionList))
-              for (let i = 0; i < transport.transactionList.length; i++) {
-                if (transport.transactionList[i].transactionUrl == null) {
-                  transport.transactionList[i].transactionUrl =
-                    BASE_TRANSACTION_URL +
-                    transport.transactionList[i].transactionId;
-                }
-              }
-            else
-              return res
-                .status(400)
-                .send(
-                  onError(
-                    400,
-                    "Some transaction are duplicated" + ERROR_MESSAGE
-                  )
-                );
-          }
+          // if (req.body.logList != null) {
+          //   if (!findDuplicates(transport.logList))
+          //     for (let i = 0; i < transport.logList.length; i++) {
+          //       if (transport.logList[i].transactionUrl == null) {
+          //         transport.logList[i].transactionUrl =
+          //           BASE_TRANSACTION_URL + transport.logList[i].transactionId;
+          //       }
+          //     }
+          //   else
+          //     return res
+          //       .status(400)
+          //       .send(
+          //         onError(
+          //           400,
+          //           "Some transaction are duplicated" + ERROR_MESSAGE
+          //         )
+          //       );
+          // }
+
+          //await sendData(stepLog._id);
 
           // check whether the body of the updated model has any invalid field
           // [state] must be State.Pending
@@ -108,6 +129,13 @@ const transportController = {
             .populate("projectId")
             .populate("inspector");
           res.status(200).send(transportPop);
+
+          // save the transport model after changed
+          // save the model after changed
+          stepLog = await StepLogModel.findById(transportPop.logId);
+          stepLog.modelAfterChanged = JSON.stringify(transport);
+          console.log("Step Log Final", stepLog);
+          stepLog.save();
         }
       });
     } catch (e) {

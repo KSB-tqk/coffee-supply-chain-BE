@@ -223,9 +223,7 @@ const projectController = {
 
               // save the model after changed
               stepLog = await StepLogModel.findById(project.logId);
-              stepLog.modelAfterChanged = JSON.stringify(
-                await ProjectModel.findById(project._id)
-              );
+              stepLog.modelAfterChanged = JSON.stringify(project);
               console.log("Step Log Final", stepLog);
               stepLog.save();
 

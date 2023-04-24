@@ -1,14 +1,17 @@
+import { ObjectId } from "mongodb";
 import { BASE_TRANSACTION_URL, ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserDepartment from "../../enum/user_department.js";
 import UserRole from "../../enum/user_role.js";
 import {
   findDuplicates,
+  getUserIdByHeader,
   onError,
   onValidUserDepartment,
   onValidUserRole,
 } from "../../helper/data_helper.js";
 import { isValidProduceStateUpdate } from "../../helper/produce/produce_data_helper.js";
 import ProduceSupervisionModel from "../../model/produce_supervision/produce_supervision.js";
+import StepLogModel from "../../model/step_log/step_log.js";
 import User from "../../model/user/user.js";
 
 const produceSupervisionController = {
@@ -47,6 +50,23 @@ const produceSupervisionController = {
         if (err) {
           res.send(422, "Update transport failed");
         } else {
+          // save model before change
+          let stepLog = StepLogModel();
+          stepLog.projectId = produceSupervision.projectId;
+          stepLog.actor = ObjectId(
+            await getUserIdByHeader(req.header("Authorization"))
+          );
+          stepLog.modelBeforeChanged = JSON.stringify(produceSupervision);
+          console.log("steplog before save", stepLog);
+          await stepLog.save();
+
+          // push current stepLog into logList in produceSupervision model
+          if (produceSupervision.logList == null)
+            produceSupervision.logList = [];
+          produceSupervision.logList = produceSupervision.logList.concat({
+            log: stepLog._id,
+          });
+          produceSupervision.logId = stepLog._id;
           const oldState = produceSupervision.state;
 
           //update fields
@@ -124,6 +144,13 @@ const produceSupervisionController = {
           res.status(200).send({
             produce: producePop,
           });
+
+          // save the harvest model after changed
+          // save the model after changed
+          stepLog = await StepLogModel.findById(producePop.logId);
+          stepLog.modelAfterChanged = JSON.stringify(produceSupervision);
+          console.log("Step Log Final", stepLog);
+          stepLog.save();
         }
       }
     );

@@ -1,13 +1,16 @@
+import { ObjectId } from "mongodb";
 import { BASE_TRANSACTION_URL, ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserDepartment from "../../enum/user_department.js";
 import UserRole from "../../enum/user_role.js";
 import {
   findDuplicates,
+  getUserIdByHeader,
   onError,
   onValidUserDepartment,
   onValidUserRole,
 } from "../../helper/data_helper.js";
 import { isValidWarehouseStateUpdate } from "../../helper/warehouse_storage/warehouse_storage_data_helper.js";
+import StepLogModel from "../../model/step_log/step_log.js";
 import User from "../../model/user/user.js";
 import WarehouseStorageModel from "../../model/warehouse_storage/warehouse_storage.js";
 
@@ -43,8 +46,25 @@ const warehouseStorageController = {
       { _id: id },
       async function (err, warehouseStorage) {
         if (err) {
-          res.status(422).send(onError(422, "Update transport failed"));
+          res.status(422).send(onError(422, "Update warehouse storage failed"));
         } else {
+          // save model before change
+          let stepLog = StepLogModel();
+          stepLog.projectId = warehouseStorage.projectId;
+          stepLog.actor = ObjectId(
+            await getUserIdByHeader(req.header("Authorization"))
+          );
+          stepLog.modelBeforeChanged = JSON.stringify(warehouseStorage);
+          console.log("steplog before save", stepLog);
+          await stepLog.save();
+
+          // push current stepLog into logList in warehouseStorage model
+          if (warehouseStorage.logList == null) warehouseStorage.logList = [];
+          warehouseStorage.logList = warehouseStorage.logList.concat({
+            log: stepLog._id,
+          });
+          warehouseStorage.logId = stepLog._id;
+
           const oldState = warehouseStorage.state;
 
           //update fields
@@ -120,6 +140,13 @@ const warehouseStorageController = {
           res.status(200).send({
             warehouse: warehousePop,
           });
+
+          // save the harvest model after changed
+          // save the model after changed
+          stepLog = await StepLogModel.findById(warehousePop.logId);
+          stepLog.modelAfterChanged = JSON.stringify(warehouseStorage);
+          console.log("Step Log Final", stepLog);
+          stepLog.save();
         }
       }
     );

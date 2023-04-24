@@ -1,8 +1,10 @@
+import { ObjectId } from "mongodb";
 import { BASE_TRANSACTION_URL, ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserDepartment from "../../enum/user_department.js";
 import UserRole from "../../enum/user_role.js";
 import {
   findDuplicates,
+  getUserIdByHeader,
   onError,
   onValidUserDepartment,
   onValidUserRole,
@@ -10,6 +12,7 @@ import {
 import { isValidHarvestStateUpdate } from "../../helper/harvest/harvest_data_helper.js";
 import { isValidTransportStateUpdate } from "../../helper/transport/transport_data_helper.js";
 import HarvestModel from "../../model/harvest/harvest.js";
+import StepLogModel from "../../model/step_log/step_log.js";
 import User from "../../model/user/user.js";
 const harvestController = {
   addHarvest: async (req, res) => {
@@ -37,8 +40,23 @@ const harvestController = {
       if (err) {
         res
           .status(422)
-          .send(onError(422, "Update transport failed" + ERROR_MESSAGE));
+          .send(onError(422, "Update harvest failed" + ERROR_MESSAGE));
       } else {
+        // save model before change
+        let stepLog = StepLogModel();
+        stepLog.projectId = harvest.projectId;
+        stepLog.actor = ObjectId(
+          await getUserIdByHeader(req.header("Authorization"))
+        );
+        stepLog.modelBeforeChanged = JSON.stringify(harvest);
+        console.log("steplog before save", stepLog);
+        await stepLog.save();
+
+        // push current stepLog into logList in harvest model
+        if (harvest.logList == null) harvest.logList = [];
+        harvest.logList = harvest.logList.concat({ log: stepLog._id });
+        harvest.logId = stepLog._id;
+
         const oldState = harvest.state;
 
         //update fields
@@ -108,6 +126,13 @@ const harvestController = {
         res.status(200).send({
           harvest: harvestPop,
         });
+
+        // save the harvest model after changed
+        // save the model after changed
+        stepLog = await StepLogModel.findById(harvestPop.logId);
+        stepLog.modelAfterChanged = JSON.stringify(harvest);
+        console.log("Step Log Final", stepLog);
+        stepLog.save();
       }
     });
   },
@@ -118,7 +143,7 @@ const harvestController = {
       const harvest = await HarvestModel.findById(id).exec();
 
       if (!harvest) {
-        return res.status(400).send(onError("This harvest doesn't exist"));
+        return res.status(400).send(onError(400, "This harvest doesn't exist"));
       }
 
       const harvestChangeState = await HarvestModel.findById(id);
@@ -151,7 +176,7 @@ const harvestController = {
         .exec();
 
       if (!harvest) {
-        return res.status(400).send(onError("This harvest doesn't exist"));
+        return res.status(400).send(onError(400, "This harvest doesn't exist"));
       }
 
       res.status(200).send(harvest);
