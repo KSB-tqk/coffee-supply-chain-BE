@@ -223,9 +223,7 @@ const projectController = {
 
               // save the model after changed
               stepLog = await StepLogModel.findById(project.logId);
-              stepLog.modelAfterChanged = JSON.stringify(
-                await ProjectModel.findById(project._id)
-              );
+              stepLog.modelAfterChanged = JSON.stringify(project);
               console.log("Step Log Final", stepLog);
               stepLog.save();
 
@@ -313,6 +311,7 @@ const projectController = {
             path: "projectLog",
           },
         })
+        .populate("farmProject")
         .exec();
 
       if (!project) {
@@ -323,7 +322,7 @@ const projectController = {
 
       res.status(200).send(project);
     } catch (err) {
-      res.status(400).send(onError(400, err.message));
+      return res.status(400).send(onError(400, err.message));
     }
   },
 };

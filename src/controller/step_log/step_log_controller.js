@@ -1,4 +1,4 @@
-import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import { BASE_TRANSACTION_URL, ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserDepartment from "../../enum/user_department.js";
 import UserRole from "../../enum/user_role.js";
 import {
@@ -25,39 +25,39 @@ const stepLogController = {
     const stepLog = await StepLogModel.findById(id).exec();
 
     if (!stepLog) {
-      return res.status(400).send(onError("This stepLog doesn't exist"));
+      return res.status(400).send(onError(400, "This step log doesn't exist"));
     }
 
     StepLogModel.findOne({ _id: id }, async function (err, stepLog) {
       if (err) {
         res.send(422, "Update transport failed");
       } else {
-        //update fields
-        if (stepLog.state == 2)
-          return res
-            .status(400)
-            .send(
-              onError(
-                400,
-                "StepLog infomation cannot be update because it has been completed"
-              )
-            );
         for (var field in StepLogModel.schema.paths) {
-          if (field !== "_id" && field !== "__v") {
+          if (
+            field !== "_id" &&
+            field !== "__v" &&
+            field !== "projectId" &&
+            field !== "inspector"
+          ) {
             if (req.body[field] !== undefined) {
               stepLog[field] = req.body[field];
             }
           }
         }
 
-        if (stepLog.state == 2) {
-          stepLog.dateCompleted = Date.now();
-        }
+        console.log(
+          "transaction hash url" +
+            BASE_TRANSACTION_URL +
+            req.body.transactionHash
+        );
 
-        stepLog.save();
-        const stepLogPop = await StepLogModel.findById(stepLog._id)
-          .populate("projectId")
-          .populate("actor");
+        stepLog.transactionUrl =
+          BASE_TRANSACTION_URL + req.body.transactionHash;
+
+        await stepLog.save();
+        const stepLogPop = await StepLogModel.findById(stepLog._id);
+        // .populate("projectId")
+        // .populate("actor");
         res.status(200).send(stepLogPop);
       }
     });
@@ -69,7 +69,7 @@ const stepLogController = {
       const stepLog = await StepLogModel.findByIdAndDelete(id).exec();
 
       if (!stepLog) {
-        return res.status(400).send(onError("This stepLog doesn't exist"));
+        return res.status(400).send(onError(400, "This stepLog doesn't exist"));
       }
 
       res.status(200).send({ msg: "Delete stepLog success" });
@@ -99,7 +99,7 @@ const stepLogController = {
         .exec();
 
       if (!stepLog) {
-        return res.status(400).send(onError("This stepLog doesn't exist"));
+        return res.status(400).send(onError(400, "This stepLog doesn't exist"));
       }
 
       res.status(200).send(stepLog);

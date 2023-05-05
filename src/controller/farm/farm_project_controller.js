@@ -31,7 +31,6 @@ const farmProjectController = {
 
       const newFarmProject = new FarmProjectModel(req.body);
       newFarmProject.farmProjectId = newFarmProject._id;
-      newFarmProject.logId = StepLogModel()._id;
       await newFarmProject.save();
 
       if (farm.farmProjectList == null) farm.farmProjectList = [];
@@ -204,6 +203,7 @@ const farmProjectController = {
 
       const farmProject = await FarmProjectModel.findById(id)
         .populate(["land", "seed"])
+        .populate("farmProject")
         .exec();
 
       if (!farmProject)

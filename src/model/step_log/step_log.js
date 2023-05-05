@@ -24,6 +24,18 @@ const stepLogSchema = mongoose.Schema(
       type: String,
       default: null,
     },
+    transactionHash: {
+      type: String,
+      default: null,
+    },
+    transactionAddress: {
+      type: String,
+      default: null,
+    },
+    transactionUrl: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,
