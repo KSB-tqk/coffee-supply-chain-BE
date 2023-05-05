@@ -311,6 +311,7 @@ const projectController = {
             path: "projectLog",
           },
         })
+        .populate("farmProject")
         .exec();
 
       if (!project) {
