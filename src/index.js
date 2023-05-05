@@ -66,7 +66,7 @@ const publicDir = path.join(__dirname, "../public");
 
 app.use(express.static(publicDir));
 
-app.listen(port || 3000, () => {
+app.listen(port || 3001, () => {
   console.log("Server is up on port " + port);
 });
 

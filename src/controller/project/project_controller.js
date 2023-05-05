@@ -321,7 +321,7 @@ const projectController = {
 
       res.status(200).send(project);
     } catch (err) {
-      res.status(400).send(onError(400, err.message));
+      return res.status(400).send(onError(400, err.message));
     }
   },
 };
