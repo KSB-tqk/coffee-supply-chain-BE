@@ -203,7 +203,6 @@ const farmProjectController = {
 
       const farmProject = await FarmProjectModel.findById(id)
         .populate(["land", "seed"])
-        .populate("farmProject")
         .exec();
 
       if (!farmProject)
