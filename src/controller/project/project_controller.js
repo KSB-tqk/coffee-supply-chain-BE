@@ -9,6 +9,7 @@ import {
   checkValidObjectId,
   getUserIdByHeader,
   onError,
+  onValidUserDepartment,
   onValidUserRole,
 } from "../../helper/data_helper.js";
 import {
@@ -21,6 +22,8 @@ import ProduceSupervisionModel from "../../model/produce_supervision/produce_sup
 import ProjectModel from "../../model/project/project.js";
 import StepLogModel from "../../model/step_log/step_log.js";
 import transportModel from "../../model/transport/transport.js";
+import User from "../../model/user/user.js";
+import UserDepartment from "../../enum/user_department.js";
 import warehouseStorageModel from "../../model/warehouse_storage/warehouse_storage.js";
 const projectController = {
   addProject: async (req, res) => {
@@ -59,6 +62,240 @@ const projectController = {
         projectCode: req.body.projectCode,
       });
 
+      if (req.body.farmProjectId != null) {
+        project.farmProjectId = req.body.farmProjectId;
+        const farmProject = await FarmProjectModel.findOne({
+          _id: project.farmProjectId,
+        });
+        if (farmProject == null) {
+          return res
+            .status(404)
+            .send(onError(404, "Farm Project does not exist" + ERROR_MESSAGE));
+        }
+
+        if (farmProject.projectId != null) {
+          const existProject = await ProjectModel.findOne({
+            _id: farmProject.projectId,
+          });
+
+          if (existProject != null)
+            return res
+              .status(400)
+              .send(
+                onError(
+                  400,
+                  "Farm Project already had already been add to another project" +
+                    ERROR_MESSAGE
+                )
+              );
+        }
+
+        farmProject.projectId = project._id;
+      }
+
+      //
+      //  check valid for adding staff to harvest step
+      //
+      if (req.body.harvestor != null) {
+        const user = await User.findOne({ _id: req.body.harvestor });
+        if (user == null) {
+          return res
+            .status(404)
+            .send(
+              onError(
+                404,
+                "User in harvest department not found" + ERROR_MESSAGE
+              )
+            );
+        }
+
+        if (
+          user.role != UserRole.Staff ||
+          user.department != UserDepartment.HarvestInspector
+        ) {
+          return res
+            .status(404)
+            .send(
+              onError(
+                404,
+                "Staff does not have permission for Harvestor" + ERROR_MESSAGE
+              )
+            );
+        }
+
+        if (
+          !(await onValidUserDepartment(user, [
+            UserDepartment.HarvestInspector,
+          ]))
+        )
+          return res
+            .status(400)
+            .send(
+              onError(
+                400,
+                "User is not participate in Harvest department" + ERROR_MESSAGE
+              )
+            );
+
+        if (
+          (await onValidUserRole(req.header("Authorization"), [
+            UserRole.SystemAdmin,
+            UserRole.TechAdmin,
+          ])) == false
+        )
+          return res
+            .status(400)
+            .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
+
+        harvest.inspector = user._id;
+      }
+      //
+      //  check valid for adding staff to harvest step
+      //
+
+      //
+      // check valid for adding staff to transport step
+      //
+      if (req.body.transportInspector != null) {
+        const user = await User.findOne({ _id: req.body.transportInspector });
+
+        if (user == null)
+          return res
+            .status(404)
+            .send(
+              onError(
+                404,
+                "User in transport department not found " + ERROR_MESSAGE
+              )
+            );
+
+        if (
+          !(await onValidUserDepartment(user, [
+            UserDepartment.TransportSupervision,
+          ]))
+        )
+          return res
+            .status(400)
+            .send(
+              onError(
+                400,
+                "User is not participate in Transport department" +
+                  ERROR_MESSAGE
+              )
+            );
+
+        if (
+          (await onValidUserRole(req.header("Authorization"), [
+            UserRole.SystemAdmin,
+            UserRole.TechAdmin,
+          ])) == false
+        )
+          return res
+            .status(400)
+            .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
+
+        transport.inspector = user._id;
+      }
+      //
+      // check valid for adding staff to transport step
+      //
+
+      //
+      // check valid for adding staff to produce step
+      //
+      if (req.body.produceInspector != null) {
+        const user = await User.findOne({ _id: req.body.produceInspector });
+
+        if (user == null)
+          return res
+            .status(404)
+            .send(
+              onError(
+                404,
+                "User in produce supervision department not found" +
+                  req.body.produceInspector +
+                  " " +
+                  ERROR_MESSAGE
+              )
+            );
+
+        if (
+          !(await onValidUserDepartment(user, [
+            UserDepartment.SupervisingProduce,
+          ]))
+        )
+          return res
+            .status(400)
+            .send(
+              onError(
+                400,
+                "User is not participate in Produce Supervision department" +
+                  ERROR_MESSAGE
+              )
+            );
+
+        if (
+          (await onValidUserRole(req.header("Authorization"), [
+            UserRole.SystemAdmin,
+            UserRole.TechAdmin,
+          ])) == false
+        )
+          return res
+            .status(400)
+            .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
+
+        produce.inspector = user._id;
+      }
+      //
+      // check valid for adding staff to produce step
+      //
+
+      //
+      // check valid for adding staff to warehouse storage step
+      //
+      if (req.body.warehouseInspector != null) {
+        const user = await User.findOne({ _id: req.body.warehouseInspector });
+        if (user == null)
+          return res
+            .status(404)
+            .send(
+              onError(
+                404,
+                "User in warehouse storage department not found" + ERROR_MESSAGE
+              )
+            );
+
+        if (
+          !(await onValidUserDepartment(user, [
+            UserDepartment.WarehouseSupervision,
+          ]))
+        )
+          return res
+            .status(400)
+            .send(
+              onError(
+                400,
+                "User is not participate in Warehouse Storage department" +
+                  ERROR_MESSAGE
+              )
+            );
+
+        if (
+          (await onValidUserRole(req.header("Authorization"), [
+            UserRole.SystemAdmin,
+            UserRole.TechAdmin,
+          ])) == false
+        )
+          return res
+            .status(400)
+            .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
+
+        warehouseStorage.inspector = user._id;
+      }
+      //
+      // check valid for adding staff to warehouse storage step
+      //
+
       project.manager = isValidUser._id;
       project.projectLogList = [];
 
@@ -80,7 +317,7 @@ const projectController = {
       harvest.harvestId = harvest._id;
       transport.transportId = transport._id;
       warehouseStorage.warehouseStorageId = warehouseStorage._id;
-      produce.produceSupervisionId = produce._id;
+      produce.produceId = produce._id;
 
       // save all step
       harvest.save();
