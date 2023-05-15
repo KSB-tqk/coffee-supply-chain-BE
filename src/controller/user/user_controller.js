@@ -276,6 +276,7 @@ const userController = {
     try {
       const users = await User.find({
         department: department,
+        role: UserRole.Staff,
       })
         .populate({
           path: "farmList",
