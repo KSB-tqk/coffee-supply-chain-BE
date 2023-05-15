@@ -91,6 +91,8 @@ const projectController = {
         }
 
         farmProject.projectId = project._id;
+        farmProject.save();
+        project.farmProject = farmProject;
       }
 
       //
