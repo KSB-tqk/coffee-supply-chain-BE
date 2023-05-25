@@ -40,23 +40,15 @@ export async function checkFarmer(userId) {
 export async function checkValidUserInfo(user) {
   const userInfo = await User.find({ email: user.email });
   console.log("User Info ", userInfo.length);
-  const validWalletAddress = Web3.utils.isAddress(user.walletAddress);
-  console.log("Valid Wallet Address", validWalletAddress);
+  // const validWalletAddress = Web3.utils.isAddress(user.walletAddress);
+  // console.log("Valid Wallet Address", validWalletAddress);
   if (userInfo.length > 0) {
     return "The email already linked to another account, please try again.";
   }
-  if (!validWalletAddress) {
-    return "Invalid metamask wallet address, please try again.";
-  }
-  if (
-    !user.lastName ||
-    !user.firstName ||
-    !user.role ||
-    !user.email ||
-    !user.department ||
-    !user.password ||
-    !user.walletAddress
-  ) {
+  // if (!validWalletAddress) {
+  //   return "Invalid metamask wallet address, please try again.";
+  // }
+  if (!user.lastName || !user.firstName || !user.email || !user.password) {
     return "Invalid user information, please try again";
   }
 
