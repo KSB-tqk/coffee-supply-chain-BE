@@ -10,6 +10,8 @@ userRouter.post("/", userController.addUser);
 
 userRouter.post("/login", userController.loginUser);
 
+userRouter.get("/reset-password", userController.sendEmailOTPToChangePassword);
+
 userRouter.use(auth);
 
 userRouter.get("/permission", userController.getUserPermissionById);

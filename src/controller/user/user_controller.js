@@ -18,6 +18,8 @@ import { ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserRole from "../../enum/user_role.js";
 import Staff from "../../model/user/staff.js";
 import { sendData } from "../../helper/blockchain_helper.js";
+import otpModel from "../../model/user/otp.js";
+import { sendEmail } from "../../helper/send_email_helper.js";
 
 const userController = {
   addUser: async (req, res) => {
@@ -458,6 +460,45 @@ const userController = {
           .send(onError(400, "User Not Found" + ERROR_MESSAGE));
 
       res.send(user);
+    } catch (e) {
+      res.status(500).send(onError(500, e.message));
+    }
+  },
+
+  sendEmailOTPToChangePassword: async (req, res) => {
+    try {
+      const user = await User.findOne({ email: req.query.email });
+
+      if (user == null) {
+        return res
+          .status(404)
+          .send(
+            onError(
+              404,
+              "This email does not link to any account yet" + ERROR_MESSAGE
+            )
+          );
+      }
+
+      const otp = new otpModel();
+      otp.otpCode = Math.random().toString().substr(2, 6);
+      await otp.save();
+
+      const result = await sendEmail(
+        req.query.email,
+        "Your HK Good Traceability password reset request",
+        "Here is your code: " + otp.otpCode
+      );
+
+      console.log("Result", result);
+
+      if (result != null) {
+        return res.send(otp);
+      } else {
+        return res
+          .status(500)
+          .send(onError(500, "Failed to send email" + ERROR_MESSAGE));
+      }
     } catch (e) {
       res.status(500).send(onError(500, e.message));
     }
