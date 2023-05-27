@@ -484,11 +484,12 @@ const userController = {
       otp.otpCode = Math.random().toString().substr(2, 6);
       await otp.save();
 
-      const result = await sendEmail(
-        req.query.email,
-        "Your HK Good Traceability password reset request",
-        otp.otpCode
-      );
+      console.log("OTP model", otp);
+
+      const result = await sendEmail(req.query.email, otp.otpCode);
+
+      // console.log("Otp timestamp ms", otp.createdAt.getTime() - Date.now());
+      // console.log("Otp Id", otp._id);
 
       console.log("Result", result);
 
@@ -501,6 +502,45 @@ const userController = {
       }
     } catch (e) {
       res.status(500).send(onError(500, e.message));
+    }
+  },
+
+  confirmEmailOTP: async (req, res) => {
+    try {
+      const otp = await otpModel.findOne({ _id: req.query.otpId });
+
+      if (
+        otp == null ||
+        req.query.otpCode == null ||
+        req.query.otpId == null ||
+        otp.isUsed
+      ) {
+        return res
+          .status(404)
+          .send(onError(404, "Invalid request" + ERROR_MESSAGE));
+      }
+
+      const timeRange = Date.now() - otp.createdAt.getTime();
+      const timeRangeValid = timeRange < 60000 * 3;
+      console.log("TimeRange", timeRange);
+
+      if (!timeRangeValid) {
+        return res
+          .status(400)
+          .send(onError(400, "OTP code expired" + ERROR_MESSAGE));
+      }
+
+      if (otp.otpCode != req.query.otpCode) {
+        return res
+          .status(400)
+          .send(onError(400, "Invalid OTP Code" + ERROR_MESSAGE));
+      }
+
+      otp.isUsed = true;
+      await otp.save();
+      res.send(otp);
+    } catch (e) {
+      return res.status(500).send(onError(500, e.message));
     }
   },
 };
