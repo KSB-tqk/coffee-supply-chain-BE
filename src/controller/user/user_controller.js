@@ -487,7 +487,7 @@ const userController = {
       const result = await sendEmail(
         req.query.email,
         "Your HK Good Traceability password reset request",
-        "Here is your code: " + otp.otpCode
+        otp.otpCode
       );
 
       console.log("Result", result);
