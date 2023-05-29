@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import QRCode from "qrcode";
 
 const stepLogSchema = mongoose.Schema(
   {
@@ -36,11 +37,26 @@ const stepLogSchema = mongoose.Schema(
       type: String,
       default: null,
     },
+    transactionQRCodeUri: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+//Hash the plain text pwd before saving
+stepLogSchema.pre("save", async function (next) {
+  const transactionUrl = this.transactionUrl;
+
+  if (transactionUrl != null) {
+    this.transactionQRCodeUri = await QRCode.toDataURL(transactionUrl);
+  }
+
+  next();
+});
 
 const StepLogModel = mongoose.model("StepLog", stepLogSchema);
 export default StepLogModel;
