@@ -8,6 +8,8 @@ projectRouter.use(auth);
 
 projectRouter.post("/", projectController.addProject);
 
+projectRouter.get("/by-month", projectController.getProjectByMonth);
+
 projectRouter.get("/:id", projectController.getProject);
 
 projectRouter.get("/", projectController.getAllProjects);

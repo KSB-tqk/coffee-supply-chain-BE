@@ -564,6 +564,18 @@ const projectController = {
       return res.status(400).send(onError(400, err.message));
     }
   },
+
+  getProjectByMonth: async (req, res) => {
+    try {
+      const listProject = await ProjectModel.find({
+        $expr: { $eq: [{ $month: "$dateCreated" }, req.query.month] },
+      });
+
+      res.send(listProject);
+    } catch (err) {
+      return res.status(400).send(onError(400, err.message));
+    }
+  },
 };
 
 export default projectController;
