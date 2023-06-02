@@ -5,6 +5,7 @@ import UserRole from "../../enum/user_role.js";
 import { onError, onValidUserRole } from "../../helper/data_helper.js";
 import ProjectModel from "../../model/project/project.js";
 import User from "../../model/user/user.js";
+import FarmModel from "../../model/farm/farm.js";
 
 const dashBoardController = {
   getDefaultInfo: async (req, res) => {
@@ -12,6 +13,7 @@ const dashBoardController = {
       if (
         (await onValidUserRole(req.header("Authorization"), [
           UserRole.TechAdmin,
+          UserRole.SystemAdmin,
         ])) == false
       )
         return res
@@ -36,6 +38,8 @@ const dashBoardController = {
       const transportInspector = allUser.filter(isTransportInpector);
       const warehouseInspector = allUser.filter(isWarehouseInspector);
 
+      const allFarms = await FarmModel.find();
+
       res.send({
         numberOfProject: allProject.length,
         numberOfPendingProject: pendingProject.length,
@@ -52,6 +56,7 @@ const dashBoardController = {
         numberOfProduceSupervision: produceSupervision.length,
         numberOfTransportInspector: transportInspector.length,
         numberOfWarehouseInspector: warehouseInspector.length,
+        numberOfFarms: allFarms.length,
       });
     } catch (err) {
       return res.status(500).send(onError(500, err.message));
