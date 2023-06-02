@@ -19,10 +19,11 @@ const dashBoardController = {
           .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
 
       const allProject = await ProjectModel.find({});
-      const pendingProject = allProject.filter(isPendingStateProject);
+      const proccessingProject = allProject.filter(isProccessingStateProject);
       const completedProject = allProject.filter(isCompletedStateProject);
       const canceledProject = allProject.filter(isCancelStateProject);
       const notYetProject = allProject.filter(isNotYetStateProject);
+      const pendingProject = allProject.filter(isPendingStateProject);
 
       const allUser = await User.find({});
       const systemAdmin = allUser.filter(isSystemAdmin);
@@ -38,6 +39,7 @@ const dashBoardController = {
       res.send({
         numberOfProject: allProject.length,
         numberOfPendingProject: pendingProject.length,
+        numberOfProccessingProject: proccessingProject.length,
         numberOfCompletedProject: completedProject.length,
         numberOfCanceledProject: canceledProject.length,
         numberOfNotYetProject: notYetProject.length,
@@ -92,8 +94,8 @@ const dashBoardController = {
   },
 };
 
-function isPendingStateProject(project) {
-  return project.state == State.Pending;
+function isProccessingStateProject(project) {
+  return project.state == State.Proccessing;
 }
 function isCompletedStateProject(project) {
   return project.state == State.Completed;
@@ -103,6 +105,9 @@ function isCancelStateProject(project) {
 }
 function isNotYetStateProject(project) {
   return project.state == State.NotYet;
+}
+function isPendingStateProject(project) {
+  return project.state == State.Pending;
 }
 
 function isSystemAdmin(user) {
