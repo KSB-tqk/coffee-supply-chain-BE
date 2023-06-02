@@ -15,6 +15,12 @@ dashBoardRouter.get(
   dashBoardController.getSystemAdminDashBoardInfo
 );
 
+// get list project per month
+dashBoardRouter.get(
+  "/project-per-month",
+  dashBoardController.getProjectPerMonth
+);
+
 // get dashboard info for farmer
 dashBoardRouter.get("/farmer", dashBoardController.getDefaultInfo);
 

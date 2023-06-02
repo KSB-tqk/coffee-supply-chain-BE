@@ -1,4 +1,5 @@
 import { ERROR_MESSAGE } from "../../enum/app_const.js";
+import MonthString from "../../enum/month_string.js";
 import State from "../../enum/state.js";
 import UserDepartment from "../../enum/user_department.js";
 import UserRole from "../../enum/user_role.js";
@@ -58,6 +59,24 @@ const dashBoardController = {
         numberOfWarehouseInspector: warehouseInspector.length,
         numberOfFarms: allFarms.length,
       });
+    } catch (err) {
+      return res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  getProjectPerMonth: async (req, res) => {
+    try {
+      const listProjectPerMonth = [];
+      for (let i = 0; i < 12; i++) {
+        const listProject = await ProjectModel.find({
+          $expr: { $eq: [{ $month: "$dateCreated" }, i + 1] },
+        });
+        listProjectPerMonth.push(
+          MonthString[i + 1] + ": " + listProject.length
+        );
+      }
+      console.log(listProjectPerMonth);
+      res.send(listProjectPerMonth);
     } catch (err) {
       return res.status(500).send(onError(500, err.message));
     }
