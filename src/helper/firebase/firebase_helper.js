@@ -23,12 +23,6 @@ admin.initializeApp({
   credential: admin.credential.cert(obj),
 });
 
-function convertToEnv(object) {
-  let envFile = "";
-  for (const key of Object.keys(object)) {
-    envFile += `${key}=${object[key]}\n`;
-  }
-  return envFile;
-}
-
 export default admin;
+
+//9bea460f1923ce5b055a3b35cc44b0f7b7bdc446
