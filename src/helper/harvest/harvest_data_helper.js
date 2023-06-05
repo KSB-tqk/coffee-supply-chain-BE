@@ -12,7 +12,7 @@ export async function isValidHarvestStateUpdate(harvest, state, oldState) {
         throw Error("Harvest Project Id can not be null");
       if (harvest.inspector == null)
         throw Error("Harvest Inspector can not be null");
-      if (oldState != State.Proccessing)
+      if (oldState != State.Processing)
         throw Error("Harvest state can not change to Completed");
       if (harvest.projectCode == "")
         throw Error("Harvest Project Code can not be blank");

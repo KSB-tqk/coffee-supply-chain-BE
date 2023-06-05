@@ -28,7 +28,7 @@ export async function isValidProduceStateUpdate(produce, state, oldState) {
         if (produce.factory == "") throw Error("Factory can not be blank");
         if (produce.inspector == null)
           throw Error("Produce Supervision Inspector can not be null");
-        if (oldState != State.Proccessing)
+        if (oldState != State.Processing)
           throw Error(
             "Produce Supervision State can not be change to Completed"
           );

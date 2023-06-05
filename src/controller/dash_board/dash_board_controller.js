@@ -111,7 +111,7 @@ const dashBoardController = {
 };
 
 function isProccessingStateProject(project) {
-  return project.state == State.Proccessing;
+  return project.state == State.Processing;
 }
 function isCompletedStateProject(project) {
   return project.state == State.Completed;

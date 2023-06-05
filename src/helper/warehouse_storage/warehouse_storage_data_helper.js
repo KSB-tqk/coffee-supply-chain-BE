@@ -30,7 +30,7 @@ export async function isValidWarehouseStateUpdate(
           throw Error("Warehouse in Warehouse Storage can not be blank");
         if (warehouseStorage.inspector == null)
           throw Error("Warehouse Storage Inspector can not be null");
-        if (oldState != State.Proccessing)
+        if (oldState != State.Processing)
           throw Error("Warehouse Storage State can not be change to Completed");
       }
       return true;
