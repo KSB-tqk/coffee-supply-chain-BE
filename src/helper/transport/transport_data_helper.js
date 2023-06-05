@@ -26,7 +26,7 @@ export async function isValidTransportStateUpdate(transport, state, oldState) {
           throw Error("Transport can not be blank");
         if (transport.inspector == null)
           throw Error("Transport Inspector can not be null");
-        if (oldState != State.Proccessing)
+        if (oldState != State.Processing)
           throw Error("Transport State can not be change to Completed");
       }
       return true;

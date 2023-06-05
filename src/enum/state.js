@@ -1,5 +1,5 @@
 const State = {
-  Proccessing: 1,
+  Processing: 1,
   Completed: 2,
   Canceled: 3,
   NotYet: 4,
