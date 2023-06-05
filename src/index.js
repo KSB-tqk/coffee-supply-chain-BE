@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import swaggerUi from "swagger-ui-express";
 import { createRequire } from "module";
-import QRCode from "qrcode";
+import admin from "./helper/firebase/firebase_helper.js";
 const require = createRequire(import.meta.url);
 const swaggerDocument = require("../src/swagger_v2.json");
 
@@ -28,7 +28,7 @@ import stepLogRouter from "./router/step_log/step_log_router.js";
 import dashBoardRouter from "./router/dash_board/dash_board_router.js";
 import transportCompanyRouter from "./router/transport/transport_company_router.js";
 import factoryRouter from "./router/produce_supervision_router/factory_router.js";
-
+import notificationRouter from "./router/notification/notification_router.js";
 const app = express();
 
 const port = process.env.PORT;
@@ -44,6 +44,7 @@ app.use(
 app.use(express.json());
 app.use("/users", userRouter);
 app.use("/farm", farmRouter);
+app.use("/fcm", notificationRouter);
 app.use("/farm-project", FarmProjectRouter);
 app.use("/harvest", harvestRouter);
 app.use("/transport-company", transportCompanyRouter);
@@ -82,6 +83,7 @@ app.listen(port || 3001, () => {
 });
 
 import sgMail from "@sendgrid/mail";
+import notificationController from "./controller/notification/notification_controller.js";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const msg = {
   to: "19521686@gm.uit.edu.vn", // Change to your recipient

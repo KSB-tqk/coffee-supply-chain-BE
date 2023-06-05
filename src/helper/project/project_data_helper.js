@@ -60,7 +60,7 @@ export async function onUpdateProjectState(project, updateState) {
 
         break;
 
-      case State.Proccessing:
+      case State.Processing:
         break;
 
       case State.Canceled:
