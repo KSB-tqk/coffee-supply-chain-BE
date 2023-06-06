@@ -14,6 +14,7 @@ import {
 } from "../firebase/fcm_helper.js";
 import User from "../../model/user/user.js";
 import mongoose from "mongoose";
+import NotificationModel from "../../model/step_log/notification.js";
 
 export async function onValidProjectInfo(project, userEmail) {
   const isExistProjectCode = await ProjectModel.findOne({
@@ -38,10 +39,25 @@ export async function onUpdateProjectNotification(
   project
 ) {
   console.log("Modified field", modifiedPaths);
-  const projectId = stepLog.projectId.toString();
   try {
     const tokenList = [];
+    // find the actor of the notification event
     const user = await User.findById(stepLog.actor);
+
+    // create notification model
+    const notification = new NotificationModel();
+    notification.projectId = project._id;
+    notification.title = project.projectName + " has been updated.";
+    notification.message =
+      user.lastName +
+      " " +
+      user.firstName +
+      " has update the project field: " +
+      modifiedPaths;
+    notification.stepLogId = stepLog._id;
+
+    await notification.save();
+
     if (user == null) {
       console.log("Actor Does Not Exist" + ERROR_MESSAGE);
       return null;
@@ -52,7 +68,15 @@ export async function onUpdateProjectNotification(
       const manager = await User.findById(project.manager);
       if (manager == null) {
         console.log("Manager Does Not Exist" + ERROR_MESSAGE);
-      } else tokenList.push(manager.fcmToken);
+      } else {
+        if (manager.notificationList == null) manager.notificationList = [];
+        manager.notificationList = manager.notificationList.concat({
+          notification: notification._id,
+        });
+        manager.save();
+
+        if (manager.fcmToken != null) tokenList.push(manager.fcmToken);
+      }
     }
 
     // check project harvest inspector for fcm token
@@ -66,7 +90,18 @@ export async function onUpdateProjectNotification(
         const harvestInspector = await User.findById(harvest.inspector);
         if (harvestInspector == null) {
           console.log("Harvest Inspector Does Not Exist" + ERROR_MESSAGE);
-        } else tokenList.push(harvestInspector.fcmToken);
+        } else {
+          if (harvestInspector.notificationList == null)
+            harvestInspector.notificationList = [];
+          harvestInspector.notificationList =
+            harvestInspector.notificationList.concat({
+              notification: notification._id,
+            });
+          harvestInspector.save();
+
+          if (harvestInspector.fcmToken != null)
+            tokenList.push(harvestInspector.fcmToken);
+        }
       }
     }
 
@@ -81,7 +116,18 @@ export async function onUpdateProjectNotification(
         const transportInspector = await User.findById(transport.inspector);
         if (transportInspector == null) {
           console.log("Transport Inspector Does Not Exist" + ERROR_MESSAGE);
-        } else tokenList.push(transportInspector.fcmToken);
+        } else {
+          if (transportInspector.notificationList == null)
+            transportInspector.notificationList = [];
+          transportInspector.notificationList =
+            transportInspector.notificationList.concat({
+              notification: notification._id,
+            });
+          transportInspector.save();
+
+          if (transportInspector.fcmToken != null)
+            tokenList.push(transportInspector.fcmToken);
+        }
       }
     }
 
@@ -102,7 +148,18 @@ export async function onUpdateProjectNotification(
           console.log(
             "Warehouse Storage Inspector Does Not Exist" + ERROR_MESSAGE
           );
-        } else tokenList.push(warehouseStorageInspector.fcmToken);
+        } else {
+          if (warehouseStorage.notificationList == null)
+            warehouseStorage.notificationList = [];
+          warehouseStorage.notificationList =
+            warehouseStorage.notificationList.concat({
+              notification: notification._id,
+            });
+          warehouseStorage.save();
+
+          if (warehouseStorageInspector.fcmToken != null)
+            tokenList.push(warehouseStorageInspector.fcmToken);
+        }
       }
     }
 
@@ -119,19 +176,29 @@ export async function onUpdateProjectNotification(
         const produceInspector = await User.findById(produce.inspector);
         if (produceInspector == null) {
           console.log("Produce Inspector Does Not Exist" + ERROR_MESSAGE);
-        } else tokenList.push(produceInspector.fcmToken);
+        } else {
+          if (produceInspector.notificationList == null)
+            produceInspector.notificationList = [];
+          produceInspector.notificationList =
+            produceInspector.notificationList.concat({
+              notification: notification._id,
+            });
+          produceInspector.save();
+
+          if (produceInspector.fcmToken != null)
+            tokenList.push(produceInspector.fcmToken);
+        }
       }
     }
 
-    await pushNotificationMultiCast(
-      tokenList,
-      project.projectName + " has been updated.",
-      user.lastName +
-        " " +
-        user.firstName +
-        " has update the project field: " +
-        modifiedPaths
-    );
+    console.log(tokenList.length);
+
+    if (tokenList.length > 0)
+      await pushNotificationMultiCast(
+        tokenList,
+        notification.title,
+        notification.message
+      );
   } catch (err) {
     throw Error(err.message);
   }
