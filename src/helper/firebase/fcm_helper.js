@@ -21,6 +21,27 @@ export async function pushNotification(
   return response;
 }
 
+export async function pushNotificationMultiCast(
+  token,
+  notificationTitle,
+  notificationMessage
+) {
+  const message = {
+    notification: {
+      title: notificationTitle,
+      body: notificationMessage,
+    },
+    tokens: token,
+  };
+
+  console.log("message", message);
+
+  // Send a message to the device corresponding to the provided
+  // registration token.
+  const response = await admin.messaging().sendEachForMulticast(message);
+  return response;
+}
+
 export async function pushNotificationToTopic(
   topic,
   notificationTitle,

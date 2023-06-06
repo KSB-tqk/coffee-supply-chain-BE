@@ -50,14 +50,17 @@ const seedController = {
         return res.status(400).send(onError(400, "Seed info can't be blank!"));
       }
 
-      const newSeed = await SeedModel.findByIdAndUpdate(id, {
-        $set: {
-          seedName: seedName,
-          seedFamily: seedFamily,
-          supplier: supplier,
-        },
-      });
-      res.status(200).send(newSeed);
+      for (var field in SeedModel.schema.paths) {
+        if (field !== "_id" && field !== "__v") {
+          if (req.body[field] !== undefined) {
+            seed[field] = req.body[field];
+            console.log("seed update field: ", seed[field]);
+          }
+        }
+      }
+
+      await seed.save();
+      res.status(200).send(seed);
     } catch (err) {
       res.status(400).send(onError(400, err.message));
     }
