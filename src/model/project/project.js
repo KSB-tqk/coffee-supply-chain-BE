@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { getStepLogId } from "../../enum/app_const.js";
+import { onUpdateProjectNotification } from "../../helper/project/project_data_helper.js";
 import StepLogModel from "../step_log/step_log.js";
 
 const projectSchema = mongoose.Schema({
@@ -89,6 +90,8 @@ projectSchema.pre("save", async function (next) {
     console.log("steplog after save", stepLog);
     stepLog.action = "Modified field: " + modifiedPaths;
     await stepLog.save();
+
+    onUpdateProjectNotification(stepLog, modifiedPaths, this);
   }
 
   next();
