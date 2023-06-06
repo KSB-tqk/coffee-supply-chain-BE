@@ -30,4 +30,6 @@ notificationRouter.post(
   "/save-fcm-token",
   notificationController.saveUserFCMToken
 );
+
+notificationRouter.get("/by-id", notificationController.getNotificationLogById);
 export default notificationRouter;

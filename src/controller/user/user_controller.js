@@ -5,6 +5,7 @@ import Farmer from "../../model/user/farmer.js";
 import SystemAdmin from "../../model/user/system_admin.js";
 import {
   checkValidObjectId,
+  getUserIdByHeader,
   onError,
   onLogoutCurrentUser,
   onResponse,
@@ -312,7 +313,7 @@ const userController = {
     }
   },
   getListUserPaginate: async (req, res) => {
-    const perPage = 2;
+    const perPage = 10;
     const page = req.params.page;
     try {
       const users = await User.find()
@@ -543,6 +544,37 @@ const userController = {
       return res.status(500).send(onError(500, e.message));
     }
   },
+
+  getNotificationList: async (req, res) => {
+    try {
+      const userId = await getUserIdByHeader(req.header("Authorization"));
+      const user = await User.findById(userId);
+
+      if (user == null) {
+        return res
+          .status(404)
+          .send(onError(404, "User Not Found" + ERROR_MESSAGE));
+      }
+
+      const userNotificationList = user.notificationList.chunk(10);
+
+      console.log(user.notificationList);
+
+      if (req.query.page < userNotificationList.length)
+        res.send(userNotificationList[req.query.page]);
+      else res.send([]);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
 };
 
+Object.defineProperty(Array.prototype, "chunk", {
+  value: function (chunkSize) {
+    var R = [];
+    for (var i = 0; i < this.length; i += chunkSize)
+      R.push(this.slice(i, i + chunkSize));
+    return R;
+  },
+});
 export default userController;
