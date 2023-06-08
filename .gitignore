@@ -2,3 +2,4 @@ node_modules
 config
 .env
 dev.env
+src/helper/firebase/firebase-account-config.json
