@@ -19,6 +19,21 @@ const enterpriseSchema = mongoose.Schema(
         }
       },
     },
+    enterpriseWebsite: {
+      type: String,
+    },
+    enterprisePhoneNumber: {
+      type: String,
+    },
+    enterpriseEmail: {
+      type: String,
+    },
+    enterpriseAddress: {
+      type: String,
+    },
+    enterpriseLogoUrl: {
+      type: String,
+    },
   },
   {
     timestamps: true,
