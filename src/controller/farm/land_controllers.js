@@ -47,21 +47,23 @@ const landController = {
         res.status(400).send(onError(400, "Invalid Land Id"));
       }
 
-      const landId = await LandModel.findById(id);
+      const land = await LandModel.findById(id);
 
-      if (!landId)
+      if (!land)
         return res.status(400).send(onError(400, "This land doesn't exist"));
       else if (!landName || !landArea || !state) {
         return res.status(400).send(onError(400, "Land name can't be blank!"));
       }
-      const landModel = await LandModel.findByIdAndUpdate(id, {
-        $set: {
-          landName: landName,
-          landArea: landArea,
-          state: state,
-        },
-      });
-      res.status(200).send(landModel);
+      for (var field in LandModel.schema.paths) {
+        if (field !== "_id" && field !== "__v") {
+          if (req.body[field] !== undefined) {
+            land[field] = req.body[field];
+            console.log("seed update field: ", land[field]);
+          }
+        }
+      }
+      await land.save();
+      res.status(200).send(land);
     } catch (err) {
       res.status(400).send(onError(400, err.message));
     }
