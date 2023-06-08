@@ -4,6 +4,8 @@ import auth from "../../middleware/authentication.js";
 
 const projectRouter = express.Router();
 
+projectRouter.get("/without-token", projectController.getProjectWithoutToken);
+
 projectRouter.use(auth);
 
 projectRouter.post("/", projectController.addProject);
