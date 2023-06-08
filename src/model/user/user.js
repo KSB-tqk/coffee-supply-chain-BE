@@ -65,6 +65,14 @@ const userSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
+    notificationList: [
+      {
+        notification: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Notification",
+        },
+      },
+    ],
   },
   {
     timestamps: true,

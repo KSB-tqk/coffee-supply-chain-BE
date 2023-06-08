@@ -6,6 +6,7 @@ import {
   subscribeToTopic,
   unSubscribeFromTopic,
 } from "../../helper/firebase/fcm_helper.js";
+import NotificationModel from "../../model/step_log/notification.js";
 import User from "../../model/user/user.js";
 
 const notificationController = {
@@ -72,6 +73,23 @@ const notificationController = {
       user.fcmToken = req.body.token;
       await user.save();
       res.send(user);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  getNotificationLogById: async (req, res) => {
+    try {
+      const notification = await NotificationModel.findById(
+        req.query.notificationId
+      );
+
+      if (notification == null)
+        return res
+          .status(404)
+          .send(onError(404, "Notification Not Found" + ERROR_MESSAGE));
+
+      res.send(notification);
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }

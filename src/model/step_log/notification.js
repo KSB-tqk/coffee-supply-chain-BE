@@ -7,38 +7,15 @@ const notificationSchema = mongoose.Schema(
       ref: "Project",
       default: null,
     },
-    actor: {
+    message: {
+      type: String,
+    },
+    title: {
+      type: String,
+    },
+    stepLogId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: null,
-    },
-    action: {
-      type: String,
-      default: "",
-    },
-    modelBeforeChanged: {
-      type: String,
-      default: null,
-    },
-    modelAfterChanged: {
-      type: String,
-      default: null,
-    },
-    transactionHash: {
-      type: String,
-      default: null,
-    },
-    transactionAddress: {
-      type: String,
-      default: null,
-    },
-    transactionUrl: {
-      type: String,
-      default: null,
-    },
-    transactionQRCodeUri: {
-      type: String,
-      default: null,
+      ref: "StepLog",
     },
   },
   {
@@ -46,16 +23,5 @@ const notificationSchema = mongoose.Schema(
   }
 );
 
-//Hash the plain text pwd before saving
-stepLogSchema.pre("save", async function (next) {
-  const transactionUrl = this.transactionUrl;
-
-  if (transactionUrl != null) {
-    this.transactionQRCodeUri = await QRCode.toDataURL(transactionUrl);
-  }
-
-  next();
-});
-
-const StepLogModel = mongoose.model("StepLog", stepLogSchema);
-export default StepLogModel;
+const NotificationModel = mongoose.model("Notification", notificationSchema);
+export default NotificationModel;

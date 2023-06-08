@@ -24,6 +24,8 @@ userRouter.get("/me", userController.getCurrentUserInfo);
 
 userRouter.get("/filter", userController.getAllUserByFilter);
 
+userRouter.get("/all-notification", userController.getNotificationList);
+
 userRouter.get("/department/:id", userController.getUserByDepartmentId);
 
 userRouter.get("/role/:id", userController.getUserByRoleTypeId);
