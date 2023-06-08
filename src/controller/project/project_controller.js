@@ -565,6 +565,58 @@ const projectController = {
     }
   },
 
+  getProjectWithoutToken: async (req, res) => {
+    try {
+      const id = req.query.id;
+
+      console.log("Use this function");
+
+      const project = await ProjectModel.findById(id)
+        .populate("manager")
+        .populate({
+          path: "harvest",
+          populate: {
+            path: "inspector",
+          },
+        })
+        .populate({
+          path: "transport",
+          populate: {
+            path: "inspector",
+          },
+        })
+        .populate({
+          path: "warehouseStorage",
+          populate: {
+            path: "inspector",
+          },
+        })
+        .populate({
+          path: "produce",
+          populate: {
+            path: "inspector",
+          },
+        })
+        .populate({
+          path: "projectLogList",
+          populate: {
+            path: "projectLog",
+          },
+        })
+        .populate("farmProject")
+        .exec();
+
+      if (!project) {
+        return res
+          .status(400)
+          .send(onError(400, "This project doesn't exist" + ERROR_MESSAGE));
+      }
+
+      res.status(200).send(project);
+    } catch (err) {
+      return res.status(400).send(onError(400, err.message));
+    }
+  },
   getProjectByMonth: async (req, res) => {
     try {
       const listProject = await ProjectModel.find({
