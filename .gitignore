@@ -2,3 +2,4 @@ node_modules
 config
 .env
 dev.env
+src/helper/firebase/coffee-supply-chain-2c30f-firebase-adminsdk-v5jv0-7e64f6c9d7.json
