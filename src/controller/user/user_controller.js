@@ -618,12 +618,14 @@ const userController = {
       ) {
       } else if (user.role == UserRole.Farmer) {
         const projectIdList = [];
-        for (var project in allProject) {
+        for (let i = 0; i < allProject.length; i++) {
+          const project = allProject[i];
           if (project.farmProject.farmer == user._id) {
             projectIdList.push(project._id);
           } else {
             const farm = await FarmModel.findById(project.farmProject.farmId);
-            for (var farmer in farm.farmerList) {
+            for (let j = 0; j < farm.farmerList.length; j++) {
+              const farmer = farm.farmerList[j];
               if (farmer == user._id) {
                 projectIdList.push(project._id);
               }
@@ -638,12 +640,14 @@ const userController = {
         case UserRole.TechAdmin:
           return res.send(allProject);
         case UserRole.Farmer:
-          for (var project in allProject) {
+          for (let i = 0; i < allProject.length; i++) {
+            const project = allProject[i];
             if (project.farmProject.farmer == user._id) {
               projectIdList.push(project._id);
             } else {
               const farm = await FarmModel.findById(project.farmProject.farmId);
-              for (var farmer in farm.farmerList) {
+              for (let j = 0; j < farm.farmerList.length; j++) {
+                const farmer = farm.farmerList[j];
                 if (farmer == user._id) {
                   projectIdList.push(project._id);
                 }
@@ -656,25 +660,46 @@ const userController = {
             case UserDepartment.Empty:
               break;
             case UserDepartment.HarvestInspector:
-              for (var project in allProject) {
+              for (let i = 0; i < allProject.length; i++) {
+                const project = allProject[i];
+                if (project.harvest.inspector == null) continue;
+                console.log("User Id", user._id);
+                if (project.harvest.inspector == user._id) {
+                  console.log(project);
+                  projectIdList.push(project._id);
+                }
               }
               break;
             case UserDepartment.TransportSupervision:
+              for (let i = 0; i < allProject.length; i++) {
+                const project = allProject[i];
+                if (project.transport.inspector == null) continue;
+                if (project.transport.inspector == user._id) {
+                  projectIdList.push(project._id);
+                }
+              }
               break;
             case UserDepartment.SupervisingProduce:
+              for (let i = 0; i < allProject.length; i++) {
+                const project = allProject[i];
+                if (project.produce.inspector == null) continue;
+                if (project.produce.inspector == user._id) {
+                  projectIdList.push(project._id);
+                }
+              }
               break;
             case UserDepartment.WarehouseSupervision:
+              for (let i = 0; i < allProject.length; i++) {
+                const project = allProject[i];
+                if (project.warehouseStorage.inspector == null) continue;
+                if (project.warehouseStorage.inspector == user._id) {
+                  projectIdList.push(project._id);
+                }
+              }
               break;
           }
       }
-
-      const userNotificationList = user.notificationList.chunk(10);
-
-      console.log(user.notificationList);
-
-      if (req.query.page < userNotificationList.length)
-        res.send(userNotificationList[req.query.page]);
-      else res.send([]);
+      res.send(projectIdList);
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }

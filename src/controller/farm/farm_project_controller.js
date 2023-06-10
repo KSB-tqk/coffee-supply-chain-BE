@@ -54,57 +54,45 @@ const farmProjectController = {
         return res.status(400).send(onError(400, "Invalid Farm Project Id"));
       }
 
-      const {
-        farmProjectName,
-        land,
-        seed,
-        dateCreated,
-        dateCompleted,
-        totalHarvest,
-        state,
-        farmer,
-      } = req.body;
-
       const farmProject = await FarmProjectModel.findById(id).exec();
 
-      if (!checkValidObjectId(id)) {
-        return res.status(400).send(onError(400, "Invalid Land Id"));
-      }
-      const landProject = await LandModel.findById(land).exec();
+      if (req.body.land != null) {
+        if (!checkValidObjectId(req.body.land)) {
+          return res.status(400).send(onError(400, "Invalid Land Id"));
+        }
+        const landProject = await LandModel.findById(req.body.land);
 
-      if (!checkValidObjectId(id)) {
-        return res.status(400).send(onError(400, "Invalid Seed Id"));
+        if (!landProject)
+          return res.status(400).send(onError(400, "This land doesn't exist"));
       }
-      const seedProject = await SeedModel.findById(seed).exec();
+
+      if (req.body.seed != null) {
+        if (!checkValidObjectId(req.body.seed)) {
+          return res.status(400).send(onError(400, "Invalid Seed Id"));
+        }
+        const seedProject = await SeedModel.findById(req.body.seed);
+
+        if (!seedProject)
+          return res.status(400).send(onError(400, "This seed doesn't exist"));
+      }
 
       if (!farmProject)
         return res
           .status(400)
           .send(onError(400, "This farm project doesn't exist"));
-      else if (!landProject)
-        return res.status(400).send(onError(400, "This land doesn't exist"));
-      else if (!seedProject)
-        return res.status(400).send(onError(400, "This seed doesn't exist"));
-      else if (!farmProjectName || !state) {
-        return res
-          .status(400)
-          .send(onError(400, "Farm Prject Info can't be blank"));
-      } else if (totalHarvest < 0) {
+      else if (req.body.totalHarvest < 0 && req.body.totalHarvest != null) {
         return res
           .status(400)
           .send(onError(400, "Total harvest must be greater than 0"));
       } else {
-        const farmProject = await FarmProjectModel.findByIdAndUpdate(id, {
-          $set: {
-            farmProjectName: farmProjectName,
-            land: land,
-            seed: seed,
-            dateCreated: dateCreated,
-            dateCompleted: state === 3 ? Date.now() : dateCompleted,
-            totalHarvest: totalHarvest,
-            state: state,
-          },
-        });
+        for (var field in FarmProjectModel.schema.paths) {
+          if (field !== "_id" && field !== "__v") {
+            if (req.body[field] !== undefined) {
+              farmProject[field] = req.body[field];
+              console.log("farmProject update field: ", farmProject[field]);
+            }
+          }
+        }
 
         // save log for farmProject in project log list
         if (farmProject.projectId != null) {
@@ -132,7 +120,7 @@ const farmProjectController = {
             projectLog: stepLog._id,
           });
 
-          project.save();
+          await project.save();
         }
 
         // check to add farmer to farmPJ
@@ -147,10 +135,10 @@ const farmProjectController = {
               .status(400)
               .send(onError(400, "User is not a farmer" + ERROR_MESSAGE));
           farmProject.farmer = farmer._id;
-          await farmProject.save();
         }
 
-        return res.status(200).send(farmProject);
+        await farmProject.save();
+        res.status(200).send(farmProject);
       }
     } catch (err) {
       res.status(500).send(onError(500, err.message));
