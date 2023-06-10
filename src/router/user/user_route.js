@@ -22,6 +22,8 @@ userRouter.get("/", userController.getAllUserInfo);
 
 userRouter.get("/me", userController.getCurrentUserInfo);
 
+userRouter.get("/all-project", userController.getAllUserProject);
+
 userRouter.get("/filter", userController.getAllUserByFilter);
 
 userRouter.get("/all-notification", userController.getNotificationList);
