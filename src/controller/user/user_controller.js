@@ -21,6 +21,10 @@ import Staff from "../../model/user/staff.js";
 import { sendData } from "../../helper/blockchain_helper.js";
 import otpModel from "../../model/user/otp.js";
 import { sendEmail } from "../../helper/send_email_helper.js";
+import ProjectModel from "../../model/project/project.js";
+import FarmProjectModel from "../../model/farm/farm_project.js";
+import FarmModel from "../../model/farm/farm.js";
+import UserDepartment from "../../enum/user_department.js";
 
 const userController = {
   addUser: async (req, res) => {
@@ -554,6 +558,114 @@ const userController = {
         return res
           .status(404)
           .send(onError(404, "User Not Found" + ERROR_MESSAGE));
+      }
+
+      const userNotificationList = user.notificationList.chunk(10);
+
+      console.log(user.notificationList);
+
+      if (req.query.page < userNotificationList.length)
+        res.send(userNotificationList[req.query.page]);
+      else res.send([]);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  getAllUserProject: async (req, res) => {
+    try {
+      const userId = await getUserIdByHeader(req.header("Authorization"));
+      const user = await User.findById(userId);
+
+      if (user == null) {
+        return res
+          .status(404)
+          .send(onError(404, "User Not Found" + ERROR_MESSAGE));
+      }
+
+      const allProject = await ProjectModel.find({})
+        .populate("manager")
+        .populate({
+          path: "harvest",
+          populate: {
+            path: "inspector",
+          },
+        })
+        .populate({
+          path: "transport",
+          populate: {
+            path: "inspector",
+          },
+        })
+        .populate({
+          path: "warehouseStorage",
+          populate: {
+            path: "inspector",
+          },
+        })
+        .populate({
+          path: "produce",
+          populate: {
+            path: "inspector",
+          },
+        })
+        .populate("farmProject")
+        .exec();
+
+      if (
+        user.role == UserRole.SystemAdmin ||
+        user.role == UserRole.TechAdmin
+      ) {
+      } else if (user.role == UserRole.Farmer) {
+        const projectIdList = [];
+        for (var project in allProject) {
+          if (project.farmProject.farmer == user._id) {
+            projectIdList.push(project._id);
+          } else {
+            const farm = await FarmModel.findById(project.farmProject.farmId);
+            for (var farmer in farm.farmerList) {
+              if (farmer == user._id) {
+                projectIdList.push(project._id);
+              }
+            }
+          }
+        }
+      }
+
+      const projectIdList = [];
+      switch (user.role) {
+        case UserRole.SystemAdmin:
+        case UserRole.TechAdmin:
+          return res.send(allProject);
+        case UserRole.Farmer:
+          for (var project in allProject) {
+            if (project.farmProject.farmer == user._id) {
+              projectIdList.push(project._id);
+            } else {
+              const farm = await FarmModel.findById(project.farmProject.farmId);
+              for (var farmer in farm.farmerList) {
+                if (farmer == user._id) {
+                  projectIdList.push(project._id);
+                }
+              }
+            }
+          }
+          break;
+        case UserRole.Staff:
+          switch (user.department) {
+            case UserDepartment.Empty:
+              break;
+            case UserDepartment.HarvestInspector:
+              for (var project in allProject) {
+              }
+              break;
+            case UserDepartment.TransportSupervision:
+              break;
+            case UserDepartment.SupervisingProduce:
+              break;
+            case UserDepartment.WarehouseSupervision:
+              break;
+          }
       }
 
       const userNotificationList = user.notificationList.chunk(10);

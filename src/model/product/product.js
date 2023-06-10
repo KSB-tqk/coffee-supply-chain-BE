@@ -45,6 +45,22 @@ const productSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
   },
+
+  typeOfProduct: {
+    type: String,
+  },
+
+  measureUnit: {
+    type: String,
+  },
+
+  productImage: [
+    {
+      productImageUrl: {
+        type: String,
+      },
+    },
+  ],
 });
 
 const ProductModel = mongoose.model("Product", productSchema);
