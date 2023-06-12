@@ -76,22 +76,23 @@ const farmProjectSchema = mongoose.Schema({
   },
   totalSeeds: {
     type: Number,
-    default: 0.0,
+    default: null,
   },
   totalFertilizers: {
     type: Number,
-    default: 0.0,
+    default: null,
   },
   ripeness: {
     type: Number,
-    default: 0.0,
+    default: null,
   },
   pesticide: {
     type: String,
+    default: null,
   },
   plantDensity: {
     type: Number,
-    default: 0.0,
+    default: null,
   },
 });
 
