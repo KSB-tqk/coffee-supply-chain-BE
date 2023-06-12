@@ -612,27 +612,7 @@ const userController = {
         .populate("farmProject")
         .exec();
 
-      if (
-        user.role == UserRole.SystemAdmin ||
-        user.role == UserRole.TechAdmin
-      ) {
-      } else if (user.role == UserRole.Farmer) {
-        const projectIdList = [];
-        for (let i = 0; i < allProject.length; i++) {
-          const project = allProject[i];
-          if (project.farmProject.farmer == user._id) {
-            projectIdList.push(project._id);
-          } else {
-            const farm = await FarmModel.findById(project.farmProject.farmId);
-            for (let j = 0; j < farm.farmerList.length; j++) {
-              const farmer = farm.farmerList[j];
-              if (farmer == user._id) {
-                projectIdList.push(project._id);
-              }
-            }
-          }
-        }
-      }
+      console.log("User Role", user.role);
 
       const projectIdList = [];
       switch (user.role) {
@@ -642,13 +622,19 @@ const userController = {
         case UserRole.Farmer:
           for (let i = 0; i < allProject.length; i++) {
             const project = allProject[i];
-            if (project.farmProject.farmer == user._id) {
+            if (
+              project.farmProject == null ||
+              project.farmProject.farmer == null
+            )
+              continue;
+
+            if (project.farmProject.farmer._id.equals(user._id)) {
               projectIdList.push(project._id);
             } else {
               const farm = await FarmModel.findById(project.farmProject.farmId);
               for (let j = 0; j < farm.farmerList.length; j++) {
                 const farmer = farm.farmerList[j];
-                if (farmer == user._id) {
+                if (farmer._id.equals(user._id)) {
                   projectIdList.push(project._id);
                 }
               }
@@ -660,12 +646,10 @@ const userController = {
             case UserDepartment.Empty:
               break;
             case UserDepartment.HarvestInspector:
-              for (let i = 0; i < allProject.length; i++) {
-                const project = allProject[i];
+              for (let k = 0; k < allProject.length; k++) {
+                const project = allProject[k];
                 if (project.harvest.inspector == null) continue;
-                console.log("User Id", user._id);
-                if (project.harvest.inspector == user._id) {
-                  console.log(project);
+                if (project.harvest.inspector._id.equals(user._id)) {
                   projectIdList.push(project._id);
                 }
               }
@@ -674,7 +658,7 @@ const userController = {
               for (let i = 0; i < allProject.length; i++) {
                 const project = allProject[i];
                 if (project.transport.inspector == null) continue;
-                if (project.transport.inspector == user._id) {
+                if (project.transport.inspector._id.equals(user._id)) {
                   projectIdList.push(project._id);
                 }
               }
@@ -683,7 +667,7 @@ const userController = {
               for (let i = 0; i < allProject.length; i++) {
                 const project = allProject[i];
                 if (project.produce.inspector == null) continue;
-                if (project.produce.inspector == user._id) {
+                if (project.produce.inspector._id.equals(user._id)) {
                   projectIdList.push(project._id);
                 }
               }
@@ -692,14 +676,33 @@ const userController = {
               for (let i = 0; i < allProject.length; i++) {
                 const project = allProject[i];
                 if (project.warehouseStorage.inspector == null) continue;
-                if (project.warehouseStorage.inspector == user._id) {
+                if (project.warehouseStorage.inspector._id.equals(user._id)) {
                   projectIdList.push(project._id);
                 }
               }
               break;
           }
+          break;
       }
       res.send(projectIdList);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  updateUserIdField: async (req, res) => {
+    try {
+      const allUser = await User.find({});
+
+      for (let i = 0; i < allUser.length; i++) {
+        const user = allUser[i];
+        if (user.userId == null) {
+          user.userId = user._id;
+          await user.save();
+        }
+      }
+
+      res.send("Update field UserId for all user successfully");
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }
