@@ -125,6 +125,9 @@ const farmProjectController = {
 
         // check to add farmer to farmPJ
         if (req.body.farmer != null) {
+          if (!checkValidObjectId(req.body.farmer)) {
+            return res.status(400).send(onError(400, "Invalid Farmer Id"));
+          }
           const farmer = await User.findById(req.body.farmer);
           if (farmer == null)
             return res
@@ -138,7 +141,12 @@ const farmProjectController = {
         }
 
         await farmProject.save();
-        res.status(200).send(farmProject);
+        const farmProjectPop = await FarmProjectModel.findById(farmProject._id)
+          .populate(["land", "seed"])
+          .populate("farmer")
+          .populate("projectId")
+          .exec();
+        res.status(200).send(farmProjectPop);
       }
     } catch (err) {
       res.status(500).send(onError(500, err.message));

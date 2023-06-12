@@ -62,6 +62,7 @@ const userController = {
             .status(400)
             .send(onError(400, "Permission denied" + ERROR_MESSAGE));
 
+        user.userId = user._id;
         await user.save();
         const token = await user.generateAuthToken();
         res.status(201).send({ user, token });
