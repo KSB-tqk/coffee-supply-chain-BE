@@ -10,6 +10,9 @@ const options = { discriminatorKey: "kind" };
 
 const userSchema = mongoose.Schema(
   {
+    userId: {
+      type: String,
+    },
     lastName: {
       type: String,
       trim: true,
