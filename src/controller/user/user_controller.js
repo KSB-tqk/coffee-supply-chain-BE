@@ -621,26 +621,6 @@ const userController = {
         case UserRole.TechAdmin:
           return res.send(allProject);
         case UserRole.Farmer:
-          for (let i = 0; i < allProject.length; i++) {
-            const project = allProject[i];
-            if (
-              project.farmProject == null ||
-              project.farmProject.farmer == null
-            )
-              continue;
-
-            if (project.farmProject.farmer._id.equals(user._id)) {
-              projectIdList.push(project._id);
-            } else {
-              const farm = await FarmModel.findById(project.farmProject.farmId);
-              for (let j = 0; j < farm.farmerList.length; j++) {
-                const farmer = farm.farmerList[j];
-                if (farmer._id.equals(user._id)) {
-                  projectIdList.push(project._id);
-                }
-              }
-            }
-          }
           break;
         case UserRole.Staff:
           switch (user.department) {

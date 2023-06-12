@@ -144,7 +144,6 @@ const farmProjectController = {
         const farmProjectPop = await FarmProjectModel.findById(farmProject._id)
           .populate(["land", "seed"])
           .populate("farmer")
-          .populate("projectId")
           .exec();
         res.status(200).send(farmProjectPop);
       }
