@@ -74,6 +74,25 @@ const farmProjectSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "StepLog",
   },
+  totalSeeds: {
+    type: Number,
+    default: 0.0,
+  },
+  totalFertilizers: {
+    type: Number,
+    default: 0.0,
+  },
+  ripeness: {
+    type: Number,
+    default: 0.0,
+  },
+  pesticide: {
+    type: String,
+  },
+  plantDensity: {
+    type: Number,
+    default: 0.0,
+  },
 });
 
 //Hash the plain text pwd before saving
