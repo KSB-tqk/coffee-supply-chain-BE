@@ -551,7 +551,20 @@ const projectController = {
             path: "projectLog",
           },
         })
-        .populate("farmProject")
+        .populate({
+          path:"farmProject",
+          populate: [
+            {
+              path: 'farmer',
+            },
+            {
+              path: 'land',
+            },
+            {
+              path: 'seed',
+            },
+          ]
+        })
         .exec();
 
       if (!project) {
