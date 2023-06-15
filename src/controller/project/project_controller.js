@@ -459,6 +459,9 @@ const projectController = {
                   populate: {
                     path: "inspector",
                   },
+                })
+                .populate({
+                  path: "farmProject",
                 });
 
               // save the model after changed
