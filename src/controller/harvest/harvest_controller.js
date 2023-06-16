@@ -244,9 +244,13 @@ const harvestController = {
           .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
 
       harvest.inspector = user._id;
-      harvest.save();
+      await harvest.save();
 
-      res.status(200).send(harvest);
+      const responseHarvest = await HarvestModel.findById(harvest._id).populate({path: 'inspector'});
+
+      console.log(responseHarvest);
+
+      res.status(200).send(responseHarvest);
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }
