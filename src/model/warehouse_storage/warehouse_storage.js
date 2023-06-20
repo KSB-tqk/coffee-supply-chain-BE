@@ -39,7 +39,7 @@ const warehouseStorageSchema = mongoose.Schema({
   },
   state: {
     type: Number,
-    default: 1,
+    default: 5,
   },
   note: {
     type: String,
