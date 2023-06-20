@@ -48,7 +48,7 @@ const transportSchema = mongoose.Schema({
   },
   state: {
     type: Number,
-    default: 1,
+    default: 5,
   },
   note: [String],
   transactionList: [
