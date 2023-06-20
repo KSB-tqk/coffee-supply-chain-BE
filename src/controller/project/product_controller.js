@@ -87,8 +87,26 @@ const productController = {
   getProduct: async (req, res) => {
     try {
       const id = req.params.id;
+      const product = await ProductModel.findById(id)
+        .populate("projectId")
+        .exec();
 
-      const product = await ProductModel.findById(id);
+      if (!product) {
+        return res.status(400).send(onError(400, "This product doesn't exist"));
+      }
+
+      res.status(200).send(product);
+    } catch (err) {
+      res.status(400).send(onError(err.message));
+    }
+  },
+
+  getProductWithoutToken: async (req, res) => {
+    try {
+      const id = req.query.productId;
+      const product = await ProductModel.findById(id)
+        .populate("projectId")
+        .exec();
 
       if (!product) {
         return res.status(400).send(onError(400, "This product doesn't exist"));

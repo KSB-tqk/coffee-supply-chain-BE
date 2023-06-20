@@ -313,7 +313,7 @@ const harvestController = {
             )
           );
 
-      res.status(200).send(harvestList);
+      res.status(200).send(harvestList.reverse());
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }
