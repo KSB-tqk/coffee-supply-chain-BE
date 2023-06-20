@@ -4,6 +4,8 @@ import auth from "../../middleware/authentication.js";
 
 const productRouter = express.Router();
 
+productRouter.get("/without-token", productController.getProductWithoutToken);
+
 productRouter.use(auth);
 
 productRouter.post("/", productController.addProduct);

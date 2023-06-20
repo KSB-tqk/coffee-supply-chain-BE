@@ -10,6 +10,11 @@ const productSchema = mongoose.Schema({
     type: String,
   },
 
+  projectId: {
+    type: String,
+    ref: "Project",
+  },
+
   description: [
     {
       title: {
@@ -28,7 +33,7 @@ const productSchema = mongoose.Schema({
     type: String,
   },
 
-  bussinessLicenseRegistrationNumber: {
+  businessLicenseRegistrationNumber: {
     type: String,
   },
 

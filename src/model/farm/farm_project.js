@@ -76,7 +76,6 @@ const farmProjectSchema = mongoose.Schema({
   },
   totalSeeds: {
     type: Number,
-    default: null,
   },
   totalFertilizers: {
     type: Number,
