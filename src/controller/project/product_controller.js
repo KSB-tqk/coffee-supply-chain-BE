@@ -181,6 +181,24 @@ const productController = {
       res.status(400).send(onError(err.message));
     }
   },
+
+  getAllProductByProjectId: async (req, res) => {
+    try {
+      const allProduct = await ProductModel.find({
+        projectId: req.query.projectId,
+      });
+
+      if (allProduct == null) {
+        return res
+          .status(404)
+          .send(onError(404, "No Product Was Found" + ERROR_MESSAGE));
+      }
+
+      res.send(allProduct);
+    } catch (err) {
+      res.status(400).send(onError(err.message));
+    }
+  },
 };
 
 export default productController;
