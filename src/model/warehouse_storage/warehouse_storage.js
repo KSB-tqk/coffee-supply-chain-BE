@@ -9,7 +9,6 @@ const warehouseStorageSchema = mongoose.Schema({
   },
   totalInput: {
     type: Number,
-    default: 0,
   },
   warehouseStorageId: {
     type: String,
@@ -35,7 +34,6 @@ const warehouseStorageSchema = mongoose.Schema({
   },
   totalExport: {
     type: Number,
-    default: 0,
   },
   state: {
     type: Number,

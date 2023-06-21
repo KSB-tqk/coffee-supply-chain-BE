@@ -13,7 +13,6 @@ const produceSupervisionSchema = mongoose.Schema({
   },
   totalInput: {
     type: Number,
-    default: 0,
   },
   factory: {
     type: String,
@@ -31,15 +30,12 @@ const produceSupervisionSchema = mongoose.Schema({
   },
   totalProduct: {
     type: Number,
-    default: 0,
   },
   humidity: {
     type: Number,
-    default: 0,
   },
   dryingTemperature: {
     type: Number,
-    default: 0,
   },
   expiredDate: {
     type: Date,
