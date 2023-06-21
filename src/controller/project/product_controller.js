@@ -164,6 +164,12 @@ const productController = {
             path: "warehouseStorage",
           },
         })
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "manager",
+          },
+        })
         .exec();
 
       if (!product) {
