@@ -351,7 +351,7 @@ const produceSupervisionController = {
             )
           );
 
-      res.status(200).send(produceList);
+      res.status(200).send(produceList.reverse());
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }

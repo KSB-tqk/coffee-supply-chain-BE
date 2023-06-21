@@ -32,7 +32,7 @@ const harvestSchema = mongoose.Schema({
   state: {
     type: Number,
     required: true,
-    default: 1,
+    default: 5,
   },
   projectCode: {
     type: String,

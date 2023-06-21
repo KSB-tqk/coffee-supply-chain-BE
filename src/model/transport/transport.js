@@ -21,9 +21,7 @@ const transportSchema = mongoose.Schema({
     default: 0,
   },
   transportCompany: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "TransportCompany",
-    default: null,
+    type: String,
   },
   inspector: {
     type: mongoose.Schema.Types.ObjectId,
@@ -48,7 +46,7 @@ const transportSchema = mongoose.Schema({
   },
   state: {
     type: Number,
-    default: 1,
+    default: 5,
   },
   note: [String],
   transactionList: [
