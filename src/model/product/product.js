@@ -46,11 +46,6 @@ const productSchema = mongoose.Schema({
     ref: "Enterprise",
   },
 
-  batchId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Project",
-  },
-
   typeOfProduct: {
     type: String,
   },
