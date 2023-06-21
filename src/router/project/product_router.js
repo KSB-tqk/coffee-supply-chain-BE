@@ -10,6 +10,10 @@ productRouter.use(auth);
 
 productRouter.post("/", productController.addProduct);
 
+productRouter.get(
+  "/all-by-project",
+  productController.getAllProductByProjectId
+);
 productRouter.get("/:id", productController.getProduct);
 
 productRouter.get("/", productController.getAllProducts);
