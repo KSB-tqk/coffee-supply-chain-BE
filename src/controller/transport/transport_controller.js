@@ -324,7 +324,7 @@ const transportController = {
             )
           );
 
-      res.status(200).send(transportList);
+      res.status(200).send(transportList.reverse());
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }
