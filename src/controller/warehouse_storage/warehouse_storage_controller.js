@@ -344,7 +344,7 @@ const warehouseStorageController = {
             )
           );
 
-      res.status(200).send(warehouseStorageList);
+      res.status(200).send(warehouseStorageList.reverse());
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }

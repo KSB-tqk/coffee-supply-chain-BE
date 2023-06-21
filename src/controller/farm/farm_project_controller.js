@@ -252,7 +252,7 @@ const farmProjectController = {
             )
           );
 
-      res.status(200).send(farmProjectList);
+      res.status(200).send(farmProjectList.reverse());
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }
