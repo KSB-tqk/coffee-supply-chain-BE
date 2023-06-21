@@ -14,11 +14,9 @@ const harvestSchema = mongoose.Schema({
   },
   totalHarvest: {
     type: Number,
-    default: 0,
   },
   ripeness: {
     type: Number,
-    default: 0,
   },
   inspector: {
     type: mongoose.Schema.Types.ObjectId,
@@ -40,11 +38,9 @@ const harvestSchema = mongoose.Schema({
   },
   moisture: {
     type: Number,
-    default: 0,
   },
   temperature: {
     type: Number,
-    default: 0,
   },
   transactionList: [
     {

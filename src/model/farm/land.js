@@ -19,7 +19,6 @@ const landSchema = mongoose.Schema({
   landArea: {
     type: Number,
     trim: true,
-    default: 0,
   },
   state: {
     type: Number,
