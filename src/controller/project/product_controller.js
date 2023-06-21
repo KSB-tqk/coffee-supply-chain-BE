@@ -88,7 +88,36 @@ const productController = {
     try {
       const id = req.params.id;
       const product = await ProductModel.findById(id)
-        .populate("projectId")
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "produce",
+          },
+        })
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "farmProject",
+          },
+        })
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "harvest",
+          },
+        })
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "transport",
+          },
+        })
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "warehouseStorage",
+          },
+        })
         .exec();
 
       if (!product) {
@@ -105,7 +134,42 @@ const productController = {
     try {
       const id = req.query.productId;
       const product = await ProductModel.findById(id)
-        .populate("projectId")
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "produce",
+          },
+        })
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "farmProject",
+          },
+        })
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "harvest",
+          },
+        })
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "transport",
+          },
+        })
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "warehouseStorage",
+          },
+        })
+        .populate({
+          path: "projectId",
+          populate: {
+            path: "manager",
+          },
+        })
         .exec();
 
       if (!product) {

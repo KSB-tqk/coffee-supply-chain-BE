@@ -18,7 +18,6 @@ const transportSchema = mongoose.Schema({
   },
   totalInput: {
     type: Number,
-    default: 0,
   },
   transportCompany: {
     type: String,
@@ -34,7 +33,6 @@ const transportSchema = mongoose.Schema({
   },
   numberOfVehicle: {
     type: Number,
-    default: 0,
   },
   dateCompleted: {
     type: Date,

@@ -12,7 +12,6 @@ const enterpriseSchema = mongoose.Schema(
     },
     enterpriseEmployeeCount: {
       type: Number,
-      default: 0,
       validator(value) {
         if (value < 0) {
           throw Error("Invalid number of employee");
