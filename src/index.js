@@ -30,6 +30,7 @@ import transportCompanyRouter from "./router/transport/transport_company_router.
 import factoryRouter from "./router/produce_supervision_router/factory_router.js";
 import notificationRouter from "./router/notification/notification_router.js";
 import productRouter from "./router/project/product_router.js";
+import imageUploadRouter from "./router/image_upload/image_upload_router.js";
 const app = express();
 
 const port = process.env.PORT;
@@ -57,6 +58,7 @@ app.use("/produce", produceSupervisionRouter);
 app.use("/steplog", stepLogRouter);
 app.use("/project", projectRouter);
 app.use("/dashboard", dashBoardRouter);
+app.use("/image", imageUploadRouter);
 app.use("/product", productRouter);
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get("/cronjob", (req, res) => {
