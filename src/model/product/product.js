@@ -54,6 +54,10 @@ const productSchema = mongoose.Schema({
     type: String,
   },
 
+  productQRCodeUri: {
+    type: String,
+  },
+
   productImage: [
     {
       productImageUrl: {
