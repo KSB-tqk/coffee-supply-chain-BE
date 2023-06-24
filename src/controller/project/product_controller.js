@@ -8,13 +8,58 @@ import {
   onValidUserDepartment,
   onValidUserRole,
 } from "../../helper/data_helper.js";
+import cloudinary from "cloudinary";
+import dotenv from "dotenv";
+import path from "path";
+import { promisify } from "util";
+import { dirname } from "path";
+import fs from "fs";
+import ImageUploadModel from "../../model/image_upload/image_upload.js";
 import ProductModel from "../../model/product/product.js";
+
+dotenv.config({ path: path.resolve(dirname + "/dev.env") });
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const unlinkAsync = promisify(fs.unlink);
+
 const productController = {
   addProduct: async (req, res) => {
     try {
       const product = new ProductModel(req.body);
 
       product.productId = product._id;
+      product.productImage = [];
+
+      let imageUploadInfo = null;
+      const files = req.files;
+
+      for (const file of files) {
+        const result = await cloudinary.v2.uploader.upload(file.path);
+        imageUploadInfo = ImageUploadModel(result);
+        imageUploadInfo.publicId = result.public_id;
+        product.productImage = product.productImage.concat({
+          productImageUrl: imageUploadInfo.secure_url,
+        });
+
+        if (imageUploadInfo != null) {
+          await imageUploadInfo.save();
+        } else {
+          return res
+            .status(400)
+            .send(
+              onError(400, "Fail to upload and save image" + ERROR_MESSAGE)
+            );
+        }
+
+        // Delete the file like normal
+        await unlinkAsync(file.path);
+      }
+
       await product.save();
 
       res
