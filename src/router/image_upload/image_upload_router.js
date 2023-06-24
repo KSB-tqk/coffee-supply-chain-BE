@@ -8,7 +8,7 @@ const imageUploadRouter = express.Router();
 
 imageUploadRouter.post(
   "/upload",
-  upload.single("image"),
+  upload.array("images", 4),
   imageUploadController.uploadImage
 );
 
