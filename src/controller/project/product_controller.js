@@ -33,31 +33,13 @@ const productController = {
       const product = new ProductModel(req.body);
 
       product.productId = product._id;
-      product.productImage = [];
 
-      let imageUploadInfo = null;
-      const files = req.files;
+      if (product.productImage == null) product.productImage = [];
 
-      for (const file of files) {
-        const result = await cloudinary.v2.uploader.upload(file.path);
-        imageUploadInfo = ImageUploadModel(result);
-        imageUploadInfo.publicId = result.public_id;
+      for (const file of req.body.productImage) {
         product.productImage = product.productImage.concat({
-          productImageUrl: imageUploadInfo.secure_url,
+          productImageUrl: file,
         });
-
-        if (imageUploadInfo != null) {
-          await imageUploadInfo.save();
-        } else {
-          return res
-            .status(400)
-            .send(
-              onError(400, "Fail to upload and save image" + ERROR_MESSAGE)
-            );
-        }
-
-        // Delete the file like normal
-        await unlinkAsync(file.path);
       }
 
       await product.save();
