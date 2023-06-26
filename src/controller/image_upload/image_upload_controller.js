@@ -22,17 +22,23 @@ const imageUploadController = {
   uploadImage: async (req, res) => {
     try {
       let imageUploadInfo = null;
-      await cloudinary.v2.uploader.upload(req.file.path).then((result) => {
-        console.log(result);
+
+      const urls = [];
+      const files = req.files;
+
+      for (const file of files) {
+        const result = await cloudinary.v2.uploader.upload(file.path);
         imageUploadInfo = ImageUploadModel(result);
         imageUploadInfo.publicId = result.public_id;
-      });
+        urls.push(imageUploadInfo.secure_url);
+
+        // Delete the file like normal
+        await unlinkAsync(file.path);
+      }
 
       if (imageUploadInfo != null) {
         await imageUploadInfo.save();
-        res.send(imageUploadInfo);
-        // Delete the file like normal
-        await unlinkAsync(req.file.path);
+        res.send(urls);
       } else {
         res
           .status(400)
