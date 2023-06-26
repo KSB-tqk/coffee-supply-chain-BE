@@ -34,7 +34,10 @@ import imageUploadRouter from "./router/image_upload/image_upload_router.js";
 const app = express();
 
 const port = process.env.PORT;
-mongooseDB.then(() => console.log("Connect db success!"));
+mongooseDB.then(() => {
+  console.log("Connect db success!");
+  unlockAccount();
+});
 
 app.use(cors());
 app.use(morgan("dev"));
@@ -88,6 +91,8 @@ app.listen(port || 3001, () => {
 
 import sgMail from "@sendgrid/mail";
 import notificationController from "./controller/notification/notification_controller.js";
+import ProduceSupervisionModel from "./model/produce_supervision/produce_supervision.js";
+import { unlockAccount } from "./helper/blockchain_helper.js";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const msg = {
   to: "19521686@gm.uit.edu.vn", // Change to your recipient
