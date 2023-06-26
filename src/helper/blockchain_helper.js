@@ -36,3 +36,42 @@ export async function sendData(logId) {
 
   console.log("done with all things");
 }
+
+//contract = 0x4c5a4eee23ad871a77d36e04ce63721a8c7eb25b;
+
+export async function unlockAccount() {
+  let web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+
+  const accountAddress = "0x4Fb3A0f1Bc360E6CFE5E400f7F68220b5ef5C8c8"; // replace with your wallet address
+  const accountPassword = "myhao12102001"; // replace with your account password
+  const permissioningContractAddress =
+    "0x4c5a4eee23ad871a77d36e04ce63721a8c7eb25b";
+
+  // unlock the account associated with the wallet address
+  web3.eth.personal.unlockAccount(
+    accountAddress,
+    accountPassword,
+    function (error, result) {
+      if (error) {
+        console.error("Failed to unlock account: ", error);
+      } else {
+        console.log("Account unlocked: ", result);
+
+        // call the permissioning contract to authorize the wallet address
+        const permissioningContract = new web3.eth.Contract(
+          SmartContractABI,
+          permissioningContractAddress
+        );
+        permissioningContract.methods
+          .authorize(accountAddress)
+          .send({ from: accountAddress })
+          .then(function (result) {
+            console.log("Wallet address authorized: ", result);
+          })
+          .catch(function (error) {
+            console.error("Failed to authorize wallet address: ", error);
+          });
+      }
+    }
+  );
+}
