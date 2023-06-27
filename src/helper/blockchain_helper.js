@@ -1,14 +1,15 @@
 import Web3 from "web3";
 import Provider from "@truffle/hdwallet-provider";
 import fs from "fs";
-
+import { ethers } from "ethers";
+import keythereum from "keythereum";
 const contractJson = fs.readFileSync(
   "blockchain/contracts/TrackingModelAbi.json"
 );
 
-var SmartContractAddress = "0x456E5aC29729C18d4C43ef3a1aA91074E9b3bD38";
+var SmartContractAddress = "0xf0E4f7313fbf9E7538a48441e1Ce6d4b06c709B9";
 var SmartContractABI = JSON.parse(contractJson);
-var address = "0x4Fb3A0f1Bc360E6CFE5E400f7F68220b5ef5C8c8";
+var address = "0xECDbcA8cA437ECc9D601314b7168B5f668568371";
 var privatekey =
   "18556d29e398bb540c5ab4a27af51b94d0a22f853b098910bf13d198ff2d48a4";
 var rpcurl =
@@ -39,39 +40,33 @@ export async function sendData(logId) {
 
 //contract = 0x4c5a4eee23ad871a77d36e04ce63721a8c7eb25b;
 
+//contract=0xf0E4f7313fbf9E7538a48441e1Ce6d4b06c709B9
+
 export async function unlockAccount() {
-  let web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+  main();
+}
 
-  const accountAddress = "0x4Fb3A0f1Bc360E6CFE5E400f7F68220b5ef5C8c8"; // replace with your wallet address
-  const accountPassword = "myhao12102001"; // replace with your account password
-  const permissioningContractAddress =
-    "0x4c5a4eee23ad871a77d36e04ce63721a8c7eb25b";
+let provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
 
-  // unlock the account associated with the wallet address
-  web3.eth.personal.unlockAccount(
-    accountAddress,
-    accountPassword,
-    function (error, result) {
-      if (error) {
-        console.error("Failed to unlock account: ", error);
-      } else {
-        console.log("Account unlocked: ", result);
+async function main() {
+  var datadir =
+    "/Users/khanhtran/ProjectFlutter/geth-PoA-private-blockchain/node1/data/";
+  const password = "myhao12102001";
 
-        // call the permissioning contract to authorize the wallet address
-        const permissioningContract = new web3.eth.Contract(
-          SmartContractABI,
-          permissioningContractAddress
-        );
-        permissioningContract.methods
-          .authorize(accountAddress)
-          .send({ from: accountAddress })
-          .then(function (result) {
-            console.log("Wallet address authorized: ", result);
-          })
-          .catch(function (error) {
-            console.error("Failed to authorize wallet address: ", error);
-          });
-      }
-    }
+  var keyObject = keythereum.importFromFile(address, datadir);
+  var privateKey = keythereum.recover(password, keyObject);
+  console.log(privateKey.toString("hex"));
+
+  let wallet = new ethers.Wallet(privateKey, provider);
+  const myContract = new ethers.Contract(
+    SmartContractAddress,
+    SmartContractABI,
+    provider
   );
+
+  let tx = await myContract
+    .connect(wallet)
+    .addTrackingBlock("Something", "UpdateContentNe", address);
+  await tx.wait();
+  console.log(tx);
 }
