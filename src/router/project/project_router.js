@@ -6,6 +6,8 @@ const projectRouter = express.Router();
 
 projectRouter.get("/without-token", projectController.getProjectWithoutToken);
 
+projectRouter.get("/loglist", projectController.getProjectLogList);
+
 projectRouter.use(auth);
 
 projectRouter.post("/", projectController.addProject);

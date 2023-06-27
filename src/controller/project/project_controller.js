@@ -518,6 +518,23 @@ const projectController = {
       res.status(400).send(onError(400, err.message));
     }
   },
+  getProjectLogList: async (req, res) => {
+    try {
+      const projects = await ProjectModel.findById(req.query.projectId)
+        .populate({
+          path: "projectLogList",
+          populate: {
+            path: "projectLog",
+          },
+        })
+        .exec();
+
+      if (projects.projectLogList == null) projects.projectLogList = [];
+      res.status(200).send(projects.projectLogList);
+    } catch (err) {
+      res.status(400).send(onError(400, err.message));
+    }
+  },
   getProject: async (req, res) => {
     try {
       const id = req.params.id;
@@ -555,18 +572,18 @@ const projectController = {
           },
         })
         .populate({
-          path:"farmProject",
+          path: "farmProject",
           populate: [
             {
-              path: 'farmer',
+              path: "farmer",
             },
             {
-              path: 'land',
+              path: "land",
             },
             {
-              path: 'seed',
+              path: "seed",
             },
-          ]
+          ],
         })
         .exec();
 

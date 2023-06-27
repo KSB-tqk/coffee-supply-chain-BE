@@ -25,8 +25,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const unlinkAsync = promisify(fs.unlink);
-
 const productController = {
   addProduct: async (req, res) => {
     try {
