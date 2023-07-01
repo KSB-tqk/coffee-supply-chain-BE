@@ -529,8 +529,58 @@ const projectController = {
         })
         .exec();
 
+      const harvest = await harvestModel
+        .findById(projects.harvest)
+        .populate({
+          path: "logList",
+          populate: {
+            path: "log",
+          },
+        })
+        .exec();
+
+      const transport = await transportModel
+        .findById(projects.transport)
+        .populate({
+          path: "logList",
+          populate: {
+            path: "log",
+          },
+        })
+        .exec();
+
+      const warehouseStorage = await warehouseStorageModel
+        .findById(projects.warehouseStorage)
+        .populate({
+          path: "logList",
+          populate: {
+            path: "log",
+          },
+        })
+        .exec();
+
+      const produce = await ProduceSupervisionModel.findById(projects.produce)
+        .populate({
+          path: "logList",
+          populate: {
+            path: "log",
+          },
+        })
+        .exec();
+
       if (projects.projectLogList == null) projects.projectLogList = [];
-      res.status(200).send(projects.projectLogList);
+      if (harvest.logList == null) harvest.logList = [];
+      if (transport.logList == null) transport.logList = [];
+      if (warehouseStorage.logList == null) warehouseStorage.logList = [];
+      if (produce.logList == null) produce.logList = [];
+
+      res.status(200).send({
+        projectLogList: projects.projectLogList,
+        harvestLogList: harvest.logList,
+        transportLogList: transport.logList,
+        warehouseStorageLogList: warehouseStorage.logList,
+        produceLogList: produce.logList,
+      });
     } catch (err) {
       res.status(400).send(onError(400, err.message));
     }
