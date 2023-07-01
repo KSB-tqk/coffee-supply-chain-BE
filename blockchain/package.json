@@ -7,6 +7,8 @@
     "hardhat": "^2.11.2"
   },
   "dependencies": {
-    "@truffle/hdwallet-provider": "^2.1.6"
+    "@truffle/hdwallet-provider": "^2.1.6",
+    "solc": "^0.8.20",
+    "truffle": "^5.10.1"
   }
 }
