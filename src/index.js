@@ -36,6 +36,7 @@ const app = express();
 const port = process.env.PORT;
 mongooseDB.then(() => {
   console.log("Connect db success!");
+  //unlockAccount();
 });
 
 app.use(cors());
