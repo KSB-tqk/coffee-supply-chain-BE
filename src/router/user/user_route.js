@@ -18,6 +18,8 @@ userRouter.get("/update-field-userid", userController.updateUserIdField);
 
 userRouter.use(auth);
 
+userRouter.post("/confirm-password", userController.confirmChangePassword);
+
 userRouter.get("/permission", userController.getUserPermissionById);
 
 userRouter.get("/", userController.getAllUserInfo);

@@ -688,6 +688,21 @@ const userController = {
       res.status(500).send(onError(500, err.message));
     }
   },
+
+  confirmChangePassword: async (req, res) => {
+    try {
+      const user = await User.validPasswordChange(
+        req.body.email,
+        req.body.password,
+        req.body.newPassword
+      );
+
+      await user.save();
+      res.send(user);
+    } catch (err) {
+      res.status(400).send(onError(400, err.message));
+    }
+  },
 };
 
 Object.defineProperty(Array.prototype, "chunk", {

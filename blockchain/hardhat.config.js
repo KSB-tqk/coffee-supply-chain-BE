@@ -1,25 +1,30 @@
-require("dotenv").config();
-require("@nomicfoundation/hardhat-toolbox");
-
-/** @type import('hardhat/config').HardhatUserConfig */
+require("@nomiclabs/hardhat-waffle");
 module.exports = {
-  networks: {
-    hardhat: {},
-    matic: {
-      url: "https://polygon-mumbai.g.alchemy.com/v2/dansTXmThZA3jPgRwOuk0DIHn9obm666",
-      accounts: [process.env.PRIVATE_KEY],
-    },
+  localhost: {
+    url: "http://127.0.0.1:8545",
+    account: [
+      "faf149372e318e5f1c2253b949d6b4e5da5294735877a3cd663d32d5828d33a1",
+    ],
   },
-  etherscan: {
-    apiKey: process.env.POLYGONSCAN_API_KEY,
+  hardhat: {
+    // See its defaults
   },
   solidity: {
-    version: "0.8.9",
+    version: "0.8.20",
     settings: {
       optimizer: {
         enabled: true,
         runs: 200,
       },
     },
+  },
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts",
+  },
+  mocha: {
+    timeout: 40000,
   },
 };
