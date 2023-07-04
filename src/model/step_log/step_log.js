@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 import QRCode from "qrcode";
+import { getBlockchainMode, setBlockchainMode } from "../../enum/app_const.js";
+import BlockchainMode from "../../enum/blockchain_mode.js";
+import {
+  createTransaction,
+  storeLogOnBlockchain,
+} from "../../helper/blockchain_helper.js";
 
 const stepLogSchema = mongoose.Schema(
   {
@@ -56,6 +62,10 @@ stepLogSchema.pre("save", async function (next) {
   }
 
   next();
+});
+
+stepLogSchema.post("save", async function (stepLog) {
+  storeLogOnBlockchain(this.transactionHash, stepLog);
 });
 
 const StepLogModel = mongoose.model("StepLog", stepLogSchema);

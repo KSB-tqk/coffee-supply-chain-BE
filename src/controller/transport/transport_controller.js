@@ -2,7 +2,6 @@ import { ObjectId } from "mongodb";
 import { BASE_TRANSACTION_URL, ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserDepartment from "../../enum/user_department.js";
 import UserRole from "../../enum/user_role.js";
-import { sendData } from "../../helper/blockchain_helper.js";
 import {
   findDuplicates,
   getUserIdByHeader,
