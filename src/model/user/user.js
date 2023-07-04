@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import extendSchema from "mongoose-extend-schema";
 import { checkValidObjectId } from "../../helper/data_helper.js";
 import PermissionModel from "../permission/permission.js";
+import { ERROR_MESSAGE } from "../../enum/app_const.js";
 
 const options = { discriminatorKey: "kind" };
 
@@ -126,6 +127,40 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
   if (!isMatch) {
     throw Error("Wrong password or email, Please check and try again.");
+  }
+
+  return user;
+};
+
+userSchema.statics.validPasswordChange = async (
+  email,
+  password,
+  newPassword
+) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw Error(
+      "Unable to find account link to this email, please check and try again"
+    );
+  }
+
+  console.log("Password", password);
+  console.log("new password", newPassword);
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  console.log("Current Password", user.password);
+
+  console.log("Is Match", isMatch);
+
+  if (!isMatch) {
+    throw Error("Wrong password" + ERROR_MESSAGE);
+  } else {
+    if (password == newPassword) {
+      throw Error(
+        "Current password can not be set as new password" + ERROR_MESSAGE
+      );
+    } else user.password = newPassword;
   }
 
   return user;
