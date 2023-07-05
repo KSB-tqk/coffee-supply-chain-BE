@@ -46,12 +46,14 @@ export async function createTransaction(blockId, blockContent) {
 
 export async function storeLogOnBlockchain(transactionHash, stepLog) {
   const blockMode = getBlockchainMode();
-  setBlockchainMode(BlockchainMode.Private);
 
-  switch (blockMode) {
+  console.log("blockMode:" + blockMode);
+
+  switch (parseInt(blockMode, 10)) {
     case BlockchainMode.Public:
       break;
     case BlockchainMode.Private:
+      console.log("Here it in");
       if (transactionHash != null) return;
       const result = await createTransaction(
         "|Step Log Id:" + stepLog._id.toString() + "|",
