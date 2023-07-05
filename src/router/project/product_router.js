@@ -16,6 +16,8 @@ productRouter.post(
   productController.addProduct
 );
 
+productRouter.get("/all", productController.getAllProductByState);
+
 productRouter.get(
   "/all-by-project",
   productController.getAllProductByProjectId

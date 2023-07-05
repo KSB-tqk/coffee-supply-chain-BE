@@ -58,6 +58,22 @@ const productController = {
       return res.status(400).send(onError(400, "This product doesn't exist"));
     }
 
+    if (
+      (await onValidUserRole(req.header("Authorization"), [
+        UserRole.TechAdmin,
+        UserRole.SystemAdmin,
+      ])) == false
+    ) {
+      return res
+        .status(400)
+        .send(
+          onError(
+            400,
+            "Does not have permission to update product state" + ERROR_MESSAGE
+          )
+        );
+    }
+
     ProductModel.findOne({ _id: id }, async function (err, product) {
       if (err) {
         res
@@ -211,6 +227,24 @@ const productController = {
     try {
       const allProduct = await ProductModel.find({
         projectId: req.query.projectId,
+      });
+
+      if (allProduct == null) {
+        return res
+          .status(404)
+          .send(onError(404, "No Product Was Found" + ERROR_MESSAGE));
+      }
+
+      res.send(allProduct);
+    } catch (err) {
+      res.status(400).send(onError(err.message));
+    }
+  },
+
+  getAllProductByState: async (req, res) => {
+    try {
+      const allProduct = await ProductModel.find({
+        state: req.query.state,
       });
 
       if (allProduct == null) {
