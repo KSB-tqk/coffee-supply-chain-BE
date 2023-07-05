@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import StepLogModel from "../step_log/step_log.js";
+import QRcode from "qrcode";
 
 const productSchema = mongoose.Schema({
   productId: {
@@ -13,6 +13,11 @@ const productSchema = mongoose.Schema({
   projectId: {
     type: String,
     ref: "Project",
+  },
+
+  state: {
+    type: Number,
+    default: 0,
   },
 
   description: [
@@ -65,6 +70,17 @@ const productSchema = mongoose.Schema({
       },
     },
   ],
+});
+
+//Hash the plain text pwd before saving
+productSchema.pre("save", async function (next) {
+  const state = this.state;
+
+  if (state == 1) {
+    this.productQRCodeUri = await QRcode.toDataURL(this.productId);
+  } else this.productQRCodeUri = null;
+
+  next();
 });
 
 const ProductModel = mongoose.model("Product", productSchema);
