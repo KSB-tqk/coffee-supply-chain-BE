@@ -270,9 +270,11 @@ const warehouseStorageController = {
           .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
 
       warehouseStorage.inspector = user._id;
-      warehouseStorage.save();
+      await warehouseStorage.save();
 
-      res.status(200).send(warehouseStorage);
+      const responseWarehouseStorage = await WarehouseStorageModel.findById(warehouseStorage.warehouseStorageId).populate({path: 'inspector'});
+
+      res.status(200).send(responseWarehouseStorage);
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }

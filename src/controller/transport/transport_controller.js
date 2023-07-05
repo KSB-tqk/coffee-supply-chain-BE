@@ -254,9 +254,11 @@ const transportController = {
           .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
 
       transport.inspector = user._id;
-      transport.save();
+      await transport.save();
 
-      res.status(200).send(transport);
+      const resTransport = await TransportModel.findById(transport.transportId).populate({path: 'inspector'});
+
+      res.status(200).send(resTransport);
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }
