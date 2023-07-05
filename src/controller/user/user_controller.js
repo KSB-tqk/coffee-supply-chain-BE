@@ -18,7 +18,6 @@ import validator from "validator";
 import { ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserRole from "../../enum/user_role.js";
 import Staff from "../../model/user/staff.js";
-import { sendData } from "../../helper/blockchain_helper.js";
 import otpModel from "../../model/user/otp.js";
 import { sendEmail } from "../../helper/send_email_helper.js";
 import ProjectModel from "../../model/project/project.js";
@@ -690,6 +689,21 @@ const userController = {
       res.send("Update field UserId for all user successfully");
     } catch (err) {
       res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  confirmChangePassword: async (req, res) => {
+    try {
+      const user = await User.validPasswordChange(
+        req.body.email,
+        req.body.password,
+        req.body.newPassword
+      );
+
+      await user.save();
+      res.send(user);
+    } catch (err) {
+      res.status(400).send(onError(400, err.message));
     }
   },
 };
