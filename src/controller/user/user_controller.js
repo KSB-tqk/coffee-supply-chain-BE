@@ -18,7 +18,6 @@ import validator from "validator";
 import { ERROR_MESSAGE } from "../../enum/app_const.js";
 import UserRole from "../../enum/user_role.js";
 import Staff from "../../model/user/staff.js";
-import { sendData } from "../../helper/blockchain_helper.js";
 import otpModel from "../../model/user/otp.js";
 import { sendEmail } from "../../helper/send_email_helper.js";
 import ProjectModel from "../../model/project/project.js";

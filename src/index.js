@@ -13,6 +13,7 @@ const swaggerDocument = require("../src/swagger_v2.json");
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+import settingRouter from "./router/setting/setting_router.js";
 import userRouter from "./router/user/user_route.js";
 import farmRouter from "./router/farm/farm_router.js";
 import FarmProjectRouter from "./router/farm/farm_project_router.js";
@@ -36,9 +37,10 @@ const app = express();
 const port = process.env.PORT;
 mongooseDB.then(() => {
   console.log("Connect db success!");
-  //unlockAccount();
-  //getTransactionReceipt();
-  //web3Deploy();
+  //createTransaction("testBlockId/", "TestBlockContent");
+  // getTransactionReceipt(
+  //   "0xac5b1e97b94a53622bcc75921e19d428cc9d164c5945710c57f80331f8cd0915"
+  // );
 });
 
 app.use(cors());
@@ -65,6 +67,7 @@ app.use("/project", projectRouter);
 app.use("/dashboard", dashBoardRouter);
 app.use("/image", imageUploadRouter);
 app.use("/product", productRouter);
+app.use("/setting", settingRouter);
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get("/cronjob", (req, res) => {
   res.status(200).send(onError(200, "Cron Job Success"));
@@ -96,8 +99,7 @@ import notificationController from "./controller/notification/notification_contr
 import ProduceSupervisionModel from "./model/produce_supervision/produce_supervision.js";
 import {
   getTransactionReceipt,
-  unlockAccount,
-  web3Deploy,
+  createTransaction,
 } from "./helper/blockchain_helper.js";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const msg = {
