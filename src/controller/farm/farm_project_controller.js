@@ -85,67 +85,104 @@ const farmProjectController = {
           .status(400)
           .send(onError(400, "Total harvest must be greater than 0"));
       } else {
-        for (var field in FarmProjectModel.schema.paths) {
-          if (field !== "_id" && field !== "__v") {
-            if (req.body[field] !== undefined) {
-              farmProject[field] = req.body[field];
-              console.log("farmProject update field: ", farmProject[field]);
+        FarmProjectModel.findOne(
+          { _id: farmProject._id },
+          async function (err, farmProject) {
+            if (err) {
+              res
+                .status(422)
+                .send(onError(422, "Update harvest failed" + ERROR_MESSAGE));
+            } else {
+              // save to log to farm project
+              let stepLog = StepLogModel();
+              stepLog.projectId = farmProject.projectId;
+              stepLog.actor = ObjectId(
+                await getUserIdByHeader(req.header("Authorization"))
+              );
+              stepLog.modelBeforeChanged = JSON.stringify(farmProject);
+              await stepLog.save();
+
+              // update model
+              for (var field in FarmProjectModel.schema.paths) {
+                if (field !== "_id" && field !== "__v") {
+                  if (req.body[field] !== undefined) {
+                    farmProject[field] = req.body[field];
+                    console.log(
+                      "farmProject update field: ",
+                      farmProject[field]
+                    );
+                  }
+                }
+              }
+
+              // save log for farmProject in project log list
+              if (farmProject.projectId != null) {
+                // push current stepLog into logList in harvest model
+                if (farmProject.logList == null) farmProject.logList = [];
+                farmProject.logList = farmProject.logList.concat({
+                  log: stepLog._id,
+                });
+                farmProject.logId = stepLog._id;
+
+                // save log to project log list
+                const project = await ProjectModel.findById(
+                  farmProject.projectId
+                );
+                if (!project)
+                  return res
+                    .status(404)
+                    .send(
+                      onError(
+                        404,
+                        "Project of this farm project was not found" +
+                          ERROR_MESSAGE
+                      )
+                    );
+
+                project.projectLogList = project.projectLogList.concat({
+                  projectLog: stepLog._id,
+                });
+
+                await project.save();
+              }
+
+              // check to add farmer to farmPJ
+              if (req.body.farmer != null) {
+                if (!checkValidObjectId(req.body.farmer)) {
+                  return res
+                    .status(400)
+                    .send(onError(400, "Invalid Farmer Id"));
+                }
+                const farmer = await User.findById(req.body.farmer);
+                if (farmer == null)
+                  return res
+                    .status(400)
+                    .send(onError(400, "Farmer Not Found" + ERROR_MESSAGE));
+                if (farmer.role != UserRole.Farmer)
+                  return res
+                    .status(400)
+                    .send(onError(400, "User is not a farmer" + ERROR_MESSAGE));
+                farmProject.farmer = farmer._id;
+              }
+
+              await farmProject.save();
+              const farmProjectPop = await FarmProjectModel.findById(
+                farmProject._id
+              )
+                .populate(["land", "seed"])
+                .populate("farmer")
+                .exec();
+              res.status(200).send(farmProjectPop);
+
+              // save the harvest model after changed
+              // save the model after changed
+              stepLog = await StepLogModel.findById(farmProjectPop.logId);
+              stepLog.modelAfterChanged = JSON.stringify(farmProjectPop);
+              console.log("Step Log Final", stepLog);
+              stepLog.save();
             }
           }
-        }
-
-        // save log for farmProject in project log list
-        if (farmProject.projectId != null) {
-          let stepLog = StepLogModel();
-          stepLog.projectId = farmProject.projectId;
-          stepLog.actor = ObjectId(
-            await getUserIdByHeader(req.header("Authorization"))
-          );
-          stepLog.modelBeforeChanged = JSON.stringify(farmProject);
-          await stepLog.save();
-
-          // save log to project log list
-          const project = await ProjectModel.findById(farmProject.projectId);
-          if (!project)
-            return res
-              .status(404)
-              .send(
-                onError(
-                  404,
-                  "Project of this farm project was not found" + ERROR_MESSAGE
-                )
-              );
-
-          project.projectLogList = project.projectLogList.concat({
-            projectLog: stepLog._id,
-          });
-
-          await project.save();
-        }
-
-        // check to add farmer to farmPJ
-        if (req.body.farmer != null) {
-          if (!checkValidObjectId(req.body.farmer)) {
-            return res.status(400).send(onError(400, "Invalid Farmer Id"));
-          }
-          const farmer = await User.findById(req.body.farmer);
-          if (farmer == null)
-            return res
-              .status(400)
-              .send(onError(400, "Farmer Not Found" + ERROR_MESSAGE));
-          if (farmer.role != UserRole.Farmer)
-            return res
-              .status(400)
-              .send(onError(400, "User is not a farmer" + ERROR_MESSAGE));
-          farmProject.farmer = farmer._id;
-        }
-
-        await farmProject.save();
-        const farmProjectPop = await FarmProjectModel.findById(farmProject._id)
-          .populate(["land", "seed"])
-          .populate("farmer")
-          .exec();
-        res.status(200).send(farmProjectPop);
+        );
       }
     } catch (err) {
       res.status(500).send(onError(500, err.message));

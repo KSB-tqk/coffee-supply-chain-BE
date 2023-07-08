@@ -93,6 +93,20 @@ const farmProjectSchema = mongoose.Schema({
     type: Number,
     default: null,
   },
+  logList: [
+    {
+      log: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "StepLog",
+        default: null,
+      },
+    },
+  ],
+  logId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "StepLog",
+    default: null,
+  },
 });
 
 //Hash the plain text pwd before saving

@@ -30,9 +30,8 @@ const userController = {
     try {
       var user;
       const isValidUserInfo = await checkValidUserInfo(req.body);
-      console.log(isValidUserInfo);
       if (isValidUserInfo == null) {
-        switch (req.body.role) {
+        switch (parseInt(req.body.role, 10)) {
           case 1:
             user = new TechAdmin(req.body);
             break;
