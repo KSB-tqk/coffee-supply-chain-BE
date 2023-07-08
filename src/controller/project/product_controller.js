@@ -34,11 +34,12 @@ const productController = {
 
       if (product.productImage == null) product.productImage = [];
 
-      for (const file of req.body.productImage) {
-        product.productImage = product.productImage.concat({
-          productImageUrl: file,
-        });
-      }
+      if (req.body.productImage != null)
+        for (const file of req.body.productImage) {
+          product.productImage = product.productImage.concat({
+            productImageUrl: file,
+          });
+        }
 
       await product.save();
 
