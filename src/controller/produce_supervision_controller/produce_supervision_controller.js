@@ -274,9 +274,11 @@ const produceSupervisionController = {
           .send(onError(400, "Unauthorized user" + ERROR_MESSAGE));
 
       produceSupervision.inspector = user._id;
-      produceSupervision.save();
+      await produceSupervision.save();
 
-      res.status(200).send(produceSupervision);
+      const response = await ProduceSupervisionModel.findById(produceSupervision.produceSupervisionId).populate({path: 'inspector'});
+
+      res.status(200).send(response);
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }
