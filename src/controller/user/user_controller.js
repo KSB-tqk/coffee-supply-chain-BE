@@ -142,6 +142,8 @@ const userController = {
       "email",
       "password",
       "address",
+      "walletAddress",
+      "phoneNumber",
     ];
 
     if (req.user.role == 1) {
@@ -191,6 +193,8 @@ const userController = {
       "password",
       "address",
       "walletAddress",
+      "phoneNumber",
+
     ];
 
     if (req.user.role == 1) {
