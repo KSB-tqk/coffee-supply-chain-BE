@@ -194,6 +194,7 @@ const userController = {
       "address",
       "walletAddress",
       "phoneNumber",
+
     ];
 
     if (req.user.role == 1) {

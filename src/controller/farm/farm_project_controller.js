@@ -102,6 +102,13 @@ const farmProjectController = {
               stepLog.modelBeforeChanged = JSON.stringify(farmProject);
               await stepLog.save();
 
+              // push current stepLog into logList in harvest model
+              if (farmProject.logList == null) farmProject.logList = [];
+              farmProject.logList = farmProject.logList.concat({
+                log: stepLog._id,
+              });
+              farmProject.logId = stepLog._id;
+
               // update model
               for (var field in FarmProjectModel.schema.paths) {
                 if (field !== "_id" && field !== "__v") {
@@ -117,13 +124,6 @@ const farmProjectController = {
 
               // save log for farmProject in project log list
               if (farmProject.projectId != null) {
-                // push current stepLog into logList in harvest model
-                if (farmProject.logList == null) farmProject.logList = [];
-                farmProject.logList = farmProject.logList.concat({
-                  log: stepLog._id,
-                });
-                farmProject.logId = stepLog._id;
-
                 // save log to project log list
                 const project = await ProjectModel.findById(
                   farmProject.projectId
@@ -165,6 +165,8 @@ const farmProjectController = {
                 farmProject.farmer = farmer._id;
               }
 
+              console.log("farmProject", farmProject);
+
               await farmProject.save();
               const farmProjectPop = await FarmProjectModel.findById(
                 farmProject._id
@@ -173,6 +175,8 @@ const farmProjectController = {
                 .populate("farmer")
                 .exec();
               res.status(200).send(farmProjectPop);
+
+              console.log("farmProjectPop", farmProjectPop);
 
               // save the harvest model after changed
               // save the model after changed
