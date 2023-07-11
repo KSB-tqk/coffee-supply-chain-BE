@@ -190,6 +190,7 @@ const userController = {
       "email",
       "password",
       "address",
+      "walletAddress",
     ];
 
     if (req.user.role == 1) {
