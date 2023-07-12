@@ -7,6 +7,9 @@ import { dirname } from "path";
 import swaggerUi from "swagger-ui-express";
 import { createRequire } from "module";
 import admin from "./helper/firebase/firebase_helper.js";
+import fs from "fs";
+import https from "https";
+import http from "http";
 const require = createRequire(import.meta.url);
 const swaggerDocument = require("../src/swagger_v2.json");
 
@@ -35,6 +38,9 @@ import imageUploadRouter from "./router/image_upload/image_upload_router.js";
 const app = express();
 
 const port = process.env.PORT;
+const protocol = process.env.PROTOCOL;
+const host = process.env.HOST;
+
 mongooseDB.then(() => {
   console.log("Connect db success!");
   //createTransaction("testBlockId/", "TestBlockContent");
@@ -90,25 +96,76 @@ const publicDir = path.join(__dirname, "../public");
 
 app.use(express.static(publicDir));
 
+// let server;
+
+// // Start a development HTTPS server.
+// if (protocol === "https") {
+//   const { execSync } = require("child_process");
+//   const execOptions = { encoding: "utf-8", windowsHide: true };
+//   let key = "./src/certs/root.key";
+//   let certificate = "./src/certs/root.crt";
+
+//   if (!fs.existsSync(key) || !fs.existsSync(certificate)) {
+//     try {
+//       execSync("openssl version", execOptions);
+
+//       execSync(
+//         `openssl req -x509 -newkey rsa:2048 -keyout ./src/certs/root.key -out ${certificate} -days 365 -nodes -subj "/C=US/ST=Foo/L=Bar/O=Baz/CN=localhost"`,
+//         execOptions
+//       );
+//       execSync(`openssl rsa -in ./src/certs/root.key -out ${key}`, execOptions);
+
+//       execSync("rm ./src/certs/root.key", execOptions);
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   }
+
+//   const options = {
+//     key: fs.readFileSync(key),
+//     cert: fs.readFileSync(certificate),
+//     passphrase: "password",
+//   };
+
+//   server = https.createServer(options, app);
+// } else {
+//   server = http.createServer(app);
+// }
+
+// function sendBootStatus(status) {
+//   // don't send anything if we're not running in a fork
+//   if (!process.send) {
+//     console.log("here it go");
+//     return;
+//   }
+//   console.log("here it go 3");
+//   process.send({ boot: status });
+// }
+
+// server.listen({ port, host }, function () {
+//   // Tell the parent process that Server has booted.
+//   sendBootStatus("ready");
+// });
+
 app.listen(port || 3001, () => {
   console.log("Server is up on port " + port);
 });
 
-import sgMail from "@sendgrid/mail";
-import notificationController from "./controller/notification/notification_controller.js";
-import ProduceSupervisionModel from "./model/produce_supervision/produce_supervision.js";
-import {
-  getTransactionReceipt,
-  createTransaction,
-} from "./helper/blockchain_helper.js";
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-const msg = {
-  to: "19521686@gm.uit.edu.vn", // Change to your recipient
-  from: "no.reply.hkmedia@gmail.com", // Change to your verified sender
-  subject: "Sending with SendGrid is Fun",
-  text: "and easy to do anywhere, even with Node.js",
-  html: "<strong>and easy to do anywhere, even with Node.js</strong>",
-};
+// import sgMail from "@sendgrid/mail";
+// import notificationController from "./controller/notification/notification_controller.js";
+// import ProduceSupervisionModel from "./model/produce_supervision/produce_supervision.js";
+// import {
+//   getTransactionReceipt,
+//   createTransaction,
+// } from "./helper/blockchain_helper.js";
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// const msg = {
+//   to: "19521686@gm.uit.edu.vn", // Change to your recipient
+//   from: "no.reply.hkmedia@gmail.com", // Change to your verified sender
+//   subject: "Sending with SendGrid is Fun",
+//   text: "and easy to do anywhere, even with Node.js",
+//   html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+// };
 
 // import { sendData } from "./helper/blockchain_helper.js";
 // await sendData();

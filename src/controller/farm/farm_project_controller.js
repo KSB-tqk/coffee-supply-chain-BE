@@ -298,6 +298,26 @@ const farmProjectController = {
       res.status(500).send(onError(500, err.message));
     }
   },
+
+  getFarmProjectLogList: async (req, res) => {
+    try {
+      const farmProject = await FarmProjectModel.findById(
+        req.query.farmProjectId
+      )
+        .populate({
+          path: "logList",
+          populate: {
+            path: "log",
+          },
+        })
+        .exec();
+      if (farmProject.logList == null) farmProject.logList = [];
+
+      res.status(200).send(farmProject.logList);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
 };
 
 const FarmProjectServices = { farmProjectController };
