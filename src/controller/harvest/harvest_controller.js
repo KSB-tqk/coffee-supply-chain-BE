@@ -246,7 +246,9 @@ const harvestController = {
       harvest.inspector = user._id;
       await harvest.save();
 
-      const responseHarvest = await HarvestModel.findById(harvest._id).populate({path: 'inspector'});
+      const responseHarvest = await HarvestModel.findById(harvest._id).populate(
+        { path: "inspector" }
+      );
 
       console.log(responseHarvest);
 
@@ -318,6 +320,23 @@ const harvestController = {
           );
 
       res.status(200).send(harvestList.reverse());
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  getHarvestLogList: async (req, res) => {
+    try {
+      const harvest = await HarvestModel.findById(req.query.harvestId)
+        .populate({
+          path: "logList",
+          populate: {
+            path: "log",
+          },
+        })
+        .exec();
+      if (harvest.logList == null) harvest.logList = [];
+      res.status(200).send(harvest.logList);
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }

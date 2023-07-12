@@ -4,6 +4,8 @@ import auth from "../../middleware/authentication.js";
 
 const harvestRouter = express.Router();
 
+harvestRouter.get("/loglist", harvestController.getHarvestLogList);
+
 harvestRouter.use(auth);
 
 harvestRouter.post("/", harvestController.addHarvest);

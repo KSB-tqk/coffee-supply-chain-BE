@@ -4,6 +4,11 @@ import auth from "../../middleware/authentication.js";
 
 const produceSupervisionRouter = express.Router();
 
+produceSupervisionRouter.get(
+  "/loglist",
+  produceSupervisionController.getProduceLogList
+);
+
 produceSupervisionRouter.use(auth);
 
 produceSupervisionRouter.post(

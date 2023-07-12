@@ -276,7 +276,9 @@ const produceSupervisionController = {
       produceSupervision.inspector = user._id;
       await produceSupervision.save();
 
-      const response = await ProduceSupervisionModel.findById(produceSupervision.produceSupervisionId).populate({path: 'inspector'});
+      const response = await ProduceSupervisionModel.findById(
+        produceSupervision.produceSupervisionId
+      ).populate({ path: "inspector" });
 
       res.status(200).send(response);
     } catch (err) {
@@ -352,6 +354,24 @@ const produceSupervisionController = {
           );
 
       res.status(200).send(produceList.reverse());
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
+  getProduceLogList: async (req, res) => {
+    try {
+      const produce = await ProduceSupervisionModel.findById(
+        req.query.produceId
+      )
+        .populate({
+          path: "logList",
+          populate: {
+            path: "log",
+          },
+        })
+        .exec();
+      if (produce.logList == null) produce.logList = [];
+      res.status(200).send(produce.logList);
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }

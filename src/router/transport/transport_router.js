@@ -4,6 +4,8 @@ import transportController from "../../controller/transport/transport_controller
 
 const transportRouter = express.Router();
 
+transportRouter.get("/loglist", transportController.getTransportLogList);
+
 transportRouter.use(auth);
 
 transportRouter.post("/", transportController.addTransport);
