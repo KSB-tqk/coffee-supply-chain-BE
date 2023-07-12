@@ -4,6 +4,11 @@ import auth from "../../middleware/authentication.js";
 
 const FarmProjectRouter = express.Router();
 
+FarmProjectRouter.get(
+  "/loglist",
+  FarmProjectServices.farmProjectController.getFarmProjectLogList
+);
+
 FarmProjectRouter.use(auth);
 
 // add new farm project
