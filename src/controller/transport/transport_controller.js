@@ -256,7 +256,9 @@ const transportController = {
       transport.inspector = user._id;
       await transport.save();
 
-      const resTransport = await TransportModel.findById(transport.transportId).populate({path: 'inspector'});
+      const resTransport = await TransportModel.findById(
+        transport.transportId
+      ).populate({ path: "inspector" });
 
       res.status(200).send(resTransport);
     } catch (err) {
@@ -326,6 +328,22 @@ const transportController = {
           );
 
       res.status(200).send(transportList.reverse());
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
+  getTransportLogList: async (req, res) => {
+    try {
+      const transport = await TransportModel.findById(req.query.transportId)
+        .populate({
+          path: "logList",
+          populate: {
+            path: "log",
+          },
+        })
+        .exec();
+      if (transport.logList == null) transport.logList = [];
+      res.status(200).send(transport.logList);
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }

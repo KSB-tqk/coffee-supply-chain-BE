@@ -272,7 +272,9 @@ const warehouseStorageController = {
       warehouseStorage.inspector = user._id;
       await warehouseStorage.save();
 
-      const responseWarehouseStorage = await WarehouseStorageModel.findById(warehouseStorage.warehouseStorageId).populate({path: 'inspector'});
+      const responseWarehouseStorage = await WarehouseStorageModel.findById(
+        warehouseStorage.warehouseStorageId
+      ).populate({ path: "inspector" });
 
       res.status(200).send(responseWarehouseStorage);
     } catch (err) {
@@ -347,6 +349,25 @@ const warehouseStorageController = {
           );
 
       res.status(200).send(warehouseStorageList.reverse());
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  getWarehouseStorageLogList: async (req, res) => {
+    try {
+      const warehouseStorage = await WarehouseStorageModel.findById(
+        req.query.warehouseStorageId
+      )
+        .populate({
+          path: "logList",
+          populate: {
+            path: "log",
+          },
+        })
+        .exec();
+      if (warehouseStorage.logList == null) warehouseStorage.logList = [];
+      res.status(200).send(warehouseStorage.logList);
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }

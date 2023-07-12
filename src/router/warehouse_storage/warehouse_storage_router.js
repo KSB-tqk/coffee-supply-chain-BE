@@ -4,6 +4,11 @@ import auth from "../../middleware/authentication.js";
 
 const warehouseStorageRouter = express.Router();
 
+warehouseStorageRouter.get(
+  "/loglist",
+  warehouseStorageController.getWarehouseStorageLogList
+);
+
 warehouseStorageRouter.use(auth);
 
 warehouseStorageRouter.post(
