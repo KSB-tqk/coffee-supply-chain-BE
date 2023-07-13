@@ -14,6 +14,8 @@ userRouter.get("/reset-password", userController.sendEmailOTPToChangePassword);
 
 userRouter.get("/confirm-otp", userController.confirmEmailOTP);
 
+userRouter.patch("/update-user", userController.updateUserInfoByEmail);
+
 userRouter.get("/update-field-userid", userController.updateUserIdField);
 
 userRouter.use(auth);

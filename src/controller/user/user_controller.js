@@ -194,7 +194,6 @@ const userController = {
       "address",
       "walletAddress",
       "phoneNumber",
-
     ];
 
     if (req.user.role == 1) {
@@ -704,6 +703,31 @@ const userController = {
       res.send(user);
     } catch (err) {
       res.status(400).send(onError(400, err.message));
+    }
+  },
+
+  updateUserInfoByEmail: async (req, res) => {
+    try {
+      const user = await User.findOne({ email: req.query.email });
+
+      if (user == null)
+        return res
+          .status(404)
+          .send(onError(404, "User Not Found" + ERROR_MESSAGE));
+
+      for (var field in User.schema.paths) {
+        if (field !== "_id" && field !== "__v") {
+          if (req.body[field] !== undefined) {
+            user[field] = req.body[field];
+            console.log("harvest update field: ", user[field]);
+          }
+        }
+      }
+
+      await user.save();
+      res.send(user);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
     }
   },
 };
