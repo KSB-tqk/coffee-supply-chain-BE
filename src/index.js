@@ -147,8 +147,16 @@ app.use(express.static(publicDir));
 //   sendBootStatus("ready");
 // });
 
-app.listen(port || 3001, () => {
-  console.log("Server is up on port " + port);
+// app.listen(port || 3001, () => {
+//   console.log("Server is up on port " + port);
+// });
+
+const httpsOptions = {
+  key: fs.readFileSync("./certs/key.pem"),
+  cert: fs.readFileSync("./certs/cert.pem"),
+};
+const server = https.createServer(httpsOptions, app).listen(port, () => {
+  console.log("server running at " + port);
 });
 
 // import sgMail from "@sendgrid/mail";
