@@ -679,10 +679,9 @@ const userController = {
 
       for (let i = 0; i < allUser.length; i++) {
         const user = allUser[i];
-        if (user.userId == null) {
-          user.userId = user._id;
-          await user.save();
-        }
+
+        user.imageUrl = null;
+        await user.save();
       }
 
       res.send("Update field UserId for all user successfully");
