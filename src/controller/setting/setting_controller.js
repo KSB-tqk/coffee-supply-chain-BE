@@ -4,6 +4,7 @@ import {
   setBlockchainMode,
 } from "../../enum/app_const.js";
 import BlockchainMode from "../../enum/blockchain_mode.js";
+import { getTransactionReceipt } from "../../helper/blockchain_helper.js";
 import { onError } from "../../helper/data_helper.js";
 
 const settingController = {
@@ -64,6 +65,22 @@ const settingController = {
       res.send({
         result: "Current Blockchain Mode is " + modeTitle + " Mode",
       });
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
+
+  getTransactionHash: async (req, res) => {
+    try {
+      const inputData = await getTransactionReceipt(req.query.transactionHash);
+
+      if (inputData == null) {
+        return res
+          .status(404)
+          .send(onError(404, "Transaction Not Found" + ERROR_MESSAGE));
+      }
+
+      return res.send({ inputData: inputData });
     } catch (err) {
       res.status(500).send(onError(500, err.message));
     }

@@ -99,6 +99,8 @@ export async function getTransactionReceipt(transactionHash) {
   const inputData = web3.utils.hexToAscii(transaction.input);
 
   console.log(inputData);
+
+  return inputData;
 }
 
 // var privatekey =
