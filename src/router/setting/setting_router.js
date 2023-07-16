@@ -4,6 +4,8 @@ import auth from "../../middleware/authentication.js";
 
 const settingRouter = express.Router();
 
+settingRouter.get("/get", settingController.getTransactionHash);
+
 settingRouter.use(auth);
 
 settingRouter.get(
