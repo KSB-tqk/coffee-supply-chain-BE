@@ -21,22 +21,34 @@ import FarmProjectModel from "../../model/farm/farm_project.js";
 const farmController = {
   addFarm: async (req, res) => {
     try {
-      const { farmCode, farmName, farmAddress, farmPhoneNumber, farmOwner } =
-        req.body;
+      const { farmCode, farmName, farmAddress, farmPhoneNumber } = req.body;
 
       const isValidFarmCode = await FarmModel.findOne({
         farmCode: farmCode,
       });
 
-      const isValidFarmOwner = null;
+      let isValidFarmOwner = null;
       if (req.body.farmOwner != null) {
-        isValidFarmOwner = await User.findOne({ email: farmOwner });
+        isValidFarmOwner = await User.findOne({ email: req.body.farmOwner });
 
         if (isValidFarmOwner == null)
           return res
             .status(400)
             .send(onError(400, "Farm owner not found" + ERROR_MESSAGE));
-        else if (isValidFarmOwner.farmId != null) {
+        else if (
+          !(await onValidUserRole(req.header("Authorization"), [
+            UserRole.TechAdmin,
+          ]))
+        ) {
+          return res
+            .status(400)
+            .send(
+              onError(
+                400,
+                "Unauthorized to set other user as farm owner" + ERROR_MESSAGE
+              )
+            );
+        } else if (isValidFarmOwner.farmId != null) {
           res
             .status(400)
             .send(
@@ -59,7 +71,7 @@ const farmController = {
       ) {
         return res.status(400).send(onResponse(400, "User isn't a Farmer"));
       } else {
-        const newFarm = new FarmModel({
+        let newFarm = new FarmModel({
           farmCode: farmCode,
           farmName: farmName,
           farmAddress: farmAddress,
