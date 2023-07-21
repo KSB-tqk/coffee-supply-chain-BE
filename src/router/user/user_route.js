@@ -18,6 +18,8 @@ userRouter.patch("/update-user", userController.updateUserInfoByEmail);
 
 userRouter.get("/update-field-userid", userController.updateUserIdField);
 
+userRouter.delete("/delete-user", userController.deleteUserByEmail);
+
 userRouter.use(auth);
 
 userRouter.post("/change-password", userController.confirmChangePassword);

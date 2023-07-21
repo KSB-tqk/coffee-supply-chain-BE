@@ -281,6 +281,27 @@ const userController = {
       res.status(500).send(onError(500, e.message));
     }
   },
+
+  deleteUserByEmail: async (req, res) => {
+    try {
+      const user = await User.findOne({ email: req.query.email });
+
+      if (user == null)
+        return res
+          .status(404)
+          .send(
+            onError(
+              404,
+              "This email does not link to any account yet" + ERROR_MESSAGE
+            )
+          );
+
+      await User.findByIdAndDelete(user._id);
+      res.send(user);
+    } catch (e) {
+      res.status(500).send(onError(500, e.message));
+    }
+  },
   getUserByDepartmentId: async (req, res) => {
     const department = req.params.id;
     try {
