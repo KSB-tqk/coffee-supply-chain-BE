@@ -179,7 +179,12 @@ const farmController = {
     try {
       const updates = Object.keys(req.body);
 
-      const allowedUpdates = ["farmName", "farmAddress", "farmPhoneNumber"];
+      const allowedUpdates = [
+        "farmName",
+        "farmAddress",
+        "farmPhoneNumber",
+        "farmCode",
+      ];
 
       const farm = await FarmModel.findById(req.params.id);
 
@@ -192,10 +197,15 @@ const farmController = {
       }
 
       try {
-        const result = await compareUserIdWithToken(
-          req.header("Authorization"),
-          farm.farmOwner
-        );
+        const result =
+          (await compareUserIdWithToken(
+            req.header("Authorization"),
+            farm.farmOwner
+          )) ||
+          (await onValidUserRole(req.header("Authorization"), [
+            UserRole.TechAdmin,
+            UserRole.SystemAdmin,
+          ]));
         if (!result) {
           return res
             .status(400)
@@ -204,6 +214,7 @@ const farmController = {
             );
         } else {
           allowedUpdates.push("farmOwner");
+          allowedUpdates.push("statusFarm");
         }
       } catch (err) {
         return res.status(400).send(onResponse(400, err.message));
