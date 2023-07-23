@@ -225,7 +225,6 @@ const farmController = {
               onResponse(400, "Unauthorized Farm Owner, please try again.")
             );
         } else {
-          allowedUpdates.push("farmOwner");
           allowedUpdates.push("statusFarm");
         }
       } catch (err) {

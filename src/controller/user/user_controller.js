@@ -576,7 +576,12 @@ const userController = {
   getNotificationList: async (req, res) => {
     try {
       const userId = await getUserIdByHeader(req.header("Authorization"));
-      const user = await User.findById(userId);
+      const user = await User.findById(userId).populate({
+        path: "notificationList",
+        populate: {
+          path: "notification",
+        },
+      });
 
       if (user == null) {
         return res
