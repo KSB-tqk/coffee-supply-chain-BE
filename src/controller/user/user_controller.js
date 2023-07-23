@@ -580,6 +580,9 @@ const userController = {
         path: "notificationList",
         populate: {
           path: "notification",
+          populate: {
+            path: "stepLogId",
+          },
         },
       });
 
