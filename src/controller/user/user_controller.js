@@ -592,7 +592,7 @@ const userController = {
           .send(onError(404, "User Not Found" + ERROR_MESSAGE));
       }
 
-      const userNotificationList = user.notificationList.chunk(10);
+      const userNotificationList = user.notificationList.reverse().chunk(10);
 
       console.log(user.notificationList);
 
