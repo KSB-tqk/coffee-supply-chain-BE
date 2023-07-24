@@ -47,7 +47,7 @@ export async function createTransaction(blockId, blockContent) {
 export async function storeLogOnBlockchain(transactionHash, stepLog) {
   const blockMode = getBlockchainMode();
 
-  const isStoring = false;
+  let isStoring = false;
 
   console.log("blockMode:" + blockMode);
 
