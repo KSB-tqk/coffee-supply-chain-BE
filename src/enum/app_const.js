@@ -11,7 +11,7 @@ export const BLOCKCHAIN_SMART_CONTRACT_ADDR =
   "0x904e147b4a9a769e680b65F569fb46f174B462c9";
 export const BLOCKCHAIN_ADDR = "0xc2197823d2d6a14e58945e50206f683d01ec10f3";
 export const PATH_TO_BLOCKCHAIN_ABI =
-  "/home/ubuntu/coffee-supply-chain-BE/blockchain/contracts/TrackingModelAbi.json";
+  "blockchain/contracts/TrackingModelAbi.json";
 export const BLOCHAIN_ADDR_PASSWORD = "myhao12102001";
 
 export function setStepLogId(stepId) {
