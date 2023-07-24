@@ -144,6 +144,7 @@ const userController = {
       "address",
       "walletAddress",
       "phoneNumber",
+      "fcmToken",
     ];
 
     if (req.user.role == 1) {
