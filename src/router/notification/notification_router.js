@@ -11,6 +11,11 @@ notificationRouter.post(
   notificationController.pushNotificationSingleUser
 );
 
+notificationRouter.get(
+  "/mark-as-readed",
+  notificationController.updateNotification
+);
+
 notificationRouter.post(
   "/subscribe-topic",
   notificationController.subscribeToTopic

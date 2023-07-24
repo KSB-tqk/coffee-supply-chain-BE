@@ -17,6 +17,10 @@ const notificationSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "StepLog",
     },
+    isRead: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
