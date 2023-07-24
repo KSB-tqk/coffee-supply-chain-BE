@@ -17,6 +17,9 @@ import {
 } from "../enum/app_const.js";
 import BlockchainMode from "../enum/blockchain_mode.js";
 import StepLogModel from "../model/step_log/step_log.js";
+import { pushNotification } from "./firebase/fcm_helper.js";
+import ProjectModel from "../model/project/project.js";
+import { onUpdateProjectNotification } from "./project/project_data_helper.js";
 
 const contractJson = fs.readFileSync(PATH_TO_BLOCKCHAIN_ABI);
 var SmartContractAddress = BLOCKCHAIN_SMART_CONTRACT_ADDR;
@@ -70,6 +73,18 @@ export async function storeLogOnBlockchain(transactionHash, stepLog) {
       stepLogModel.transactionHash = result.hash;
       await stepLogModel.save();
       setStoring(false);
+
+      if (stepLogModel.projectId != null) {
+        const project = await ProjectModel.findById(stepLogModel.projectId);
+
+        if (project != null) {
+          onUpdateProjectNotification(
+            stepLogModel,
+            stepLogModel.action,
+            project
+          );
+        }
+      }
       break;
     case BlockchainMode.Local:
       break;
