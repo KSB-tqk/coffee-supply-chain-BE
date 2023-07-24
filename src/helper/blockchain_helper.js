@@ -77,7 +77,7 @@ export async function storeLogOnBlockchain(transactionHash, stepLog) {
       if (stepLogModel.projectId != null) {
         const project = await ProjectModel.findById(stepLogModel.projectId);
 
-        if (project != null) {
+        if (project != null && stepLogModel.modelAfterChanged != null) {
           onUpdateProjectNotification(
             stepLogModel,
             stepLogModel.action,
