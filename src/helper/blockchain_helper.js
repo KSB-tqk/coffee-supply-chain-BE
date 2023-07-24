@@ -47,6 +47,8 @@ export async function createTransaction(blockId, blockContent) {
 export async function storeLogOnBlockchain(transactionHash, stepLog) {
   const blockMode = getBlockchainMode();
 
+  const isStoring = false;
+
   console.log("blockMode:" + blockMode);
 
   switch (parseInt(blockMode, 10)) {
@@ -54,7 +56,9 @@ export async function storeLogOnBlockchain(transactionHash, stepLog) {
       break;
     case BlockchainMode.Private:
       console.log("Here it in");
+      if (isStoring == true) return;
       if (transactionHash != null) return;
+      isStoring = true;
       const result = await createTransaction(
         "|Step Log Id:" + stepLog._id.toString() + "|",
         JSON.stringify(stepLog)
@@ -63,6 +67,7 @@ export async function storeLogOnBlockchain(transactionHash, stepLog) {
       console.log(result);
       stepLogModel.transactionHash = result.hash;
       await stepLogModel.save();
+      isStoring = false;
       break;
     case BlockchainMode.Local:
       break;
