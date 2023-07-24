@@ -94,6 +94,26 @@ const notificationController = {
       res.status(500).send(onError(500, err.message));
     }
   },
+
+  updateNotification: async (req, res) => {
+    try {
+      const notification = await NotificationModel.findOne({
+        _id: req.query.notificationId,
+      });
+
+      if (notification == null)
+        return res
+          .status(404)
+          .send(onError(404, "Notification Not Found" + ERROR_MESSAGE));
+
+      notification.isRead = true;
+      await notification.save();
+
+      res.send(notification);
+    } catch (err) {
+      res.status(500).send(onError(500, err.message));
+    }
+  },
 };
 
 export default notificationController;
