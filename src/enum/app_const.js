@@ -29,3 +29,13 @@ export function setBlockchainMode(blockchainMode) {
 export function getBlockchainMode() {
   return BLOCKCHAIN_MODE;
 }
+
+var IS_PROCESSING_BLOCKCHAIN = false;
+
+export function setStoring(value) {
+  IS_PROCESSING_BLOCKCHAIN = value;
+}
+
+export function getStoringStatus() {
+  return IS_PROCESSING_BLOCKCHAIN;
+}

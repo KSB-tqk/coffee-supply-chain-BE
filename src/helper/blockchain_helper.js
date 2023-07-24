@@ -11,7 +11,9 @@ import {
   BLOCKCHAIN_SMART_CONTRACT_ADDR,
   PATH_TO_BLOCKCHAIN_ABI,
   getBlockchainMode,
+  getStoringStatus,
   setBlockchainMode,
+  setStoring,
 } from "../enum/app_const.js";
 import BlockchainMode from "../enum/blockchain_mode.js";
 import StepLogModel from "../model/step_log/step_log.js";
@@ -47,7 +49,7 @@ export async function createTransaction(blockId, blockContent) {
 export async function storeLogOnBlockchain(transactionHash, stepLog) {
   const blockMode = getBlockchainMode();
 
-  let isStoring = false;
+  let isStoring = getStoringStatus();
 
   console.log("blockMode:" + blockMode);
 
@@ -58,7 +60,7 @@ export async function storeLogOnBlockchain(transactionHash, stepLog) {
       console.log("Here it in");
       if (isStoring == true) return;
       if (transactionHash != null) return;
-      isStoring = true;
+      setStoring(true);
       const result = await createTransaction(
         "|Step Log Id:" + stepLog._id.toString() + "|",
         JSON.stringify(stepLog)
@@ -67,7 +69,7 @@ export async function storeLogOnBlockchain(transactionHash, stepLog) {
       console.log(result);
       stepLogModel.transactionHash = result.hash;
       await stepLogModel.save();
-      isStoring = false;
+      setStoring(false);
       break;
     case BlockchainMode.Local:
       break;
