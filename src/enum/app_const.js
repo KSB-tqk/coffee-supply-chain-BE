@@ -3,7 +3,7 @@ import BlockchainMode from "./blockchain_mode.js";
 export const ERROR_MESSAGE = ", please check and try again.";
 export const BASE_TRANSACTION_URL = "https://mumbai.polygonscan.com/tx/";
 var STEP_LOG_ID = null; // User save id”
-var BLOCKCHAIN_MODE = BlockchainMode.Private;
+var BLOCKCHAIN_MODE = BlockchainMode.Public;
 export const BLOCKCHAIN_NETWORK_URL = "http://54.95.160.252:8547";
 export const BLOCKCHAIN_DATA_DIR =
   "/home/ubuntu/geth-PoA-Private-Blockchain/node1/data/";
